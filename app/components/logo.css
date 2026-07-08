@@ -1,0 +1,101 @@
+.logo-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-glow {
+  position: absolute;
+  width: 180%;
+  height: 180%;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(139,92,246,.35) 0%,
+    rgba(59,130,246,.25) 45%,
+    transparent 75%
+  );
+  filter: blur(40px);
+  animation: pulseGlow 5s ease-in-out infinite;
+}
+
+.logo {
+  position: relative;
+  z-index: 2;
+}
+
+.orbit-outer {
+  transform-origin: center;
+  animation: rotateOuter 45s linear infinite;
+}
+
+.orbit-inner {
+  transform-origin: center;
+  animation: rotateInner 32s linear infinite reverse;
+}
+
+.orbit-dot-top {
+  transform-origin: center;
+  animation: rotateOuter 18s linear infinite;
+}
+
+.orbit-dot-bottom {
+  transform-origin: center;
+  animation: rotateInner 14s linear infinite reverse;
+}
+
+.core {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+@keyframes rotateOuter {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotateInner {
+  from {
+    transform: rotate(360deg);
+  }
+
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes breathe {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.04);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseGlow {
+  0% {
+    opacity: .45;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: .9;
+    transform: scale(1.08);
+  }
+
+  100% {
+    opacity: .45;
+    transform: scale(1);
+  }
+}
