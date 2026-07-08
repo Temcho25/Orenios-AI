@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 export default function Navbar() {
   return (
@@ -11,13 +12,27 @@ export default function Navbar() {
         {/* Logo */}
 
         <Link href="/v2" className="flex items-center gap-3">
-          <Image
-            src="/logo.PNG"
-            alt="Orenios AI"
-            width={40}
-            height={40}
-            className="rounded-xl"
-          />
+
+          <motion.div
+            animate={{
+              y: [0, -5, 0],
+              scale: [1, 1.03, 1],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="drop-shadow-[0_0_20px_rgba(124,58,237,0.35)]"
+          >
+            <Image
+              src="/logo.PNG"
+              alt="Orenios AI"
+              width={44}
+              height={44}
+              className="rounded-full"
+            />
+          </motion.div>
 
           <div>
             <h2 className="text-lg font-bold text-black">
@@ -28,22 +43,34 @@ export default function Navbar() {
               Your Life Admin
             </p>
           </div>
+
         </Link>
 
         {/* Navigation */}
 
         <nav className="hidden items-center gap-10 text-sm font-medium text-gray-600 md:flex">
-          <a href="#features" className="transition hover:text-black">
+
+          <a
+            href="#features"
+            className="transition hover:text-black"
+          >
             Features
           </a>
 
-          <a href="#preview" className="transition hover:text-black">
+          <a
+            href="#preview"
+            className="transition hover:text-black"
+          >
             Preview
           </a>
 
-          <a href="#waitlist" className="transition hover:text-black">
+          <a
+            href="#waitlist"
+            className="transition hover:text-black"
+          >
             Waitlist
           </a>
+
         </nav>
 
         {/* CTA */}

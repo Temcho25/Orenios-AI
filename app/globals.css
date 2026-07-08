@@ -77,4 +77,22 @@ body {
 ::selection {
   background: #7c3aed;
   color: white;
+}html {
+  scroll-behavior: smooth;
+}@keyframes slow-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.logo-spin {
+  animation: slow-spin 28s linear infinite;
+}
+
+.logo-spin:hover {
+  animation-play-state: paused;
 }
