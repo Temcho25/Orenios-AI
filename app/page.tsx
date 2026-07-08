@@ -1,9 +1,9 @@
-import Navbar from "../components/v2/Navbar";
-import ProductHero from "../components/v2/ProductHero";
-import Features from "../components/v2/Features";
-import ProductPreview from "../components/v2/ProductPreview";
-import Waitlist from "../components/v2/Waitlist";
-import ScrollToTop from "../components/v2/ScrollToTop";
+import Navbar from "./components/v2/Navbar";
+import ProductHero from "./components/v2/ProductHero";
+import Features from "./components/v2/Features";
+import ProductPreview from "./components/v2/ProductPreview";
+import Waitlist from "./components/v2/Waitlist";
+import ScrollToTop from "./components/v2/ScrollToTop";
 
 export default function V2Page() {
   return (
