@@ -2,8 +2,49 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useState } from "react";
 
-export default function ProductHero() {
+export default function ProductHero() 
+{
+  const [email, setEmail] = useState("");
+const [loading, setLoading] = useState(false);
+const [joined, setJoined] = useState(false);
+
+async function handleJoin(e: React.FormEvent) {
+  e.preventDefault();
+
+  if (!email.includes("@")) {
+    alert("Please enter a valid email.");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const res = await fetch("/api/waitlist", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error);
+    }
+
+    setJoined(true);
+    setEmail("");
+
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong.");
+  } finally {
+    setLoading(false);
+  }
+}
   return (
     <section className="relative isolate overflow-hidden bg-[linear-gradient(180deg,#fafaf9_0%,#f8fafc_100%)]">
       <div className="absolute inset-0 -z-10 overflow-hidden">
@@ -35,10 +76,15 @@ export default function ProductHero() {
               One AI that remembers your goals, organizes your tasks, plans your day and keeps everything connected.
             </p>
 
-            <form className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:items-center">
+            <form
+  onSubmit={handleJoin}
+  className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:items-center"
+>
               <label className="w-full sm:flex-1">
                 <span className="sr-only">Email address</span>
                 <input
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
                   id="hero-email"
                   name="email"
                   type="email"
@@ -51,12 +97,24 @@ export default function ProductHero() {
               </label>
 
               <button
+  disabled={loading}
                 type="submit"
                 className="inline-flex h-12 items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-cyan-500 px-6 text-sm font-semibold text-white shadow-[0_16px_40px_rgba(124,58,237,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:from-violet-700 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-violet-200"
               >
-                Join Waitlist
+                {loading ? "Joining..." : "Join Waitlist"}
               </button>
             </form>
+            {joined && (
+  <div className="mt-6 rounded-2xl bg-green-50 border border-green-200 p-5">
+    <h3 className="text-lg font-bold text-green-700">
+      🎉 You're on the waitlist!
+    </h3>
+
+    <p className="mt-2 text-green-600">
+      Thanks! We'll email you before launch.
+    </p>
+  </div>
+)}
 
             <div className="mt-5 flex items-center justify-center gap-2 text-sm text-zinc-600 lg:justify-start">
               <span className="text-amber-500" aria-hidden="true">
