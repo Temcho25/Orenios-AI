@@ -9,10 +9,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full">
       <div className="mx-auto mt-6 flex max-w-7xl items-center justify-between rounded-2xl border border-gray-200/70 bg-white/80 px-6 py-4 backdrop-blur-xl shadow-sm">
 
-        {/* Logo */}
-
         <Link href="/v2" className="flex items-center gap-3">
-
           <motion.div
             animate={{
               y: [0, -5, 0],
@@ -43,13 +40,9 @@ export default function Navbar() {
               Your Life Admin
             </p>
           </div>
-
         </Link>
 
-        {/* Navigation */}
-
         <nav className="hidden items-center gap-10 text-sm font-medium text-gray-600 md:flex">
-
           <a
             href="#features"
             className="transition hover:text-black"
@@ -65,18 +58,15 @@ export default function Navbar() {
           </a>
 
           <a
-            href="#waitlist"
+            href="#hero"
             className="transition hover:text-black"
           >
-            Waitlist
+            Join Waitlist
           </a>
-
         </nav>
 
-        {/* CTA */}
-
         <a
-          href="#waitlist"
+          href="#hero"
           className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:scale-105"
         >
           Join Waitlist

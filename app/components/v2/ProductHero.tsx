@@ -46,7 +46,10 @@ async function handleJoin(e: React.FormEvent) {
   }
 }
   return (
-    <section className="relative isolate overflow-hidden bg-[linear-gradient(180deg,#fafaf9_0%,#f8fafc_100%)]">
+    <section
+  id="hero"
+  className="relative isolate overflow-hidden bg-[linear-gradient(180deg,#fafaf9_0%,#f8fafc_100%)]"
+>
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute left-1/2 top-0 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-zinc-900/5 blur-[140px]" />
       </div>
