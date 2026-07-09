@@ -2,7 +2,7 @@ import Navbar from "../components/v2/Navbar";
 import ProductHero from "../components/v2/ProductHero";
 import Features from "../components/v2/Features";
 import ProductPreview from "../components/v2/ProductPreview";
-import Waitlist from "../components/v2/Waitlist";
+import Footer from "../components/v2/Footer";
 import ScrollToTop from "../components/v2/ScrollToTop";
 
 export default function V2Page() {
@@ -12,7 +12,6 @@ export default function V2Page() {
       <ScrollToTop />
 
       {/* Aurora Background */}
-
       <div className="pointer-events-none absolute inset-0">
 
         <div className="absolute -left-40 -top-24 h-[700px] w-[700px] rounded-full bg-violet-500/20 blur-[220px]" />
@@ -37,7 +36,7 @@ export default function V2Page() {
 
         <ProductPreview />
 
-        <Waitlist />
+        <Footer />
 
       </div>
 
