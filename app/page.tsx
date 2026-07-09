@@ -11,21 +11,16 @@ export default function V2Page() {
 
       <ScrollToTop />
 
-      {/* Aurora Background */}
+ {/* Aurora Background */}
+<div className="pointer-events-none absolute inset-0 overflow-hidden">
 
-      <div className="pointer-events-none absolute inset-0">
+  <div className="absolute -left-24 -top-20 h-[500px] w-[500px] rounded-full bg-violet-500/20 blur-[110px]" />
 
-        <div className="absolute -left-40 -top-24 h-[700px] w-[700px] rounded-full bg-violet-500/20 blur-[220px]" />
+  <div className="absolute right-[-100px] top-[280px] h-[450px] w-[450px] rounded-full bg-cyan-400/15 blur-[110px]" />
 
-        <div className="absolute right-[-150px] top-[350px] h-[650px] w-[650px] rounded-full bg-cyan-400/15 blur-[220px]" />
+  <div className="absolute left-1/2 bottom-[-120px] h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-fuchsia-400/15 blur-[120px]" />
 
-        <div className="absolute left-1/2 top-[1000px] h-[700px] w-[700px] -translate-x-1/2 rounded-full bg-fuchsia-400/15 blur-[240px]" />
-
-        <div className="absolute -left-40 bottom-[300px] h-[650px] w-[650px] rounded-full bg-violet-400/15 blur-[220px]" />
-
-        <div className="absolute right-[-120px] bottom-0 h-[600px] w-[600px] rounded-full bg-cyan-300/15 blur-[220px]" />
-
-      </div>
+</div>
 
       <div className="relative z-10">
 
