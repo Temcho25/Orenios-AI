@@ -13,14 +13,43 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Orenios AI",
-  description: "Your Life Admin",
+  title: "Orenios AI – Your AI Life Admin",
+  description:
+    "Orenios AI is your personal AI life admin. Organize your goals, tasks, calendar, notes and daily planning in one intelligent workspace. Join the waitlist today.",
+  keywords: [
+    "AI",
+    "AI assistant",
+    "life admin",
+    "productivity",
+    "task manager",
+    "goals",
+    "calendar",
+    "daily planner",
+    "personal AI",
+    "Orenios AI",
+  ],
   icons: {
     icon: "/icon.png",
     shortcut: "/icon.png",
     apple: "/icon.png",
   },
+  openGraph: {
+    title: "Orenios AI – Your AI Life Admin",
+    description:
+      "One AI that remembers your goals, organizes your tasks and plans your day.",
+    url: "https://orenios.com",
+    siteName: "Orenios AI",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Orenios AI – Your AI Life Admin",
+    description:
+      "One AI that remembers your goals, organizes your tasks and plans your day.",
+  },
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,7 +60,9 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+      </body>
     </html>
   );
 }
