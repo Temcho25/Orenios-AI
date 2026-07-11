@@ -13,9 +13,7 @@ export default function V2Page() {
       {/* Aurora Background */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -left-24 -top-20 h-[500px] w-[500px] rounded-full bg-violet-500/20 blur-[110px]" />
-
         <div className="absolute right-[-100px] top-[280px] h-[450px] w-[450px] rounded-full bg-cyan-400/15 blur-[110px]" />
-
         <div className="absolute left-1/2 bottom-[-120px] h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-fuchsia-400/15 blur-[120px]" />
       </div>
 

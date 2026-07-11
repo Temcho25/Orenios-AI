@@ -1,4 +1,22 @@
+"use client";
+
 export default function Footer() {
+  const scrollToWaitlist = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+
+    const section = document.getElementById("waitlist");
+
+    if (!section) return;
+
+    const top =
+      section.getBoundingClientRect().top + window.scrollY - 180;
+
+    window.scrollTo({
+      top,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <footer className="border-t border-zinc-200 bg-white">
       <div className="mx-auto max-w-6xl px-6 py-20 text-center">
@@ -19,7 +37,8 @@ export default function Footer() {
         </p>
 
         <a
-          href="#hero-email"
+          href="#"
+          onClick={scrollToWaitlist}
           className="mt-10 inline-flex rounded-full bg-zinc-900 px-8 py-4 text-lg font-semibold text-white transition hover:-translate-y-1 hover:bg-zinc-800"
         >
           Join Waitlist

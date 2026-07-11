@@ -46,16 +46,14 @@ async function handleJoin(e: React.FormEvent) {
   }
 }
   return (
-    <section
-  id="hero"
+<section
+  id="waitlist"
   className="relative isolate overflow-hidden bg-[linear-gradient(180deg,#fafaf9_0%,#f8fafc_100%)]"
 >
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute left-1/2 top-0 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-zinc-900/5 blur-[140px]" />
-      </div>
 
-      <div className="mx-auto flex min-h-screen max-w-7xl items-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
-        <div className="grid w-full items-center gap-8 sm:gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
+<div
+  className="mx-auto flex min-h-screen max-w-7xl items-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-24"
+>      <div className="grid w-full items-center gap-8 sm:gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -80,8 +78,8 @@ async function handleJoin(e: React.FormEvent) {
             </p>
 
             <form
-  onSubmit={handleJoin}
-  className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:items-center"
+  onSubmit={handleJoin} 
+  className="scroll-mt-24 mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:items-center"
 >
               <label className="w-full sm:flex-1">
                 <span className="sr-only">Email address</span>

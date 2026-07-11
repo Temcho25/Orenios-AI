@@ -28,6 +28,7 @@ export default function Navbar() {
               width={44}
               height={44}
               className="rounded-full"
+              loading="eager"
             />
           </motion.div>
 
@@ -44,6 +45,13 @@ export default function Navbar() {
 
         <nav className="hidden items-center gap-10 text-sm font-medium text-gray-600 md:flex">
           <a
+            href="#waitlist"
+            className="transition hover:text-black"
+          >
+            Join Waitlist
+          </a>
+
+          <a
             href="#features"
             className="transition hover:text-black"
           >
@@ -56,17 +64,10 @@ export default function Navbar() {
           >
             Preview
           </a>
-
-          <a
-            href="#hero"
-            className="transition hover:text-black"
-          >
-            Join Waitlist
-          </a>
         </nav>
 
         <a
-          href="#hero"
+          href="#waitlist"
           className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:scale-105"
         >
           Join Waitlist
