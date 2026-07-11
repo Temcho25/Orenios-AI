@@ -5,14 +5,13 @@ import ProductPreview from "./components/v2/ProductPreview";
 import Footer from "./components/v2/Footer";
 import ScrollToTop from "./components/v2/ScrollToTop";
 
-export default function V2Page() {
+export default function HomePage() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#f5efff] via-[#fbf9ff] to-white">
       <ScrollToTop />
 
       {/* Premium Background */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-
         {/* Grid */}
         <div
           className="absolute inset-0 opacity-[0.04]"
@@ -39,19 +38,14 @@ export default function V2Page() {
 
         <div className="absolute right-[12%] bottom-[18%] h-[320px] w-[320px] rounded-full bg-indigo-400/12 blur-[140px]" />
 
-        {/* Top Gradient */}
         <div className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-violet-300/15 to-transparent" />
       </div>
 
       <div className="relative z-10">
         <Navbar />
-
         <ProductHero />
-
         <Features />
-
         <ProductPreview />
-
         <Footer />
       </div>
     </main>
