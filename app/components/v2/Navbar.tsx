@@ -25,8 +25,8 @@ export default function Navbar() {
             <Image
               src="/logo2.PNG"
               alt="Orenios AI"
-              width={86}
-              height={86}
+              width={70}
+              height={70}
               className="rounded-full"
               loading="eager"
             />

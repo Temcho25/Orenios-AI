@@ -175,8 +175,8 @@ export default function ProductHero() {
                     <Image
                       src="/logo2.PNG"
                       alt="Orenios AI"
-                      width={86}
-                      height={86}
+                      width={70}
+                      height={70}
                       className="h-[58px] w-[58px] object-contain sm:h-[72px] sm:w-[72px] lg:h-[86px] lg:w-[86px]"
                       loading="eager"
                     />
