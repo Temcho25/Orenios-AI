@@ -23,10 +23,10 @@ export default function Navbar() {
             className="drop-shadow-[0_0_20px_rgba(124,58,237,0.35)]"
           >
             <Image
-              src="/logo.PNG"
+              src="/logo2.PNG"
               alt="Orenios AI"
-              width={44}
-              height={44}
+              width={86}
+              height={86}
               className="rounded-full"
               loading="eager"
             />

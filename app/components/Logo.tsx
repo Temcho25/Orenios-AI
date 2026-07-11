@@ -44,7 +44,7 @@ export default function Logo({ size = 140 }: { size?: number }) {
         className="relative"
       >
         <Image
-          src="/logo.PNG"
+          src="/logo2.PNG"
           alt="Orenios AI"
           width={size}
           height={size}

@@ -43,7 +43,7 @@ export default function FloatingCards() {
   className="drop-shadow-[0_0_25px_rgba(124,58,237,0.35)]"
 >
   <Image
-    src="/logo.PNG"
+    src="/logo2.PNG"
     alt="Orenios AI"
     width={64}
     height={64}
