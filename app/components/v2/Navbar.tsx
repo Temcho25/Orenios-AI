@@ -9,7 +9,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full">
       <div className="mx-auto mt-6 flex max-w-7xl items-center justify-between rounded-2xl border border-gray-200/70 bg-white/80 px-6 py-4 backdrop-blur-xl shadow-sm">
 
-        <Link href="/v2" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3">
           <motion.div
             animate={{
               y: [0, -5, 0],
