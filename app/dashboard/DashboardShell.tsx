@@ -2,11 +2,13 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { useState } from "react";
-import LogoutButton from "./LogoutButton";
+import { useEffect, useState } from "react";import LogoutButton from "./LogoutButton";
 import TasksCard from "./TasksCard";
 import FocusCard from "./FocusCard";
 import GoalsCard from "./GoalsCard";
+import CalendarCard from "./CalendarCard";
+import NotesCard from "./NotesCard";
+import AICoach from "./AICoach";
 
 type DashboardShellProps = {
   firstName: string;
@@ -171,9 +173,47 @@ export default function DashboardShell({
   firstName,
   email,
 }: DashboardShellProps) {
-  const [activeItem, setActiveItem] = useState("Overview");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const [activeItem, setActiveItem] = useState("Overview");
+const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const [navigationRestored, setNavigationRestored] = useState(false);
 
+useEffect(() => {
+  const savedItem = sessionStorage.getItem(
+    "orenios-active-dashboard-section"
+  );
+
+  const validItems = navigationItems.map((item) => item.label);
+
+  if (savedItem && validItems.includes(savedItem)) {
+    setActiveItem(savedItem);
+  }
+
+  setNavigationRestored(true);
+}, []);
+
+useEffect(() => {
+  if (!navigationRestored) {
+    return;
+  }
+
+  sessionStorage.setItem(
+    "orenios-active-dashboard-section",
+    activeItem
+  );
+}, [activeItem, navigationRestored]);
+if (!navigationRestored) {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-[#f5f6fa]">
+      <div className="flex flex-col items-center gap-4">
+        <span className="h-7 w-7 animate-spin rounded-full border-2 border-violet-200 border-t-violet-600" />
+
+        <p className="text-sm font-medium text-gray-400">
+          Restoring your workspace...
+        </p>
+      </div>
+    </main>
+  );
+}
   function selectNavigationItem(item: string) {
     setActiveItem(item);
     setMobileMenuOpen(false);
@@ -395,6 +435,42 @@ function DashboardContent({
         description="Define meaningful outcomes, set deadlines and keep your progress visible."
       >
         <GoalsCard />
+      </SectionPage>
+    );
+  }
+
+  if (activeItem === "Calendar") {
+    return (
+      <SectionPage
+        eyebrow="Time and schedule"
+        title="Calendar"
+        description="Organize your events, choose your priorities and keep every important commitment visible."
+      >
+        <CalendarCard />
+      </SectionPage>
+    );
+  }
+
+  if (activeItem === "Notes") {
+    return (
+      <SectionPage
+        eyebrow="Knowledge and ideas"
+        title="Notes"
+        description="Capture ideas, organize important information and quickly find everything you want to remember."
+      >
+        <NotesCard />
+      </SectionPage>
+    );
+  }
+
+  if (activeItem === "AI Coach") {
+    return (
+      <SectionPage
+        eyebrow="Intelligent guidance"
+        title="AI Coach"
+        description="Get personalized guidance, clear priorities and practical action plans from your Orenios life assistant."
+      >
+        <AICoach />
       </SectionPage>
     );
   }
@@ -621,6 +697,7 @@ function OverviewContent({
 
           <button
             type="button"
+            onClick={() => onNavigate("AI Coach")}
             className="flex h-12 shrink-0 items-center justify-center gap-2 rounded-2xl bg-white px-5 text-sm font-semibold text-gray-950 transition hover:scale-[1.02]"
           >
             Plan my day
@@ -659,12 +736,18 @@ function OverviewContent({
 
       <GoalsCard />
 
-      <DashboardCard
-        title="Upcoming"
-        value="2"
-        description="Events in the next 24 hours"
-        accent="View calendar"
-      />
+      <button
+        type="button"
+        onClick={() => onNavigate("Calendar")}
+        className="w-full text-left"
+      >
+        <DashboardCard
+          title="Upcoming"
+          value="2"
+          description="Events in the next 24 hours"
+          accent="View calendar"
+        />
+      </button>
     </div>
   );
 }
@@ -725,7 +808,7 @@ function DashboardCard({
   accent,
 }: DashboardCardProps) {
   return (
-    <div className="rounded-[26px] border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
+    <div className="rounded-[26px] border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)] transition hover:border-gray-300 hover:shadow-[0_22px_60px_rgba(15,23,42,0.08)]">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-gray-900">

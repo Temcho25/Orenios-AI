@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "../lib/supabase";
+import { createClient } from "../lib/supabase";
 import { motion } from "framer-motion";
 
 export default function Waitlist() {
@@ -17,6 +17,7 @@ export default function Waitlist() {
 
     setLoading(true);
 
+    const supabase = await createClient();
     const { error } = await supabase
       .from("waitlist")
       .insert([{ email }]);
