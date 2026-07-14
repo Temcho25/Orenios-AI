@@ -89,6 +89,7 @@ export default function NotesCard() {
           .select(
             "id, title, content, created_at, updated_at"
           )
+          .eq("user_id", user.id)
           .order("updated_at", { ascending: false });
 
         if (error) {
@@ -220,6 +221,7 @@ export default function NotesCard() {
             updated_at: updatedAt,
           })
           .eq("id", editingNoteId)
+          .eq("user_id", user.id)
           .select(
             "id, title, content, created_at, updated_at"
           )
@@ -305,10 +307,22 @@ export default function NotesCard() {
     try {
       const supabase = createClient();
 
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        throw new Error(
+          "Your session has expired. Please sign in again."
+        );
+      }
+
       const { error } = await supabase
         .from("notes")
         .delete()
-        .eq("id", note.id);
+        .eq("id", note.id)
+        .eq("user_id", user.id);
 
       if (error) {
         throw error;

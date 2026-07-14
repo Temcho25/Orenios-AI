@@ -59,6 +59,7 @@ export default function FocusCard() {
         const { data, error } = await supabase
           .from("daily_focus")
           .select("id, title, description, progress, focus_date")
+          .eq("user_id", user.id)
           .eq("focus_date", today)
           .maybeSingle();
 
@@ -183,10 +184,22 @@ export default function FocusCard() {
     try {
       const supabase = createClient();
 
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        throw new Error(
+          "Your session has expired. Please sign in again."
+        );
+      }
+
       const { error } = await supabase
         .from("daily_focus")
         .delete()
-        .eq("id", focus.id);
+        .eq("id", focus.id)
+        .eq("user_id", user.id);
 
       if (error) {
         throw error;

@@ -243,6 +243,7 @@ export default function CalendarCard() {
           .select(
             "id, title, description, event_date, start_time, end_time, category, created_at"
           )
+          .eq("user_id", user.id)
           .gte("event_date", visibleStartDate)
           .lte("event_date", visibleEndDate)
           .order("event_date", { ascending: true })
@@ -368,6 +369,18 @@ export default function CalendarCard() {
       return;
     }
 
+    if (!eventDate) {
+      setErrorMessage("Please choose an event date.");
+      return;
+    }
+
+    if (endTime && !startTime) {
+      setErrorMessage(
+        "Please choose a start time before adding an end time."
+      );
+      return;
+    }
+
     if (startTime && endTime && endTime <= startTime) {
       setErrorMessage(
         "The end time must be later than the start time."
@@ -459,10 +472,22 @@ export default function CalendarCard() {
     try {
       const supabase = createClient();
 
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        throw new Error(
+          "Your session has expired. Please sign in again."
+        );
+      }
+
       const { error } = await supabase
         .from("calendar_events")
         .delete()
-        .eq("id", calendarEvent.id);
+        .eq("id", calendarEvent.id)
+        .eq("user_id", user.id);
 
       if (error) {
         throw error;
