@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { createClient } from "../../lib/supabase-server";
+import { aiCoachRateLimit } from "@/app/lib/rate-limit";
 import { formatConversationHistory } from "./lib/conversation";
 import { aiCoachTools } from "./lib/tools";
 import { buildAICoachPrompt } from "./lib/prompt";
@@ -20,17 +21,20 @@ import type {
   TaskRecord,
   GoalRecord,
 } from "./lib/types";
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+
 const taskSelect =
   "id, title, completed, priority, due_date, created_at";
+
 export async function POST(request: Request) {
   try {
-    if (!process.env.OPENAI_API_KEY) {
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+      console.error("OPENAI_API_KEY is missing.");
+
       return NextResponse.json(
         {
-          error: "OpenAI API key is missing.",
+          error: "Orenios AI is temporarily unavailable.",
         },
         {
           status: 500,
@@ -68,7 +72,6 @@ export async function POST(request: Request) {
     }
 
     const timeZone = resolveTimeZone(body.timeZone);
-
     const supabase = await createClient();
 
     const {
@@ -79,8 +82,7 @@ export async function POST(request: Request) {
     if (userError || !user) {
       return NextResponse.json(
         {
-          error:
-            "Your session has expired. Please sign in again.",
+          error: "Your session has expired. Please sign in again.",
         },
         {
           status: 401,
@@ -88,11 +90,35 @@ export async function POST(request: Request) {
       );
     }
 
+    const {
+      success: rateLimitSuccess,
+      reset,
+    } = await aiCoachRateLimit.limit(user.id);
+
+    if (!rateLimitSuccess) {
+      return NextResponse.json(
+        {
+          error:
+            "You are sending messages too quickly. Please wait a moment.",
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": Math.max(
+              1,
+              Math.ceil((reset - Date.now()) / 1000)
+            ).toString(),
+          },
+        }
+      );
+    }
+
+    const openai = new OpenAI({
+      apiKey,
+    });
+
     const today = getTodayDate(timeZone);
-    const upcomingDate = getFutureDate(
-      14,
-      timeZone
-    );
+    const upcomingDate = getFutureDate(14, timeZone);
 
     const [
       tasksResult,
@@ -185,15 +211,11 @@ export async function POST(request: Request) {
       historyResult.error;
 
     if (databaseError) {
-      console.error(
-        "AI Coach database error:",
-        databaseError
-      );
+      console.error("AI Coach database error:", databaseError);
 
       return NextResponse.json(
         {
-          error:
-            "Orenios could not load your workspace data.",
+          error: "Orenios could not load your workspace data.",
         },
         {
           status: 500,
@@ -262,8 +284,7 @@ export async function POST(request: Request) {
 
       return NextResponse.json(
         {
-          error:
-            "Orenios could not save your message.",
+          error: "Orenios could not save your message.",
         },
         {
           status: 500,
@@ -273,91 +294,91 @@ export async function POST(request: Request) {
 
     const response = await openai.responses.create({
       model: "gpt-4.1-mini",
-
       tools: aiCoachTools,
-input: buildAICoachPrompt({
-  workspaceContext,
-  conversationHistory,
-  message,
-}),
+      input: buildAICoachPrompt({
+        workspaceContext,
+        conversationHistory,
+        message,
+      }),
     });
 
     const functionCall = response.output.find(
       (outputItem) =>
         outputItem.type === "function_call"
     );
-let reply = "";
-let action: string | null = null;
 
-if (
-  functionCall &&
-  functionCall.type === "function_call"
-) {
-  const referencedAction = resolveReferencedAction({
-    message,
-    previousMessages,
-    functionName: functionCall.name,
-    rawArguments: functionCall.arguments,
-  });
+    let reply = "";
+    let action: string | null = null;
 
-  const crossTypeAmbiguityReply =
-    getCrossTypeAmbiguityReply({
-      message,
-      functionName: referencedAction.functionName,
-      rawArguments: referencedAction.rawArguments,
-      tasks,
-      goals,
-    });
-
-  if (crossTypeAmbiguityReply) {
-    reply = crossTypeAmbiguityReply;
-  } else {
-    const taskResult = await executeTaskAction({
-      functionName: referencedAction.functionName,
-      rawArguments: referencedAction.rawArguments,
-      supabase,
-      userId: user.id,
-      tasks,
-    });
-
-    if (taskResult.handled) {
-      reply = taskResult.reply;
-      action = taskResult.action;
-    } else {
-      const goalResult = await executeGoalAction({
-        functionName: referencedAction.functionName,
-        rawArguments: referencedAction.rawArguments,
-        supabase,
-        userId: user.id,
-        goals,
+    if (
+      functionCall &&
+      functionCall.type === "function_call"
+    ) {
+      const referencedAction = resolveReferencedAction({
+        message,
+        previousMessages,
+        functionName: functionCall.name,
+        rawArguments: functionCall.arguments,
       });
 
-      if (goalResult.handled) {
-        reply = goalResult.reply;
-        action = goalResult.action;
+      const crossTypeAmbiguityReply =
+        getCrossTypeAmbiguityReply({
+          message,
+          functionName: referencedAction.functionName,
+          rawArguments: referencedAction.rawArguments,
+          tasks,
+          goals,
+        });
+
+      if (crossTypeAmbiguityReply) {
+        reply = crossTypeAmbiguityReply;
+      } else {
+        const taskResult = await executeTaskAction({
+          functionName: referencedAction.functionName,
+          rawArguments: referencedAction.rawArguments,
+          supabase,
+          userId: user.id,
+          tasks,
+        });
+
+        if (taskResult.handled) {
+          reply = taskResult.reply;
+          action = taskResult.action;
+        } else {
+          const goalResult = await executeGoalAction({
+            functionName: referencedAction.functionName,
+            rawArguments: referencedAction.rawArguments,
+            supabase,
+            userId: user.id,
+            goals,
+          });
+
+          if (goalResult.handled) {
+            reply = goalResult.reply;
+            action = goalResult.action;
+          }
+        }
       }
     }
-  }
-}
 
-if (!reply) {
-  const generatedReply =
-    response.output_text?.trim();
+    if (!reply) {
+      const generatedReply =
+        response.output_text?.trim();
 
-  if (!generatedReply) {
-    return NextResponse.json(
-      {
-        error:
-          "Orenios returned an empty response.",
-      },
-      {
-        status: 500,
+      if (!generatedReply) {
+        return NextResponse.json(
+          {
+            error: "Orenios returned an empty response.",
+          },
+          {
+            status: 500,
+          }
+        );
       }
-    );
-  }
 
-  reply = generatedReply;
-}
+      reply = generatedReply;
+    }
+
     const { error: assistantMessageSaveError } =
       await supabase.from("ai_messages").insert({
         user_id: user.id,
@@ -387,17 +408,12 @@ if (!reply) {
       action,
     });
   } catch (error) {
-    console.error(
-      "AI Coach route error:",
-      error
-    );
+    console.error("AI Coach route error:", error);
 
     return NextResponse.json(
       {
         error:
-          error instanceof Error
-            ? error.message
-            : "Something went wrong while contacting Orenios.",
+          "Something went wrong while contacting Orenios.",
       },
       {
         status: 500,
