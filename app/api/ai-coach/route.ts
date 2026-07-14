@@ -5,19 +5,20 @@ import { formatConversationHistory } from "./lib/conversation";
 import { aiCoachTools } from "./lib/tools";
 import { buildAICoachPrompt } from "./lib/prompt";
 import { executeTaskAction } from "./lib/task-actions";
+import { executeGoalAction } from "./lib/goal-actions";
+import {
+  getCrossTypeAmbiguityReply,
+  resolveReferencedAction,
+} from "./lib/references";
 import {
   getTodayDate,
   getFutureDate,
-  isValidDateKey,
+  resolveTimeZone,
 } from "./lib/dates";
 import type {
   StoredAIMessage,
-  TaskPriority,
-  CreateTaskArguments,
-  CompleteTaskArguments,
-  DeleteTaskArguments,
-  UpdateTaskArguments,
   TaskRecord,
+  GoalRecord,
 } from "./lib/types";
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -66,6 +67,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const timeZone = resolveTimeZone(body.timeZone);
+
     const supabase = await createClient();
 
     const {
@@ -85,8 +88,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const today = getTodayDate();
-    const upcomingDate = getFutureDate(14);
+    const today = getTodayDate(timeZone);
+    const upcomingDate = getFutureDate(
+      14,
+      timeZone
+    );
 
     const [
       tasksResult,
@@ -198,6 +204,9 @@ export async function POST(request: Request) {
     const tasks =
       (tasksResult.data ?? []) as TaskRecord[];
 
+    const goals =
+      (goalsResult.data ?? []) as GoalRecord[];
+
     const firstName =
       profileResult.data?.first_name?.trim() ||
       user.user_metadata?.full_name
@@ -229,9 +238,10 @@ export async function POST(request: Request) {
         email: user.email ?? null,
       },
       current_date: today,
+      time_zone: timeZone,
       todays_focus: focusResult.data ?? null,
       tasks,
-      goals: goalsResult.data ?? [],
+      goals,
       upcoming_calendar_events:
         calendarResult.data ?? [],
       recent_notes: notesForAI,
@@ -283,17 +293,50 @@ if (
   functionCall &&
   functionCall.type === "function_call"
 ) {
-  const taskResult = await executeTaskAction({
+  const referencedAction = resolveReferencedAction({
+    message,
+    previousMessages,
     functionName: functionCall.name,
     rawArguments: functionCall.arguments,
-    supabase,
-    userId: user.id,
-    tasks,
   });
 
-  if (taskResult.handled) {
-    reply = taskResult.reply;
-    action = taskResult.action;
+  const crossTypeAmbiguityReply =
+    getCrossTypeAmbiguityReply({
+      message,
+      functionName: referencedAction.functionName,
+      rawArguments: referencedAction.rawArguments,
+      tasks,
+      goals,
+    });
+
+  if (crossTypeAmbiguityReply) {
+    reply = crossTypeAmbiguityReply;
+  } else {
+    const taskResult = await executeTaskAction({
+      functionName: referencedAction.functionName,
+      rawArguments: referencedAction.rawArguments,
+      supabase,
+      userId: user.id,
+      tasks,
+    });
+
+    if (taskResult.handled) {
+      reply = taskResult.reply;
+      action = taskResult.action;
+    } else {
+      const goalResult = await executeGoalAction({
+        functionName: referencedAction.functionName,
+        rawArguments: referencedAction.rawArguments,
+        supabase,
+        userId: user.id,
+        goals,
+      });
+
+      if (goalResult.handled) {
+        reply = goalResult.reply;
+        action = goalResult.action;
+      }
+    }
   }
 }
 

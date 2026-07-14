@@ -36,3 +36,43 @@ export type TaskRecord = {
   due_date: string | null;
   created_at: string;
 };
+
+export type GoalStatus =
+  | "Not Started"
+  | "In Progress"
+  | "Completed";
+
+export type CreateGoalArguments = {
+  title: string;
+  description: string | null;
+  deadline: string | null;
+};
+
+export type CompleteGoalArguments = {
+  title: string;
+};
+
+export type DeleteGoalArguments = {
+  title: string;
+};
+
+export type UpdateGoalArguments = {
+  title: string;
+  new_title: string | null;
+  description: string | null;
+  remove_description: boolean;
+  progress: number | null;
+  status: GoalStatus | null;
+  deadline: string | null;
+  remove_deadline: boolean;
+};
+
+export type GoalRecord = {
+  id: string;
+  title: string;
+  description: string | null;
+  progress: number;
+  status: GoalStatus;
+  deadline: string | null;
+  created_at: string;
+};

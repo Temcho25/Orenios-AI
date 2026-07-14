@@ -43,6 +43,19 @@ function createMessageId() {
   return `${Date.now()}-${Math.random()}`;
 }
 
+function getBrowserTimeZone() {
+  try {
+    const timeZone =
+      Intl.DateTimeFormat()
+        .resolvedOptions()
+        .timeZone?.trim();
+
+    return timeZone || "UTC";
+  } catch {
+    return "UTC";
+  }
+}
+
 function formatAssistantResponse(content: string) {
   const lines = content.split("\n");
 
@@ -228,6 +241,7 @@ export default function AICoach() {
         },
         body: JSON.stringify({
           message: normalizedMessage,
+          timeZone: getBrowserTimeZone(),
         }),
       });
 
