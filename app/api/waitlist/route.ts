@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
+import { waitlistRateLimit } from "@/app/lib/rate-limit";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -14,9 +15,39 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function getClientIp(req: Request) {
+  return (
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
+    "unknown"
+  );
+}
+
 export async function POST(req: Request) {
   try {
+    const ip = getClientIp(req);
+
+    const { success, reset } = await waitlistRateLimit.limit(ip);
+
+    if (!success) {
+      return NextResponse.json(
+        {
+          error: "Too many attempts. Please try again later.",
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": Math.max(
+              1,
+              Math.ceil((reset - Date.now()) / 1000)
+            ).toString(),
+          },
+        }
+      );
+    }
+
     const body = await req.json();
+
     const email =
       typeof body.email === "string"
         ? body.email.trim().toLowerCase()
@@ -29,9 +60,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const { error } = await supabase
-      .from("waitlist")
-      .insert([{ email }]);
+    const { error } = await supabase.from("waitlist").insert([{ email }]);
 
     if (error) {
       if (error.code === "23505") {
@@ -47,7 +76,9 @@ export async function POST(req: Request) {
       });
 
       return NextResponse.json(
-        { error: "We could not add you right now. Please try again." },
+        {
+          error: "We could not add you right now. Please try again.",
+        },
         { status: 500 }
       );
     }
@@ -60,7 +91,9 @@ export async function POST(req: Request) {
     console.error("Waitlist request failed:", error);
 
     return NextResponse.json(
-      { error: "We could not process your request. Please try again." },
+      {
+        error: "We could not process your request. Please try again.",
+      },
       { status: 500 }
     );
   }
