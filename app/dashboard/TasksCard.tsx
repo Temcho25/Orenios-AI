@@ -104,6 +104,7 @@ export default function TasksCard() {
           .select(
             "id, title, completed, priority, due_date, created_at"
           )
+          .eq("user_id", user.id)
           .order("completed", {
             ascending: true,
           })
@@ -257,12 +258,24 @@ export default function TasksCard() {
     try {
       const supabase = createClient();
 
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        throw new Error(
+          "Your session has expired. Please sign in again."
+        );
+      }
+
       const { error } = await supabase
         .from("tasks")
         .update({
           completed: nextCompleted,
         })
-        .eq("id", task.id);
+        .eq("id", task.id)
+        .eq("user_id", user.id);
 
       if (error) {
         throw error;
@@ -300,10 +313,22 @@ export default function TasksCard() {
     try {
       const supabase = createClient();
 
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        throw new Error(
+          "Your session has expired. Please sign in again."
+        );
+      }
+
       const { error } = await supabase
         .from("tasks")
         .delete()
-        .eq("id", task.id);
+        .eq("id", task.id)
+        .eq("user_id", user.id);
 
       if (error) {
         throw error;

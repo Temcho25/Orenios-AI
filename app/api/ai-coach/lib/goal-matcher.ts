@@ -4,7 +4,7 @@ export function normalizeGoalTitle(value: string) {
   return value
     .trim()
     .toLocaleLowerCase()
-    .replace(/[â€œâ€"'`]/g, "")
+    .replace(/[“”"'`]/g, "")
     .replace(/\s+/g, " ");
 }
 

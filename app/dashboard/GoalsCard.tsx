@@ -2,9 +2,12 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import {
+  getGoalStatusForProgress,
+  normalizeGoalState,
+  type GoalStatus,
+} from "../lib/goal-state";
 import { createClient } from "../lib/supabase";
-
-type GoalStatus = "Not Started" | "In Progress" | "Completed";
 
 type Goal = {
   id: string;
@@ -85,6 +88,7 @@ export default function GoalsCard() {
           .select(
             "id, title, description, progress, status, deadline, created_at"
           )
+          .eq("user_id", user.id)
           .order("created_at", { ascending: false });
 
         if (error) {
@@ -178,12 +182,17 @@ export default function GoalsCard() {
         throw new Error("Your session has expired. Please sign in again.");
       }
 
+      const normalizedState = normalizeGoalState({
+        status,
+        progress,
+      });
+
       const goalPayload = {
         user_id: user.id,
         title: normalizedTitle,
         description: normalizedDescription || null,
-        progress,
-        status,
+        progress: normalizedState.progress,
+        status: normalizedState.status,
         deadline: deadline || null,
       };
 
@@ -192,6 +201,7 @@ export default function GoalsCard() {
           .from("goals")
           .update(goalPayload)
           .eq("id", editingGoalId)
+          .eq("user_id", user.id)
           .select(
             "id, title, description, progress, status, deadline, created_at"
           )
@@ -243,10 +253,22 @@ export default function GoalsCard() {
     try {
       const supabase = createClient();
 
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        throw new Error(
+          "Your session has expired. Please sign in again."
+        );
+      }
+
       const { error } = await supabase
         .from("goals")
         .delete()
-        .eq("id", goal.id);
+        .eq("id", goal.id)
+        .eq("user_id", user.id);
 
       if (error) {
         throw error;
@@ -570,19 +592,15 @@ export default function GoalsCard() {
               max="100"
               step="5"
               value={progress}
-onChange={(event) => {
-  const nextProgress = Number(event.target.value);
+              onChange={(event) => {
+                const nextProgress = Number(event.target.value);
 
-  setProgress(nextProgress);
-
-  if (nextProgress === 0) {
-    setStatus("Not Started");
-  } else if (nextProgress === 100) {
-    setStatus("Completed");
-  } else {
-    setStatus("In Progress");
-  }
-}}              disabled={saving}
+                setProgress(nextProgress);
+                setStatus(
+                  getGoalStatusForProgress(nextProgress)
+                );
+              }}
+              disabled={saving}
               className="mt-4 w-full cursor-pointer accent-violet-600 disabled:cursor-not-allowed"
             />
           </div>
@@ -598,9 +616,15 @@ onChange={(event) => {
             <select
               id="goal-status"
               value={status}
-              onChange={(event) =>
-                setStatus(event.target.value as GoalStatus)
-              }
+              onChange={(event) => {
+                const nextState = normalizeGoalState({
+                  status: event.target.value as GoalStatus,
+                  progress,
+                });
+
+                setStatus(nextState.status);
+                setProgress(nextState.progress);
+              }}
               disabled={saving}
               className="h-12 w-full rounded-2xl border border-white/80 bg-white/90 px-4 text-sm text-gray-950 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:cursor-not-allowed disabled:opacity-60"
             >

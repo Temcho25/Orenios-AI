@@ -257,7 +257,6 @@ export async function POST(request: Request) {
     const workspaceContext = {
       user: {
         first_name: firstName,
-        email: user.email ?? null,
       },
       current_date: today,
       time_zone: timeZone,

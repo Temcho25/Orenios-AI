@@ -1,4 +1,8 @@
 import { createClient } from "../../../lib/supabase-server";
+import {
+  getGoalStatusForProgress,
+  normalizeGoalState,
+} from "../../../lib/goal-state";
 
 import {
   findBestGoalMatch,
@@ -300,35 +304,22 @@ export async function executeGoalAction({
       updates.description = goalArguments.description;
     }
 
-    if (goalArguments.progress !== null) {
-      updates.progress = goalArguments.progress;
+    if (
+      goalArguments.progress !== null ||
+      goalArguments.status
+    ) {
+      const requestedProgress =
+        goalArguments.progress ?? match.goal.progress;
+      const requestedStatus =
+        goalArguments.status ??
+        getGoalStatusForProgress(requestedProgress);
+      const normalizedState = normalizeGoalState({
+        status: requestedStatus,
+        progress: requestedProgress,
+      });
 
-      if (!goalArguments.status) {
-        updates.status =
-          goalArguments.progress === 0
-            ? "Not Started"
-            : goalArguments.progress === 100
-              ? "Completed"
-              : "In Progress";
-      }
-    }
-
-    if (goalArguments.status) {
-      updates.status = goalArguments.status;
-
-      if (
-        goalArguments.status === "Completed" &&
-        goalArguments.progress === null
-      ) {
-        updates.progress = 100;
-      }
-
-      if (
-        goalArguments.status === "Not Started" &&
-        goalArguments.progress === null
-      ) {
-        updates.progress = 0;
-      }
+      updates.progress = normalizedState.progress;
+      updates.status = normalizedState.status;
     }
 
     if (goalArguments.remove_deadline) {

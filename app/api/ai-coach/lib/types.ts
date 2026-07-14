@@ -1,3 +1,5 @@
+import type { GoalStatus as SharedGoalStatus } from "../../../lib/goal-state";
+
 export type StoredAIMessage = {
   role: "user" | "assistant";
   content: string;
@@ -37,10 +39,7 @@ export type TaskRecord = {
   created_at: string;
 };
 
-export type GoalStatus =
-  | "Not Started"
-  | "In Progress"
-  | "Completed";
+export type GoalStatus = SharedGoalStatus;
 
 export type CreateGoalArguments = {
   title: string;

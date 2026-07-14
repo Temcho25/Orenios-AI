@@ -20,7 +20,7 @@ export async function createClient() {
             });
           } catch {
             // В Server Component изменение cookies может быть недоступно.
-            // Позже обновление сессии будет обрабатывать middleware.
+            // Обновление сессии обрабатывает корневой proxy.ts.
           }
         },
       },

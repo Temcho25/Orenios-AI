@@ -158,7 +158,7 @@ export default function AICoach() {
           .select("id, role, content, created_at")
           .eq("user_id", user.id)
           .order("created_at", {
-            ascending: true,
+            ascending: false,
           })
           .limit(100);
 
@@ -167,7 +167,9 @@ export default function AICoach() {
         }
 
         if (!cancelled) {
-          setMessages((data ?? []) as StoredChatMessage[]);
+          setMessages(
+            [...((data ?? []) as StoredChatMessage[])].reverse()
+          );
         }
       } catch (error) {
         if (!cancelled) {
