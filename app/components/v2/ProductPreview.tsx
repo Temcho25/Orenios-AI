@@ -26,7 +26,7 @@ export default function ProductPreview() {
 
         <div className="grid gap-8 lg:grid-cols-2">
 
-          {/* Today's Tasks */}
+          {/* Today&apos;s Tasks */}
 
           <div className="rounded-3xl border border-gray-200 p-8">
 
@@ -39,7 +39,7 @@ export default function ProductPreview() {
                 </p>
 
                 <h3 className="mt-2 text-3xl font-bold">
-                  Today's Tasks
+                  Today&apos;s Tasks
                 </h3>
 
               </div>
@@ -99,7 +99,7 @@ export default function ProductPreview() {
             <p className="mt-6 text-lg leading-8 text-white/90">
               Your landing page is ready.
               Continue growing your waitlist,
-              publish today's content and prepare
+              publish today&apos;s content and prepare
               for the public launch.
             </p>
 

@@ -178,17 +178,21 @@ const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 const [navigationRestored, setNavigationRestored] = useState(false);
 
 useEffect(() => {
-  const savedItem = sessionStorage.getItem(
-    "orenios-active-dashboard-section"
-  );
+  const timer = window.setTimeout(() => {
+    const savedItem = sessionStorage.getItem(
+      "orenios-active-dashboard-section"
+    );
 
-  const validItems = navigationItems.map((item) => item.label);
+    const validItems = navigationItems.map((item) => item.label);
 
-  if (savedItem && validItems.includes(savedItem)) {
-    setActiveItem(savedItem);
-  }
+    if (savedItem && validItems.includes(savedItem)) {
+      setActiveItem(savedItem);
+    }
 
-  setNavigationRestored(true);
+    setNavigationRestored(true);
+  }, 0);
+
+  return () => window.clearTimeout(timer);
 }, []);
 
 useEffect(() => {

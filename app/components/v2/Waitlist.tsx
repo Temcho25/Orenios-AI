@@ -91,11 +91,11 @@ export default function Waitlist() {
         <div className="mb-3 text-5xl">✅</div>
 
         <h3 className="text-2xl font-bold">
-          You're on the waitlist!
+          You&apos;re on the waitlist!
         </h3>
 
         <p className="mt-3 text-white/90">
-          Thanks for joining. We'll notify you before launch.
+          Thanks for joining. We&apos;ll notify you before launch.
         </p>
       </div>
     )}

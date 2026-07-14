@@ -14,7 +14,7 @@ export default function AIAssistantCard() {
 
       <p className="mt-6 text-white/90 leading-8">
 
-        Based on today's schedule,
+        Based on today&apos;s schedule,
         your highest-impact task is to
         finish the landing page,
         continue growing the waitlist

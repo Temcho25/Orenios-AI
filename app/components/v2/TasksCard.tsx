@@ -30,7 +30,7 @@ export default function TasksCard() {
       className="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm"
     >
       <h3 className="text-2xl font-bold">
-        Today's Tasks
+        Today&apos;s Tasks
       </h3>
 
       <p className="mt-2 text-gray-500">
