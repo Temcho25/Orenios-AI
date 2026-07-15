@@ -1,4 +1,21 @@
+import { Fragment } from "react";
+
 export default function ProductPreview() {
+  const steps = [
+    {
+      number: "1",
+      text: "Tell Orenios what's on your mind",
+    },
+    {
+      number: "2",
+      text: "It turns it into tasks, goals or a plan",
+    },
+    {
+      number: "3",
+      text: "You see everything organized in one place",
+    },
+  ];
+
   return (
     <section
       id="preview"
@@ -7,198 +24,45 @@ export default function ProductPreview() {
       <div className="text-center">
 
         <div className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-5 py-2 text-sm font-medium text-violet-700">
-          PRODUCT PREVIEW
+          HOW IT WORKS
         </div>
 
         <h2 className="mt-8 text-6xl font-bold tracking-tight text-black">
-          Your entire life.
+          From a thought.
           <br />
-          One dashboard.
+          To a plan.
         </h2>
 
         <p className="mx-auto mt-8 max-w-3xl text-xl leading-9 text-gray-600">
-          Everything you need to organize your life inside one intelligent workspace.
+          No manual sorting, no blank to-do list. Just tell Orenios what&apos;s
+          going on.
         </p>
 
       </div>
 
-      <div className="mt-20 rounded-[42px] border border-gray-200 bg-white p-10 shadow-[0_40px_120px_rgba(0,0,0,.08)]">
-
-        <div className="grid gap-8 lg:grid-cols-2">
-
-          {/* Today&apos;s Tasks */}
-
-          <div className="rounded-3xl border border-gray-200 p-8">
-
-            <div className="flex items-center justify-between">
-
-              <div>
-
-                <p className="text-sm uppercase tracking-[0.25em] text-violet-600">
-                  TODAY
-                </p>
-
-                <h3 className="mt-2 text-3xl font-bold">
-                  Today&apos;s Tasks
-                </h3>
-
+      <div className="mt-20 flex flex-col gap-6 lg:flex-row lg:items-stretch">
+        {steps.map((step, index) => (
+          <Fragment key={step.number}>
+            <div className="flex-1 rounded-3xl border border-gray-200 bg-white p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400 text-lg font-bold text-white">
+                {step.number}
               </div>
 
-              <div className="rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700">
-                4 Tasks
-              </div>
-
+              <p className="text-xl font-semibold leading-8 text-black">
+                {step.text}
+              </p>
             </div>
 
-            <div className="mt-8 space-y-4">
-
-              <div className="flex items-center justify-between rounded-2xl bg-gray-50 px-5 py-4">
-                <span>🚀 Launch Landing Page</span>
-                <span className="font-medium text-green-600">
-                  Done
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between rounded-2xl bg-gray-50 px-5 py-4">
-                <span>✅ Review Waitlist</span>
-                <span className="font-medium text-green-600">
-                  Done
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between rounded-2xl bg-gray-50 px-5 py-4">
-                <span>🎥 Publish Instagram Reel</span>
-                <span className="font-medium text-orange-500">
-                  Today
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between rounded-2xl bg-gray-50 px-5 py-4">
-                <span>🌍 Public Launch</span>
-                <span className="font-medium text-red-500">
-                  Next
-                </span>
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* AI Assistant */}
-
-          <div className="rounded-[34px] bg-gradient-to-br from-violet-600 via-blue-600 to-cyan-500 p-10 text-white">
-
-            <p className="text-sm uppercase tracking-[0.3em] text-white/70">
-              AI ASSISTANT
-            </p>
-
-            <h3 className="mt-4 text-4xl font-bold">
-              Your day is organized.
-            </h3>
-
-            <p className="mt-6 text-lg leading-8 text-white/90">
-              Your landing page is ready.
-              Continue growing your waitlist,
-              publish today&apos;s content and prepare
-              for the public launch.
-            </p>
-
-            <button className="mt-10 rounded-2xl bg-white px-7 py-4 font-semibold text-black transition duration-300 hover:scale-105">
-              Open Dashboard →
-            </button>
-
-          </div>
-
-        </div>
-
-        <div className="mt-8 grid gap-8 lg:grid-cols-2">
-                    {/* Goals */}
-
-          <div className="rounded-3xl border border-gray-200 p-8">
-
-            <p className="text-sm uppercase tracking-[0.25em] text-violet-600">
-              GOALS
-            </p>
-
-            <h3 className="mt-3 text-3xl font-bold">
-              Current Progress
-            </h3>
-
-            <div className="mt-8">
-
-              <div className="flex justify-between text-sm font-medium">
-                <span>Launch Orenios</span>
-                <span>82%</span>
-              </div>
-
-              <div className="mt-3 h-3 rounded-full bg-gray-100">
-                <div className="h-3 w-[82%] rounded-full bg-gradient-to-r from-violet-600 to-cyan-500" />
-              </div>
-
-            </div>
-
-            <div className="mt-8">
-
-              <div className="flex justify-between text-sm font-medium">
-                <span>1000 Waitlist Users</span>
-                <span>12%</span>
-              </div>
-
-              <div className="mt-3 h-3 rounded-full bg-gray-100">
-                <div className="h-3 w-[12%] rounded-full bg-gradient-to-r from-cyan-500 to-violet-500" />
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* Upcoming */}
-
-          <div className="rounded-3xl border border-gray-200 p-8">
-
-            <p className="text-sm uppercase tracking-[0.25em] text-violet-600">
-              UPCOMING
-            </p>
-
-            <h3 className="mt-3 text-3xl font-bold">
-              Schedule
-            </h3>
-
-            <div className="mt-8 space-y-4">
-
-              <div className="rounded-2xl bg-red-50 p-5">
-                <div className="font-semibold">
-                  🥊 Boxing Training
-                </div>
-                <div className="mt-1 text-gray-500">
-                  Today · 09:00
-                </div>
-              </div>
-
-              <div className="rounded-2xl bg-blue-50 p-5">
-                <div className="font-semibold">
-                  💻 Build Orenios
-                </div>
-                <div className="mt-1 text-gray-500">
-                  Today · 14:00
-                </div>
-              </div>
-
-              <div className="rounded-2xl bg-green-50 p-5">
-                <div className="font-semibold">
-                  🚀 Public Launch
-                </div>
-                <div className="mt-1 text-gray-500">
-                  Coming Soon
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
+            {index < steps.length - 1 && (
+              <span
+                className="hidden shrink-0 items-center px-2 text-3xl text-gray-300 lg:flex"
+                aria-hidden="true"
+              >
+                →
+              </span>
+            )}
+          </Fragment>
+        ))}
       </div>
 
     </section>

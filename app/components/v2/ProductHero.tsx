@@ -75,45 +75,56 @@ export default function ProductHero() {
               Your Life Admin
             </p>
 
-            <h1 className="mt-3 text-5xl font-black leading-[0.9] tracking-[-0.05em] text-zinc-950 sm:mt-4 sm:text-6xl lg:text-[82px] xl:text-[92px]">
+            <h1 className="mt-3 text-5xl font-black leading-[0.9] tracking-[-0.05em] text-zinc-950 sm:mt-4 sm:text-6xl lg:text-[92px] xl:text-[104px]">
               Your AI Life Admin
             </h1>
 
             <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-zinc-600 sm:text-xl sm:leading-9 lg:mx-0">
-              One AI that remembers your goals, organizes your tasks, plans
-              your day and keeps everything connected.
+              AI does the work, not just the talking — it creates tasks,
+              tracks goals and plans your day automatically.
             </p>
 
             {!joined ? (
-              <form
-                onSubmit={handleJoin}
-                className="mt-7 flex scroll-mt-24 flex-col gap-3 sm:mt-9 sm:flex-row sm:items-center"
-              >
-                <label className="w-full sm:flex-1">
-                  <span className="sr-only">Email address</span>
-
-                  <input
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    id="hero-email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    inputMode="email"
-                    required
-                    placeholder="Enter your email"
-                    className="h-14 w-full rounded-full border border-zinc-200 bg-white/90 px-5 text-base text-zinc-900 shadow-[0_8px_24px_rgba(15,23,42,0.04)] outline-none transition duration-300 placeholder:text-zinc-400 focus:border-violet-300 focus:ring-2 focus:ring-violet-100 sm:h-16"
-                  />
-                </label>
-
-                <button
-                  disabled={loading}
-                  type="submit"
-                  className="inline-flex h-14 items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-cyan-500 px-8 text-sm font-semibold text-white shadow-[0_16px_40px_rgba(124,58,237,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:from-violet-700 hover:to-cyan-600 hover:shadow-[0_20px_50px_rgba(124,58,237,0.3)] focus:outline-none focus:ring-2 focus:ring-violet-200 disabled:cursor-not-allowed disabled:opacity-60 sm:h-16 sm:px-10 sm:text-base"
+              <>
+                <form
+                  onSubmit={handleJoin}
+                  className="mt-7 flex scroll-mt-24 flex-col gap-3 sm:mt-9 sm:flex-row sm:items-center"
                 >
-                  {loading ? "Joining..." : "Join Waitlist"}
-                </button>
-              </form>
+                  <label className="w-full sm:flex-1">
+                    <span className="sr-only">Email address</span>
+
+                    <input
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      id="hero-email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      inputMode="email"
+                      required
+                      placeholder="Enter your email"
+                      className="h-14 w-full rounded-full border border-zinc-200 bg-white/90 px-5 text-base text-zinc-900 shadow-[0_8px_24px_rgba(15,23,42,0.04)] outline-none transition duration-300 placeholder:text-zinc-400 focus:border-violet-300 focus:ring-2 focus:ring-violet-100 sm:h-16"
+                    />
+                  </label>
+
+                  <button
+                    disabled={loading}
+                    type="submit"
+                    className="inline-flex h-14 items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-cyan-500 px-8 text-sm font-semibold text-white shadow-[0_16px_40px_rgba(124,58,237,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:from-violet-700 hover:to-cyan-600 hover:shadow-[0_20px_50px_rgba(124,58,237,0.3)] focus:outline-none focus:ring-2 focus:ring-violet-200 disabled:cursor-not-allowed disabled:opacity-60 sm:h-16 sm:px-10 sm:text-base"
+                  >
+                    {loading ? "Joining..." : "Get Early Access"}
+                  </button>
+                </form>
+
+                <p className="mt-3 text-sm text-zinc-500">
+                  Early members shape the product and get founder pricing at
+                  launch.
+                </p>
+
+                <p className="mt-1 text-xs text-zinc-400">
+                  No spam. One email when we launch.
+                </p>
+              </>
             ) : (
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
@@ -141,153 +152,85 @@ export default function ProductHero() {
               delay: 0.08,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="mx-auto w-full max-w-[440px] sm:max-w-[500px] lg:mx-0 lg:max-w-[590px]"
+            className="mx-auto w-full max-w-[380px] sm:max-w-[440px] lg:mx-0 lg:max-w-[480px]"
           >
-            <div className="relative mx-auto h-[340px] w-full max-w-[390px] sm:h-[450px] sm:max-w-[470px] lg:h-[590px] lg:max-w-[550px]">
-              {/* Daily briefing card */}
+            {/* Daily briefing card */}
 
-              <motion.div
-                animate={{
-                  y: [0, -7, 0],
-                  rotate: [0, 0.35, 0],
-                }}
-                transition={{
-                  duration: 6.4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                whileHover={{
-                  y: -5,
-                  scale: 1.01,
-                }}
-                className="absolute left-0 top-2 w-[92%] rounded-[24px] border border-zinc-200/80 bg-white/90 p-3 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:top-4 sm:w-[88%] sm:p-4 lg:left-2 lg:top-4 lg:w-[88%] lg:rounded-[28px] lg:p-5"
-              >
-                <div className="flex items-center justify-between border-b border-zinc-100 pb-3 sm:pb-4">
-                  <div className="flex items-center gap-3">
-                    <Image
-                      src="/logo2.PNG"
-                      alt="Orenios AI"
-                      width={70}
-                      height={70}
-                      className="h-[58px] w-[58px] object-contain sm:h-[72px] sm:w-[72px] lg:h-[86px] lg:w-[86px]"
-                      loading="eager"
-                    />
+            <motion.div
+              animate={{
+                y: [0, -7, 0],
+                rotate: [0, 0.35, 0],
+              }}
+              transition={{
+                duration: 6.4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              whileHover={{
+                y: -5,
+                scale: 1.01,
+              }}
+              className="rounded-[24px] border border-zinc-200/80 bg-white/90 p-4 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-5 lg:rounded-[28px] lg:p-6"
+            >
+              <div className="flex items-center justify-between border-b border-zinc-100 pb-3 sm:pb-4">
+                <div className="flex items-center gap-3">
+                  <Image
+                    src="/logo2.PNG"
+                    alt="Orenios AI"
+                    width={70}
+                    height={70}
+                    className="h-[58px] w-[58px] object-contain sm:h-[72px] sm:w-[72px] lg:h-[86px] lg:w-[86px]"
+                    loading="eager"
+                  />
 
-                    <div>
-                      <p className="text-sm font-semibold text-zinc-900">
-                        Orenios AI
-                      </p>
-
-                      <p className="text-xs text-zinc-500">
-                        Daily briefing
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] font-medium text-zinc-600 sm:px-3 sm:text-xs">
-                    Synced
-                  </div>
-                </div>
-
-                <div className="mt-3 space-y-2.5 sm:mt-4 sm:space-y-3">
-                  <div className="flex items-center justify-between rounded-2xl bg-zinc-50 px-3 py-2.5 text-sm sm:px-4 sm:py-3">
-                    <span className="text-zinc-600">
-                      Goals aligned
-                    </span>
-
-                    <span className="font-semibold text-zinc-900">
-                      100%
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between rounded-2xl bg-zinc-50 px-3 py-2.5 text-sm sm:px-4 sm:py-3">
-                    <span className="text-zinc-600">
-                      Calendar synced
-                    </span>
-
-                    <span className="font-semibold text-zinc-900">
-                      Today
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between rounded-2xl bg-zinc-50 px-3 py-2.5 text-sm sm:px-4 sm:py-3">
-                    <span className="text-zinc-600">
-                      Next best action
-                    </span>
-
-                    <span className="font-semibold text-zinc-900">
-                      Review deck
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Focus score card */}
-
-              <motion.div
-                animate={{
-                  y: [0, 8, 0],
-                }}
-                transition={{
-                  duration: 5.1,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                whileHover={{
-                  y: -4,
-                  scale: 1.01,
-                }}
-                className="absolute right-0 top-20 w-[72%] rounded-[20px] border border-zinc-200/80 bg-zinc-950/95 p-4 text-white shadow-[0_24px_70px_rgba(15,23,42,0.28)] sm:top-28 sm:p-5 lg:top-32 lg:rounded-[24px]"
-              >
-                <p className="text-[11px] uppercase tracking-[0.24em] text-zinc-400 sm:text-xs">
-                  Focus score
-                </p>
-
-                <div className="mt-2 flex items-end justify-between sm:mt-3">
-                  <span className="text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">
-                    92%
-                  </span>
-
-                  <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] text-zinc-300 sm:px-3 sm:text-xs">
-                    steady
-                  </span>
-                </div>
-              </motion.div>
-
-              {/* AI assistant card */}
-
-              <motion.div
-                animate={{
-                  y: [0, -5, 0],
-                }}
-                transition={{
-                  duration: 4.7,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                whileHover={{
-                  y: -4,
-                  scale: 1.01,
-                }}
-                className="absolute bottom-3 left-3 w-[78%] rounded-[20px] border border-zinc-200/80 bg-white/95 p-3 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:bottom-4 sm:left-4 sm:w-[74%] sm:p-4 lg:bottom-6 lg:left-6 lg:rounded-[24px] lg:p-5"
-              >
-                <div className="flex items-center justify-between gap-2">
                   <div>
                     <p className="text-sm font-semibold text-zinc-900">
-                      AI assistant
+                      Orenios AI
                     </p>
 
-                    <p className="text-sm text-zinc-500">
-                      Everything is in order.
+                    <p className="text-xs text-zinc-500">
+                      Daily briefing
                     </p>
-                  </div>
-
-                  <div className="rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] font-medium text-zinc-700 sm:px-3 sm:text-xs">
-                    Organized
                   </div>
                 </div>
-              </motion.div>
-            </div>
+
+                <div className="rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] font-medium text-zinc-600 sm:px-3 sm:text-xs">
+                  Synced
+                </div>
+              </div>
+
+              <div className="mt-3 space-y-2.5 sm:mt-4 sm:space-y-3">
+                <div className="flex items-center justify-between rounded-2xl bg-zinc-50 px-3 py-2.5 text-sm sm:px-4 sm:py-3">
+                  <span className="text-zinc-600">
+                    Goals aligned
+                  </span>
+
+                  <span className="font-semibold text-zinc-900">
+                    100%
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between rounded-2xl bg-zinc-50 px-3 py-2.5 text-sm sm:px-4 sm:py-3">
+                  <span className="text-zinc-600">
+                    Calendar synced
+                  </span>
+
+                  <span className="font-semibold text-zinc-900">
+                    Today
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between rounded-2xl bg-zinc-50 px-3 py-2.5 text-sm sm:px-4 sm:py-3">
+                  <span className="text-zinc-600">
+                    Next best action
+                  </span>
+
+                  <span className="font-semibold text-zinc-900">
+                    Review deck
+                  </span>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>

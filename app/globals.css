@@ -25,38 +25,13 @@ html {
 
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at top,
-      rgba(124,58,237,.12),
-      transparent 40%),
-    radial-gradient(circle at bottom right,
-      rgba(34,195,255,.10),
-      transparent 35%),
-    var(--background);
-
+  background: #ffffff;
   color: var(--foreground);
-
-  font-family: Arial, Helvetica, sans-serif;
-
   overflow-x: hidden;
 }
 
 button {
   cursor: pointer;
-}
-
-::selection {
-  background: rgba(124,58,237,.18);
-}html {
-  scroll-behavior: smooth;
-}
-
-body {
-  background:
-    radial-gradient(circle at 20% 20%, rgba(124,58,237,0.12), transparent 35%),
-    radial-gradient(circle at 80% 0%, rgba(59,130,246,0.12), transparent 35%),
-    radial-gradient(circle at 50% 100%, rgba(168,85,247,0.10), transparent 40%),
-    #ffffff;
 }
 
 ::selection {
@@ -70,16 +45,8 @@ body {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,.6);
 }
-body {
-  background: #ffffff;
-}
 
-::selection {
-  background: #7c3aed;
-  color: white;
-}html {
-  scroll-behavior: smooth;
-}@keyframes slow-spin {
+@keyframes slow-spin {
   from {
     transform: rotate(0deg);
   }
