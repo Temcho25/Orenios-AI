@@ -1,6 +1,11 @@
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
 import { Compass, ListChecks, Sparkles, Target } from "lucide-react";
 
 export default function Features() {
+  const prefersReducedMotion = useReducedMotion();
+
   const features = [
     {
       title: "AI Life Planning",
@@ -50,9 +55,13 @@ export default function Features() {
 
       <div className="mx-auto mt-16 grid max-w-5xl gap-6 md:grid-cols-2">
         {features.map((feature) => (
-          <div
+          <motion.div
             key={feature.title}
-            className="rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:border-violet-200/70 hover:shadow-[0_30px_60px_rgba(124,58,237,0.12)]"
+            whileHover={
+              prefersReducedMotion ? undefined : { y: -10, scale: 1.02 }
+            }
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-shadow duration-300 hover:border-violet-200/70 hover:shadow-[0_30px_60px_rgba(124,58,237,0.12)]"
           >
             <div className="relative mb-6 flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400 shadow-[0_8px_20px_rgba(124,58,237,0.35)]">
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/25 to-transparent" />
@@ -70,7 +79,7 @@ export default function Features() {
             <p className="mt-3 leading-7 text-gray-500">
               {feature.description}
             </p>
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>

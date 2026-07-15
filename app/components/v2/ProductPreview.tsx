@@ -1,6 +1,11 @@
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
 import { Fragment } from "react";
 
 export default function ProductPreview() {
+  const prefersReducedMotion = useReducedMotion();
+
   const steps = [
     {
       number: "1",
@@ -43,7 +48,13 @@ export default function ProductPreview() {
       <div className="mt-20 flex flex-col gap-6 lg:flex-row lg:items-stretch">
         {steps.map((step, index) => (
           <Fragment key={step.number}>
-            <div className="flex-1 rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:border-violet-200/70 hover:shadow-[0_30px_60px_rgba(124,58,237,0.12)]">
+            <motion.div
+              whileHover={
+                prefersReducedMotion ? undefined : { y: -10, scale: 1.02 }
+              }
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="flex-1 rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-shadow duration-300 hover:border-violet-200/70 hover:shadow-[0_30px_60px_rgba(124,58,237,0.12)]"
+            >
               <div className="relative mb-6 flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400 shadow-[0_8px_20px_rgba(124,58,237,0.35)]">
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/25 to-transparent" />
 
@@ -55,7 +66,7 @@ export default function ProductPreview() {
               <p className="text-xl font-semibold leading-8 text-black">
                 {step.text}
               </p>
-            </div>
+            </motion.div>
 
             {index < steps.length - 1 && (
               <span
