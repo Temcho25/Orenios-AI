@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
+import AnimatedLogo from "./AnimatedLogo";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -54,68 +54,27 @@ export default function Navbar() {
             aria-label="Refresh Orenios AI"
             className="flex items-center gap-3 text-left"
           >
-            <div className="relative">
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 100 100"
-                className={`pointer-events-none absolute -inset-2 ${
-                  prefersReducedMotion ? "" : "logo-spin"
+            <motion.div
+              animate={
+                prefersReducedMotion
+                  ? undefined
+                  : { y: [0, -5, 0], scale: [1, 1.03, 1] }
+              }
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="drop-shadow-[0_0_20px_rgba(124,58,237,0.35)]"
+            >
+              <AnimatedLogo
+                className={`transition-all duration-300 ${
+                  isScrolled
+                    ? "h-12 w-12"
+                    : "h-14 w-14 sm:h-[70px] sm:w-[70px]"
                 }`}
-              >
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="47"
-                  fill="none"
-                  stroke="url(#navbar-orbit)"
-                  strokeWidth="1"
-                  strokeDasharray="1 6"
-                />
-                <defs>
-                  <linearGradient
-                    id="navbar-orbit"
-                    x1="0"
-                    y1="0"
-                    x2="1"
-                    y2="1"
-                  >
-                    <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.7" />
-                    <stop
-                      offset="100%"
-                      stopColor="#22c3ff"
-                      stopOpacity="0"
-                    />
-                  </linearGradient>
-                </defs>
-              </svg>
-
-              <motion.div
-                animate={
-                  prefersReducedMotion
-                    ? undefined
-                    : { y: [0, -5, 0], scale: [1, 1.03, 1] }
-                }
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="relative drop-shadow-[0_0_20px_rgba(124,58,237,0.35)]"
-              >
-                <Image
-                  src="/logo2.PNG"
-                  alt="Orenios AI"
-                  width={70}
-                  height={70}
-                  priority
-                  className={`rounded-full transition-all duration-300 ${
-                    isScrolled
-                      ? "h-12 w-12"
-                      : "h-14 w-14 sm:h-[70px] sm:w-[70px]"
-                  }`}
-                />
-              </motion.div>
-            </div>
+              />
+            </motion.div>
 
             <div>
               <h2 className="text-base font-bold text-black sm:text-lg">

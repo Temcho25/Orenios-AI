@@ -63,3 +63,44 @@ button {
 .logo-spin:hover {
   animation-play-state: paused;
 }
+
+@keyframes orbit-spin-cw {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-spin-ccw {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.orbit-ring-outer,
+.orbit-ring-middle,
+.orbit-ring-inner {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .orbit-ring-outer {
+    animation: orbit-spin-cw 30s linear infinite;
+  }
+
+  .orbit-ring-middle {
+    animation: orbit-spin-ccw 22s linear infinite;
+  }
+
+  .orbit-ring-inner {
+    animation: orbit-spin-cw 15s linear infinite;
+  }
+}

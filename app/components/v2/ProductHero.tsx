@@ -6,8 +6,8 @@ import {
   useReducedMotion,
   useSpring,
 } from "framer-motion";
-import Image from "next/image";
 import { useState } from "react";
+import AnimatedLogo from "./AnimatedLogo";
 import OrbitalRings from "./OrbitalRings";
 
 export default function ProductHero() {
@@ -353,14 +353,7 @@ export default function ProductHero() {
             >
               <div className="flex items-center justify-between border-b border-zinc-100 pb-3 sm:pb-4">
                 <div className="flex items-center gap-3">
-                  <Image
-                    src="/logo2.PNG"
-                    alt="Orenios AI"
-                    width={70}
-                    height={70}
-                    className="h-[58px] w-[58px] object-contain sm:h-[72px] sm:w-[72px] lg:h-[86px] lg:w-[86px]"
-                    loading="eager"
-                  />
+                  <AnimatedLogo className="h-[58px] w-[58px] sm:h-[72px] sm:w-[72px] lg:h-[86px] lg:w-[86px]" />
 
                   <div>
                     <p className="text-sm font-semibold text-zinc-900">
