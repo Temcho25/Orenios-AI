@@ -41,7 +41,7 @@ export default function Footer() {
         <a
           href="#"
           onClick={scrollToWaitlist}
-          className="mt-10 inline-flex rounded-full bg-zinc-900 px-8 py-4 text-lg font-semibold text-white transition hover:-translate-y-1 hover:bg-zinc-800"
+          className="mt-10 inline-flex rounded-full bg-zinc-900 px-8 py-4 text-lg font-semibold text-white shadow-[0_20px_45px_rgba(15,23,42,0.22)] transition-all duration-300 hover:-translate-y-1 hover:bg-zinc-800 hover:shadow-[0_26px_55px_rgba(15,23,42,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2"
         >
           Join Waitlist
         </a>

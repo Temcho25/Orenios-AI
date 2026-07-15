@@ -1,24 +1,30 @@
+import { Compass, ListChecks, Sparkles, Target } from "lucide-react";
+
 export default function Features() {
   const features = [
     {
       title: "AI Life Planning",
       description:
         "Plan your days, weeks and long-term goals with one intelligent assistant.",
+      icon: Sparkles,
     },
     {
       title: "Smart Tasks",
       description:
         "Organize tasks automatically and always know what matters most.",
+      icon: ListChecks,
     },
     {
       title: "Goals Tracking",
       description:
         "Track progress across every important area of your life.",
+      icon: Target,
     },
     {
       title: "Daily AI Coach",
       description:
         "Receive personalized suggestions based on your schedule and habits.",
+      icon: Compass,
     },
   ];
 
@@ -46,10 +52,15 @@ export default function Features() {
         {features.map((feature) => (
           <div
             key={feature.title}
-            className="rounded-3xl border border-gray-200 bg-white p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+            className="rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:border-violet-200/70 hover:shadow-[0_30px_60px_rgba(124,58,237,0.12)]"
           >
-            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400 text-white text-xl">
-              ✦
+            <div className="relative mb-6 flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400 shadow-[0_8px_20px_rgba(124,58,237,0.35)]">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/25 to-transparent" />
+
+              <feature.icon
+                className="relative h-6 w-6 text-white"
+                strokeWidth={2}
+              />
             </div>
 
             <h3 className="text-xl font-semibold text-black">

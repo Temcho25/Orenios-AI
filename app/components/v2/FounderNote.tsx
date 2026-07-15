@@ -1,7 +1,7 @@
 export default function FounderNote() {
   return (
     <section className="mx-auto mt-24 max-w-3xl px-6 text-center">
-      <div className="rounded-3xl border border-gray-200 bg-white/70 px-8 py-10 backdrop-blur-sm">
+      <div className="rounded-3xl border border-gray-200/70 bg-white/70 px-8 py-10 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-md">
         <p className="text-lg font-medium leading-8 text-gray-800 sm:text-xl">
           Built in public by one founder — no team, no funding, real
           progress every day.

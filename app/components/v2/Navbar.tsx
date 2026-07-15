@@ -41,10 +41,10 @@ export default function Navbar() {
             duration: 0.25,
             ease: "easeOut",
           }}
-          className={`mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-gray-200/70 px-4 backdrop-blur-xl transition-shadow duration-300 sm:px-6 ${
+          className={`mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-gray-200/60 px-4 backdrop-blur-xl transition-shadow duration-300 sm:px-6 ${
             isScrolled
-              ? "bg-white/95 shadow-lg"
-              : "bg-white/80 shadow-sm"
+              ? "bg-white/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_20px_45px_rgba(15,23,42,0.12)]"
+              : "bg-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_10px_30px_rgba(15,23,42,0.06)]"
           }`}
         >
           <button
@@ -115,7 +115,7 @@ export default function Navbar() {
 
           <a
             href="#waitlist"
-            className="rounded-full bg-black px-4 py-2.5 text-xs font-semibold text-white transition hover:scale-105 sm:px-6 sm:py-3 sm:text-sm"
+            className="rounded-full bg-black px-4 py-2.5 text-xs font-semibold text-white shadow-[0_10px_25px_rgba(15,23,42,0.18)] transition-all duration-300 hover:scale-105 hover:shadow-[0_16px_35px_rgba(15,23,42,0.28)] sm:px-6 sm:py-3 sm:text-sm"
           >
             Join Waitlist
           </a>

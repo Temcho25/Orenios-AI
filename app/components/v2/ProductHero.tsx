@@ -103,14 +103,14 @@ export default function ProductHero() {
                       inputMode="email"
                       required
                       placeholder="Enter your email"
-                      className="h-14 w-full rounded-full border border-zinc-200 bg-white/90 px-5 text-base text-zinc-900 shadow-[0_8px_24px_rgba(15,23,42,0.04)] outline-none transition duration-300 placeholder:text-zinc-400 focus:border-violet-300 focus:ring-2 focus:ring-violet-100 sm:h-16"
+                      className="h-14 w-full rounded-full border border-zinc-200/80 bg-white/70 px-5 text-base text-zinc-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_10px_30px_rgba(15,23,42,0.06)] outline-none backdrop-blur-xl transition-all duration-300 placeholder:text-zinc-400 focus:border-violet-300 focus:bg-white focus:shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_0_0_4px_rgba(124,58,237,0.12),0_10px_30px_rgba(124,58,237,0.15)] sm:h-16"
                     />
                   </label>
 
                   <button
                     disabled={loading}
                     type="submit"
-                    className="inline-flex h-14 items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-cyan-500 px-8 text-sm font-semibold text-white shadow-[0_16px_40px_rgba(124,58,237,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:from-violet-700 hover:to-cyan-600 hover:shadow-[0_20px_50px_rgba(124,58,237,0.3)] focus:outline-none focus:ring-2 focus:ring-violet-200 disabled:cursor-not-allowed disabled:opacity-60 sm:h-16 sm:px-10 sm:text-base"
+                    className="inline-flex h-14 items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-cyan-500 px-8 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_16px_40px_rgba(124,58,237,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:from-violet-700 hover:to-cyan-600 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_20px_50px_rgba(124,58,237,0.32)] focus:outline-none focus:ring-2 focus:ring-violet-200 disabled:cursor-not-allowed disabled:opacity-60 sm:h-16 sm:px-10 sm:text-base"
                   >
                     {loading ? "Joining..." : "Get Early Access"}
                   </button>
@@ -170,7 +170,7 @@ export default function ProductHero() {
                 y: -5,
                 scale: 1.01,
               }}
-              className="rounded-[24px] border border-zinc-200/80 bg-white/90 p-4 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-5 lg:rounded-[28px] lg:p-6"
+              className="rounded-[24px] border border-zinc-200/70 bg-white/80 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-5 lg:rounded-[28px] lg:p-6"
             >
               <div className="flex items-center justify-between border-b border-zinc-100 pb-3 sm:pb-4">
                 <div className="flex items-center gap-3">
