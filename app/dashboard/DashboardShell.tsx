@@ -9,11 +9,23 @@ import GoalsCard from "./GoalsCard";
 import CalendarCard from "./CalendarCard";
 import NotesCard from "./NotesCard";
 import AICoach from "./AICoach";
+import { createClient } from "../lib/supabase";
 
 type DashboardShellProps = {
   firstName: string;
   email: string;
 };
+
+function getLocalDateString(daysOffset = 0) {
+  const now = new Date();
+  now.setDate(now.getDate() + daysOffset);
+
+  const timezoneOffset = now.getTimezoneOffset() * 60_000;
+
+  return new Date(now.getTime() - timezoneOffset)
+    .toISOString()
+    .split("T")[0];
+}
 
 const navigationItems = [
   {
@@ -176,6 +188,47 @@ export default function DashboardShell({
 const [activeItem, setActiveItem] = useState("Overview");
 const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 const [navigationRestored, setNavigationRestored] = useState(false);
+const [dailyFocusProgress, setDailyFocusProgress] = useState<number | null>(null);
+const [dailyFocusLoaded, setDailyFocusLoaded] = useState(false);
+
+useEffect(() => {
+  let cancelled = false;
+
+  async function loadDailyFocusProgress() {
+    try {
+      const supabase = createClient();
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        return;
+      }
+
+      const { data } = await supabase
+        .from("daily_focus")
+        .select("progress")
+        .eq("user_id", user.id)
+        .eq("focus_date", getLocalDateString())
+        .maybeSingle();
+
+      if (!cancelled) {
+        setDailyFocusProgress(data ? data.progress : null);
+      }
+    } finally {
+      if (!cancelled) {
+        setDailyFocusLoaded(true);
+      }
+    }
+  }
+
+  loadDailyFocusProgress();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
 
 useEffect(() => {
   const timer = window.setTimeout(() => {
@@ -236,6 +289,8 @@ if (!navigationRestored) {
             activeItem={activeItem}
             email={email}
             onSelect={selectNavigationItem}
+            dailyProgress={dailyFocusProgress}
+            dailyProgressLoaded={dailyFocusLoaded}
           />
         </aside>
 
@@ -265,6 +320,8 @@ if (!navigationRestored) {
             activeItem={activeItem}
             email={email}
             onSelect={selectNavigationItem}
+            dailyProgress={dailyFocusProgress}
+            dailyProgressLoaded={dailyFocusLoaded}
           />
         </motion.aside>
 
@@ -330,8 +387,6 @@ if (!navigationRestored) {
                       strokeLinejoin="round"
                     />
                   </svg>
-
-                  <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-violet-500 ring-2 ring-white" />
                 </button>
 
                 <div className="flex h-11 items-center gap-3 rounded-2xl border border-gray-200 bg-white px-2 pr-3 shadow-sm">
@@ -527,13 +582,33 @@ type SidebarContentProps = {
   activeItem: string;
   email: string;
   onSelect: (item: string) => void;
+  dailyProgress: number | null;
+  dailyProgressLoaded: boolean;
 };
 
 function SidebarContent({
   activeItem,
   email,
   onSelect,
+  dailyProgress,
+  dailyProgressLoaded,
 }: SidebarContentProps) {
+  const progressLabel =
+    !dailyProgressLoaded
+      ? "—"
+      : dailyProgress === null
+        ? "0%"
+        : `${dailyProgress}%`;
+
+  const progressWidth =
+    dailyProgressLoaded && dailyProgress !== null
+      ? `${dailyProgress}%`
+      : "0%";
+
+  const progressCaption =
+    dailyProgressLoaded && dailyProgress === null
+      ? "Set today's focus to start tracking progress."
+      : "Complete your key priorities to keep today on track.";
   return (
     <>
       <div className="flex items-center justify-between">
@@ -627,14 +702,14 @@ function SidebarContent({
           </span>
 
           <span className="text-xs font-semibold text-violet-300">
-            68%
+            {progressLabel}
           </span>
         </div>
 
         <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
           <motion.div
             initial={{ width: 0 }}
-            animate={{ width: "68%" }}
+            animate={{ width: progressWidth }}
             transition={{
               duration: 1,
               delay: 0.3,
@@ -645,7 +720,7 @@ function SidebarContent({
         </div>
 
         <p className="mt-4 text-xs leading-5 text-white/45">
-          Complete your key priorities to keep today on track.
+          {progressCaption}
         </p>
       </div>
 
@@ -740,23 +815,162 @@ function OverviewContent({
 
       <GoalsCard />
 
-      <button
-        type="button"
-        onClick={() => onNavigate("Calendar")}
-        className="w-full text-left"
-      >
-        <DashboardCard
-          title="Upcoming"
-          value="2"
-          description="Events in the next 24 hours"
-          accent="View calendar"
-        />
-      </button>
+      <UpcomingEventsCard onNavigate={onNavigate} />
     </div>
   );
 }
 
+function isWithinNext24Hours(
+  event: { event_date: string; start_time: string | null },
+  now: Date
+) {
+  const eventDateTime = new Date(
+    event.start_time
+      ? `${event.event_date}T${event.start_time}`
+      : `${event.event_date}T00:00:00`
+  );
+
+  const diffMs = eventDateTime.getTime() - now.getTime();
+
+  return diffMs >= 0 && diffMs <= 24 * 60 * 60 * 1000;
+}
+
+function UpcomingEventsCard({
+  onNavigate,
+}: {
+  onNavigate: (item: string) => void;
+}) {
+  const [events, setEvents] = useState<
+    { event_date: string; start_time: string | null }[] | null
+  >(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadUpcomingEvents() {
+      try {
+        const supabase = createClient();
+
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          return;
+        }
+
+        const { data } = await supabase
+          .from("calendar_events")
+          .select("event_date, start_time")
+          .eq("user_id", user.id)
+          .gte("event_date", getLocalDateString())
+          .lte("event_date", getLocalDateString(1));
+
+        if (!cancelled) {
+          setEvents(data ?? []);
+        }
+      } catch {
+        if (!cancelled) {
+          setEvents([]);
+        }
+      }
+    }
+
+    loadUpcomingEvents();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const upcomingCount =
+    events === null
+      ? null
+      : events.filter((event) => isWithinNext24Hours(event, new Date()))
+          .length;
+
+  return (
+    <button
+      type="button"
+      onClick={() => onNavigate("Calendar")}
+      className="w-full text-left"
+    >
+      <DashboardCard
+        title="Upcoming"
+        value={upcomingCount === null ? "—" : String(upcomingCount)}
+        description="Events in the next 24 hours"
+        accent="View calendar"
+      />
+    </button>
+  );
+}
+
 function ProductivityScore() {
+  const [tasksToday, setTasksToday] = useState<
+    { completed: boolean }[] | null
+  >(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadTasksToday() {
+      try {
+        const supabase = createClient();
+
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          return;
+        }
+
+        const { data } = await supabase
+          .from("tasks")
+          .select("completed")
+          .eq("user_id", user.id)
+          .eq("due_date", getLocalDateString());
+
+        if (!cancelled) {
+          setTasksToday(data ?? []);
+        }
+      } catch {
+        if (!cancelled) {
+          setTasksToday([]);
+        }
+      }
+    }
+
+    loadTasksToday();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const loading = tasksToday === null;
+  const totalToday = tasksToday?.length ?? 0;
+  const completedToday =
+    tasksToday?.filter((task) => task.completed).length ?? 0;
+  const score =
+    totalToday === 0 ? null : Math.round((completedToday / totalToday) * 100);
+
+  const ringDegrees = score === null ? 0 : (score / 100) * 360;
+
+  const momentumLabel =
+    score === null
+      ? "No tasks due today"
+      : score >= 70
+        ? "Strong momentum"
+        : score >= 35
+          ? "Steady pace"
+          : "Just getting started";
+
+  const momentumDescription =
+    score === null
+      ? "Add a task with today's date to start tracking your score."
+      : `${completedToday} of ${totalToday} tasks due today are done.`;
+
   return (
     <div className="rounded-[28px] border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
       <div>
@@ -770,11 +984,16 @@ function ProductivityScore() {
       </div>
 
       <div className="mt-7 flex items-center gap-6">
-        <div className="relative flex h-28 w-28 shrink-0 items-center justify-center rounded-full bg-[conic-gradient(#7c3aed_0deg,#3b82f6_244deg,#eef2f7_244deg)]">
+        <div
+          className="relative flex h-28 w-28 shrink-0 items-center justify-center rounded-full"
+          style={{
+            background: `conic-gradient(#7c3aed 0deg, #3b82f6 ${ringDegrees}deg, #eef2f7 ${ringDegrees}deg)`,
+          }}
+        >
           <div className="flex h-[86px] w-[86px] items-center justify-center rounded-full bg-white">
             <div className="text-center">
               <p className="text-2xl font-bold tracking-[-0.04em] text-gray-950">
-                68
+                {loading ? "—" : score === null ? "—" : score}
               </p>
 
               <p className="text-[10px] uppercase tracking-[0.12em] text-gray-400">
@@ -786,11 +1005,11 @@ function ProductivityScore() {
 
         <div>
           <p className="text-sm font-semibold text-gray-900">
-            Strong momentum
+            {loading ? "Loading..." : momentumLabel}
           </p>
 
           <p className="mt-2 text-sm leading-6 text-gray-500">
-            Complete two more priorities to finish the day above your average.
+            {loading ? "Checking today's tasks..." : momentumDescription}
           </p>
         </div>
       </div>

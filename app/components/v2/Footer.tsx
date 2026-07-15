@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function Footer() {
   const scrollToWaitlist = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -47,8 +49,8 @@ export default function Footer() {
         <div className="mt-20 border-t border-zinc-200 pt-8">
 
           <div className="flex flex-wrap justify-center gap-8 text-sm text-zinc-500">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
             <a href="mailto:hello@orenios.com">Contact</a>
           </div>
 

@@ -129,14 +129,6 @@ export default function ProductHero() {
                 </p>
               </motion.div>
             )}
-
-            <div className="mt-5 flex items-center justify-center gap-2 text-sm text-zinc-600 lg:justify-start">
-              <span className="text-amber-500" aria-hidden="true">
-                ★★★★★
-              </span>
-
-              <span>Trusted by 3000+ early users</span>
-            </div>
           </motion.div>
 
           {/* Right side */}

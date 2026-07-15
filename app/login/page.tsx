@@ -393,8 +393,21 @@ export default function LoginPage() {
               </p>
 
               <p className="mt-8 text-center text-xs leading-5 text-gray-400">
-                By continuing, you agree to the Terms of Service and Privacy
-                Policy.
+                By continuing, you agree to the{" "}
+                <Link
+                  href="/terms"
+                  className="font-medium text-gray-500 underline hover:text-gray-700"
+                >
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link
+                  href="/privacy"
+                  className="font-medium text-gray-500 underline hover:text-gray-700"
+                >
+                  Privacy Policy
+                </Link>
+                .
               </p>
             </div>
           </section>
