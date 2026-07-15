@@ -2,78 +2,83 @@ type AnimatedLogoProps = {
   className?: string;
 };
 
+/**
+ * Renders the original /logo2.PNG artwork unmodified, three times, each
+ * copy clipped to a different concentric band (core / inner ring / outer
+ * ring + satellites) measured directly from the source pixels. Rotating
+ * each clipped band independently spins the real artwork — nothing here
+ * is redrawn.
+ */
 export default function AnimatedLogo({ className = "" }: AnimatedLogoProps) {
   return (
     <svg
-      viewBox="0 0 100 100"
+      viewBox="0 0 1024 1024"
       role="img"
       aria-label="Orenios AI"
       className={className}
     >
       <defs>
-        <linearGradient
-          id="orenios-logo-ring"
-          x1="0%"
-          y1="0%"
-          x2="100%"
-          y2="100%"
-        >
-          <stop offset="0%" stopColor="#8b5cf6" />
-          <stop offset="100%" stopColor="#22c3ff" />
-        </linearGradient>
+        <clipPath id="orenios-clip-core">
+          <circle cx="525" cy="465" r="100" />
+        </clipPath>
 
-        <radialGradient
-          id="orenios-logo-core"
-          cx="35%"
-          cy="30%"
-          r="75%"
-        >
-          <stop offset="0%" stopColor="#ddd6fe" />
-          <stop offset="55%" stopColor="#7c3aed" />
-          <stop offset="100%" stopColor="#4c1d95" />
-        </radialGradient>
+        <clipPath id="orenios-clip-ring-inner">
+          <path
+            fillRule="evenodd"
+            d="
+              M 525,285 A 180,180 0 1,0 525,645 A 180,180 0 1,0 525,285 Z
+              M 525,355 A 110,110 0 1,1 525,575 A 110,110 0 1,1 525,355 Z
+            "
+          />
+        </clipPath>
+
+        <clipPath id="orenios-clip-ring-outer">
+          <path
+            fillRule="evenodd"
+            d="
+              M 525,153 A 312,312 0 1,0 525,777 A 312,312 0 1,0 525,153 Z
+              M 525,270 A 195,195 0 1,1 525,660 A 195,195 0 1,1 525,270 Z
+            "
+          />
+        </clipPath>
       </defs>
 
-      {/* Outer ring + satellite — clockwise, ~30s */}
-      <g className="orbit-ring-outer">
-        <circle
-          cx="50"
-          cy="50"
-          r="44"
-          fill="none"
-          stroke="url(#orenios-logo-ring)"
-          strokeWidth="3"
-        />
-        <circle cx="50" cy="6" r="5.5" fill="url(#orenios-logo-ring)" />
-      </g>
+      <image
+        href="/logo2.PNG"
+        x="0"
+        y="0"
+        width="1024"
+        height="1024"
+        clipPath="url(#orenios-clip-core)"
+      />
 
-      {/* Middle ring + satellite — counter-clockwise, ~22s */}
-      <g className="orbit-ring-middle">
-        <circle
-          cx="50"
-          cy="50"
-          r="32"
-          fill="none"
-          stroke="url(#orenios-logo-ring)"
-          strokeWidth="2.2"
-        />
-        <circle cx="82" cy="50" r="4" fill="url(#orenios-logo-ring)" />
-      </g>
-
-      {/* Inner ring — clockwise, ~15s */}
-      <g className="orbit-ring-inner">
-        <circle
-          cx="50"
-          cy="50"
-          r="22"
-          fill="none"
-          stroke="url(#orenios-logo-ring)"
-          strokeWidth="1.8"
+      <g
+        className="orbit-ring-inner"
+        style={{ transformOrigin: "525px 465px" }}
+      >
+        <image
+          href="/logo2.PNG"
+          x="0"
+          y="0"
+          width="1024"
+          height="1024"
+          clipPath="url(#orenios-clip-ring-inner)"
         />
       </g>
 
-      {/* Static core */}
-      <circle cx="50" cy="50" r="15" fill="url(#orenios-logo-core)" />
+      <g
+        className="orbit-ring-outer"
+        style={{ transformOrigin: "525px 465px" }}
+      >
+        <image
+          href="/logo2.PNG"
+          x="0"
+          y="0"
+          width="1024"
+          height="1024"
+          clipPath="url(#orenios-clip-ring-outer)"
+        />
+      </g>
     </svg>
   );
 }
