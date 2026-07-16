@@ -1,7 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import {
+  FormEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   getGoalStatusForProgress,
   normalizeGoalState,
@@ -50,6 +56,7 @@ function getStatusClasses(status: GoalStatus) {
 }
 
 export default function GoalsCard() {
+  const titleInputRef = useRef<HTMLInputElement>(null);
   const [goals, setGoals] = useState<Goal[]>([]);
 
   const [title, setTitle] = useState("");
@@ -132,6 +139,17 @@ export default function GoalsCard() {
     setStatus("Not Started");
     setDeadline("");
     setEditingGoalId(null);
+  }
+
+  function focusNewGoalForm() {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
+
+    window.setTimeout(() => {
+      titleInputRef.current?.focus();
+    }, 350);
   }
 
   function setGoalPending(goalId: string, pending: boolean) {
@@ -473,13 +491,21 @@ export default function GoalsCard() {
             </div>
 
             <p className="mt-4 text-sm font-semibold text-gray-800">
-              No goals yet.
+              You don&apos;t have any goals yet.
             </p>
 
             <p className="mt-2 text-sm leading-6 text-gray-400">
-              Create your first goal and connect today’s work to something
-              meaningful.
+              Create your first goal, or ask the AI Coach to build
+              one from what you tell it.
             </p>
+
+            <button
+              type="button"
+              onClick={focusNewGoalForm}
+              className="mt-5 rounded-2xl bg-gray-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-black"
+            >
+              Create your first goal
+            </button>
           </div>
         )}
       </div>
@@ -503,7 +529,7 @@ export default function GoalsCard() {
             <button
               type="button"
               onClick={resetForm}
-              className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-gray-500 transition hover:text-gray-950"
+              className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-500 transition hover:border-gray-300 hover:text-gray-950"
             >
               Cancel edit
             </button>
@@ -520,6 +546,7 @@ export default function GoalsCard() {
             </label>
 
             <input
+              ref={titleInputRef}
               id="goal-title"
               type="text"
               value={title}

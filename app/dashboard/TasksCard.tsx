@@ -1,7 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import {
+  FormEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { createClient } from "../lib/supabase";
 
 type TaskPriority = "low" | "medium" | "high";
@@ -66,6 +72,7 @@ function getPriorityClasses(priority: TaskPriority) {
 }
 
 export default function TasksCard() {
+  const newTaskInputRef = useRef<HTMLInputElement>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState("");
   const [priority, setPriority] =
@@ -398,6 +405,7 @@ export default function TasksCard() {
         className="mt-6 rounded-[24px] border border-gray-200 bg-gray-50 p-4"
       >
         <input
+          ref={newTaskInputRef}
           type="text"
           value={newTask}
           onChange={(event) =>
@@ -658,12 +666,21 @@ export default function TasksCard() {
             </div>
 
             <p className="mt-4 text-sm font-semibold text-gray-800">
-              Your day is clear.
+              You don&apos;t have any tasks yet.
             </p>
 
             <p className="mt-2 text-sm leading-6 text-gray-400">
-              Add your first task and give it a priority or deadline.
+              Add your first task, or ask the AI Coach to turn a goal
+              into a plan for you.
             </p>
+
+            <button
+              type="button"
+              onClick={() => newTaskInputRef.current?.focus()}
+              className="mt-5 rounded-2xl bg-gray-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-black"
+            >
+              Add your first task
+            </button>
           </motion.div>
         )}
       </div>

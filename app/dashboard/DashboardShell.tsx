@@ -815,7 +815,10 @@ function OverviewContent({
 
       <GoalsCard />
 
-      <UpcomingEventsCard onNavigate={onNavigate} />
+      <div className="grid gap-6 sm:grid-cols-2">
+        <UpcomingEventsCard onNavigate={onNavigate} />
+        <AIActionsCard />
+      </div>
     </div>
   );
 }
@@ -955,7 +958,12 @@ function ProductivityScore() {
   const score =
     totalToday === 0 ? null : Math.round((completedToday / totalToday) * 100);
 
-  const ringDegrees = score === null ? 0 : (score / 100) * 360;
+  const ringRadius = 50;
+  const ringCircumference = 2 * Math.PI * ringRadius;
+  const ringOffset =
+    score === null
+      ? ringCircumference
+      : ringCircumference * (1 - score / 100);
 
   const momentumLabel =
     score === null
@@ -984,13 +992,46 @@ function ProductivityScore() {
       </div>
 
       <div className="mt-7 flex items-center gap-6">
-        <div
-          className="relative flex h-28 w-28 shrink-0 items-center justify-center rounded-full"
-          style={{
-            background: `conic-gradient(#7c3aed 0deg, #3b82f6 ${ringDegrees}deg, #eef2f7 ${ringDegrees}deg)`,
-          }}
-        >
-          <div className="flex h-[86px] w-[86px] items-center justify-center rounded-full bg-white">
+        <div className="relative flex h-28 w-28 shrink-0 items-center justify-center">
+          <svg viewBox="0 0 120 120" className="h-28 w-28 -rotate-90">
+            <circle
+              cx="60"
+              cy="60"
+              r={ringRadius}
+              fill="none"
+              stroke="#eef2f7"
+              strokeWidth="10"
+            />
+
+            <motion.circle
+              cx="60"
+              cy="60"
+              r={ringRadius}
+              fill="none"
+              stroke="url(#productivity-score-ring)"
+              strokeWidth="10"
+              strokeLinecap="round"
+              strokeDasharray={ringCircumference}
+              initial={{ strokeDashoffset: ringCircumference }}
+              animate={{ strokeDashoffset: ringOffset }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            />
+
+            <defs>
+              <linearGradient
+                id="productivity-score-ring"
+                x1="0"
+                y1="0"
+                x2="1"
+                y2="1"
+              >
+                <stop offset="0%" stopColor="#7c3aed" />
+                <stop offset="100%" stopColor="#3b82f6" />
+              </linearGradient>
+            </defs>
+          </svg>
+
+          <div className="absolute flex h-[86px] w-[86px] items-center justify-center rounded-full bg-white">
             <div className="text-center">
               <p className="text-2xl font-bold tracking-[-0.04em] text-gray-950">
                 {loading ? "—" : score === null ? "—" : score}
@@ -1013,6 +1054,119 @@ function ProductivityScore() {
           </p>
         </div>
       </div>
+    </div>
+  );
+}
+
+function AIActionsCard() {
+  const [counts, setCounts] = useState<{
+    last7: number;
+    last30: number;
+  } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadActionCounts() {
+      try {
+        const supabase = createClient();
+
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          return;
+        }
+
+        const since7 = getLocalDateString(-7);
+        const since30 = getLocalDateString(-30);
+
+        const { data } = await supabase
+          .from("ai_messages")
+          .select("created_at")
+          .eq("user_id", user.id)
+          .eq("role", "assistant")
+          .not("action", "is", null)
+          .gte("created_at", `${since30}T00:00:00`);
+
+        if (!cancelled) {
+          const rows = data ?? [];
+          const last7 = rows.filter(
+            (row) => row.created_at >= `${since7}T00:00:00`
+          ).length;
+
+          setCounts({ last7, last30: rows.length });
+        }
+      } catch {
+        if (!cancelled) {
+          setCounts({ last7: 0, last30: 0 });
+        }
+      }
+    }
+
+    loadActionCounts();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const loading = counts === null;
+
+  return (
+    <div className="rounded-[28px] border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold text-gray-950">
+            AI actions taken
+          </p>
+
+          <p className="mt-1 text-xs text-gray-400">
+            Real changes AI made in your workspace
+          </p>
+        </div>
+
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-blue-500 text-white shadow-[0_8px_20px_rgba(124,58,237,0.35)]">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M13 3 4 14h6l-1 7 9-11h-6l1-7Z"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <div className="mt-6 grid grid-cols-2 gap-4">
+        <div>
+          <p className="text-3xl font-semibold tracking-[-0.05em] text-gray-950">
+            {loading ? "—" : counts.last7}
+          </p>
+
+          <p className="mt-1 text-xs text-gray-400">Last 7 days</p>
+        </div>
+
+        <div>
+          <p className="text-3xl font-semibold tracking-[-0.05em] text-gray-950">
+            {loading ? "—" : counts.last30}
+          </p>
+
+          <p className="mt-1 text-xs text-gray-400">Last 30 days</p>
+        </div>
+      </div>
+
+      <p className="mt-4 text-xs leading-5 text-gray-400">
+        Tasks created, goals updated, deadlines moved — every real
+        change Orenios made for you, not just messages sent.
+      </p>
     </div>
   );
 }

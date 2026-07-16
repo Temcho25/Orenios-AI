@@ -26,10 +26,10 @@ type StoredChatMessage = {
 };
 
 const quickPrompts = [
-  "Help me plan my day",
-  "What should I focus on first?",
-  "Create a productive action plan",
-  "Help me avoid procrastination",
+  "Create a goal for this week",
+  "Add a task for tomorrow",
+  "Move a task to next week",
+  "Mark today's top task as done",
 ];
 
 function createMessageId() {

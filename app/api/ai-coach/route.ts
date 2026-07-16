@@ -383,6 +383,7 @@ export async function POST(request: Request) {
         user_id: user.id,
         role: "assistant",
         content: reply,
+        action,
       });
 
     if (assistantMessageSaveError) {
