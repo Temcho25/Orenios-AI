@@ -21,22 +21,6 @@ export default function Footer() {
 
   return (
     <footer className="relative overflow-hidden border-t border-zinc-200 bg-[#fbfaff]">
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-0 h-[520px] w-[720px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-violet-400/16 blur-[150px]" />
-        <div className="absolute -left-24 bottom-0 h-[380px] w-[380px] rounded-full bg-cyan-400/14 blur-[130px]" />
-        <div className="absolute -right-24 bottom-0 h-[380px] w-[380px] rounded-full bg-violet-500/12 blur-[130px]" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(124,58,237,.6) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(124,58,237,.6) 1px, transparent 1px)
-            `,
-            backgroundSize: "56px 56px",
-          }}
-        />
-      </div>
-
       <div className="mx-auto max-w-6xl px-6 py-20 text-center">
 
         <p className="text-sm font-semibold uppercase tracking-[0.35em] text-violet-600">

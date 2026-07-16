@@ -32,20 +32,6 @@ export default function ProductPreview() {
       id="preview"
       className="relative mx-auto max-w-7xl px-6 py-32"
     >
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -right-24 top-10 h-[420px] w-[420px] rounded-full bg-cyan-400/10 blur-[130px]" />
-        <div className="absolute -left-24 bottom-10 h-[380px] w-[380px] rounded-full bg-violet-400/10 blur-[130px]" />
-        <div
-          className="absolute inset-0 opacity-[0.025]"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(124,58,237,.6) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(124,58,237,.6) 1px, transparent 1px)
-            `,
-            backgroundSize: "56px 56px",
-          }}
-        />
-      </div>
 
       <div className="text-center">
 
