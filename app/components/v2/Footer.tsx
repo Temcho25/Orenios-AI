@@ -20,7 +20,23 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t border-zinc-200 bg-white">
+    <footer className="relative overflow-hidden border-t border-zinc-200 bg-[#fbfaff]">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-1/2 top-0 h-[520px] w-[720px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-violet-400/16 blur-[150px]" />
+        <div className="absolute -left-24 bottom-0 h-[380px] w-[380px] rounded-full bg-cyan-400/14 blur-[130px]" />
+        <div className="absolute -right-24 bottom-0 h-[380px] w-[380px] rounded-full bg-violet-500/12 blur-[130px]" />
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(124,58,237,.6) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(124,58,237,.6) 1px, transparent 1px)
+            `,
+            backgroundSize: "56px 56px",
+          }}
+        />
+      </div>
+
       <div className="mx-auto max-w-6xl px-6 py-20 text-center">
 
         <p className="text-sm font-semibold uppercase tracking-[0.35em] text-violet-600">
@@ -38,13 +54,20 @@ export default function Footer() {
           tasks, notes and daily planning.
         </p>
 
-        <a
-          href="#"
-          onClick={scrollToWaitlist}
-          className="mt-10 inline-flex rounded-full bg-zinc-900 px-8 py-4 text-lg font-semibold text-white shadow-[0_20px_45px_rgba(15,23,42,0.22)] transition-all duration-300 hover:-translate-y-1 hover:bg-zinc-800 hover:shadow-[0_26px_55px_rgba(15,23,42,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2"
-        >
-          Join Waitlist
-        </a>
+        <span className="relative mt-10 inline-block">
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-violet-500/40 to-cyan-400/40 blur-2xl"
+          />
+
+          <a
+            href="#"
+            onClick={scrollToWaitlist}
+            className="inline-flex rounded-full bg-zinc-900 px-8 py-4 text-lg font-semibold text-white shadow-[0_20px_45px_rgba(15,23,42,0.22)] transition-all duration-300 hover:-translate-y-1 hover:bg-zinc-800 hover:shadow-[0_26px_55px_rgba(15,23,42,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2"
+          >
+            Join Waitlist
+          </a>
+        </span>
 
         <div className="mt-20 border-t border-zinc-200 pt-8">
 

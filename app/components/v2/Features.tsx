@@ -36,8 +36,23 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="mx-auto mt-28 max-w-6xl px-6"
+      className="relative mx-auto mt-28 max-w-6xl px-6"
     >
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -left-24 top-0 h-[420px] w-[420px] rounded-full bg-violet-400/10 blur-[130px]" />
+        <div className="absolute -right-24 bottom-0 h-[380px] w-[380px] rounded-full bg-cyan-400/10 blur-[130px]" />
+        <div
+          className="absolute inset-0 opacity-[0.025]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(124,58,237,.6) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(124,58,237,.6) 1px, transparent 1px)
+            `,
+            backgroundSize: "56px 56px",
+          }}
+        />
+      </div>
+
       <div className="text-center">
         <p className="text-sm font-medium uppercase tracking-[0.3em] text-violet-600">
           FEATURES
@@ -54,33 +69,42 @@ export default function Features() {
       </div>
 
       <div className="mx-auto mt-16 grid max-w-5xl gap-6 md:grid-cols-2">
-        {features.map((feature) => (
-          <motion.div
-            key={feature.title}
-            whileHover={
-              prefersReducedMotion ? undefined : { y: -10, scale: 1.02 }
-            }
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-shadow duration-300 hover:border-violet-200/70 hover:shadow-[0_30px_60px_rgba(124,58,237,0.12)]"
-          >
-            <div className="relative mb-6 flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400 shadow-[0_8px_20px_rgba(124,58,237,0.35)]">
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/25 to-transparent" />
+        {features.map((feature, index) => {
+          const isAlt = index % 2 === 1;
 
-              <feature.icon
-                className="relative h-6 w-6 text-white"
-                strokeWidth={2}
-              />
-            </div>
+          return (
+            <motion.div
+              key={feature.title}
+              whileHover={prefersReducedMotion ? undefined : { y: -4 }}
+              whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-shadow duration-300 hover:border-violet-200/70 hover:shadow-[0_30px_60px_rgba(124,58,237,0.14)]"
+            >
+              <div
+                className={`relative mb-6 flex h-12 w-12 items-center justify-center overflow-hidden shadow-[0_8px_20px_rgba(124,58,237,0.35)] ${
+                  isAlt
+                    ? "rounded-full bg-gradient-to-tr from-violet-500 to-cyan-400"
+                    : "rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400"
+                }`}
+              >
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/25 to-transparent" />
 
-            <h3 className="text-xl font-semibold text-black">
-              {feature.title}
-            </h3>
+                <feature.icon
+                  className="relative h-6 w-6 text-white"
+                  strokeWidth={2}
+                />
+              </div>
 
-            <p className="mt-3 leading-7 text-gray-500">
-              {feature.description}
-            </p>
-          </motion.div>
-        ))}
+              <h3 className="text-xl font-semibold text-black">
+                {feature.title}
+              </h3>
+
+              <p className="mt-3 leading-7 text-gray-500">
+                {feature.description}
+              </p>
+            </motion.div>
+          );
+        })}
       </div>
     </section>
   );
