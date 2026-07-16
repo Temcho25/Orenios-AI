@@ -38,7 +38,17 @@ export default function Features() {
       id="features"
       className="relative mx-auto mt-28 max-w-6xl px-6"
     >
-      <div className="text-center">
+      <motion.div
+        initial={
+          prefersReducedMotion ? undefined : { opacity: 0, y: 24 }
+        }
+        whileInView={
+          prefersReducedMotion ? undefined : { opacity: 1, y: 0 }
+        }
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="text-center"
+      >
         <p className="text-sm font-medium uppercase tracking-[0.3em] text-violet-600">
           FEATURES
         </p>
@@ -51,14 +61,29 @@ export default function Features() {
           Orenios AI becomes your personal operating system for life —
           helping you organize, plan and achieve more every day.
         </p>
-      </div>
+      </motion.div>
 
       <div className="mx-auto mt-16 grid max-w-5xl items-stretch gap-6 md:grid-cols-2">
         {features.map((feature, index) => {
           const isAlt = index % 2 === 1;
 
           return (
-            <div key={feature.title} className="relative h-full">
+            <motion.div
+              key={feature.title}
+              initial={
+                prefersReducedMotion ? undefined : { opacity: 0, y: 24 }
+              }
+              whileInView={
+                prefersReducedMotion ? undefined : { opacity: 1, y: 0 }
+              }
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.08,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="relative h-full"
+            >
               <div
                 aria-hidden="true"
                 className={`pointer-events-none absolute -z-10 h-40 w-40 rounded-full bg-gradient-to-br from-violet-500 to-cyan-400 opacity-[0.13] blur-[60px] ${
@@ -107,7 +132,7 @@ export default function Features() {
                   {feature.description}
                 </p>
               </motion.div>
-            </div>
+            </motion.div>
           );
         })}
       </div>

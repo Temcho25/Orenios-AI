@@ -32,8 +32,25 @@ export default function ProductPreview() {
       id="preview"
       className="relative mx-auto max-w-7xl px-6 py-32"
     >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+      >
+        <div className="absolute -right-40 top-0 h-[560px] w-[560px] rounded-full bg-cyan-400/[0.10] blur-[160px]" />
+        <div className="absolute -left-40 bottom-0 h-[520px] w-[520px] rounded-full bg-violet-400/[0.10] blur-[160px]" />
+      </div>
 
-      <div className="text-center">
+      <motion.div
+        initial={
+          prefersReducedMotion ? undefined : { opacity: 0, y: 24 }
+        }
+        whileInView={
+          prefersReducedMotion ? undefined : { opacity: 1, y: 0 }
+        }
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="text-center"
+      >
 
         <div className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-5 py-2 text-sm font-medium text-violet-700">
           HOW IT WORKS
@@ -50,7 +67,7 @@ export default function ProductPreview() {
           going on.
         </p>
 
-      </div>
+      </motion.div>
 
       <div
         ref={stepsRef}
@@ -71,11 +88,26 @@ export default function ProductPreview() {
         {steps.map((step, index) => (
           <Fragment key={step.number}>
             <motion.div
+              initial={
+                prefersReducedMotion ? undefined : { opacity: 0, y: 24 }
+              }
+              whileInView={
+                prefersReducedMotion ? undefined : { opacity: 1, y: 0 }
+              }
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.1,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="relative flex-1"
+            >
+            <motion.div
               whileHover={
                 prefersReducedMotion ? undefined : { y: -10, scale: 1.02 }
               }
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="relative flex-1 rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-shadow duration-300 hover:border-violet-200/70 hover:shadow-[0_30px_60px_rgba(124,58,237,0.12)]"
+              className="relative h-full rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-shadow duration-300 hover:border-violet-200/70 hover:shadow-[0_30px_60px_rgba(124,58,237,0.12)]"
             >
               <motion.div
                 initial={
@@ -107,6 +139,7 @@ export default function ProductPreview() {
               <p className="text-xl font-semibold leading-8 text-black">
                 {step.text}
               </p>
+            </motion.div>
             </motion.div>
 
             {index < steps.length - 1 && (

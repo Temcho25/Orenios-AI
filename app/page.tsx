@@ -11,12 +11,13 @@ export default function HomePage() {
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#f5efff] via-[#fbf9ff] to-white">
       <ScrollToTop />
 
-      {/* Premium Background — continues the hero's dot-grid + glow at a much
-          lighter touch through the white sections below it. The hero itself
-          paints over this with its own opaque background, so this layer is
-          only ever visible from Features downward. */}
+      {/* Premium Background — continues the hero's dot-grid at a very light
+          touch through the white sections below it. The hero itself paints
+          over this with its own opaque background, so this layer is only
+          ever visible from Features downward. Section-specific glow blobs
+          live inside each section instead of here, so they stay correctly
+          positioned regardless of how tall the page ends up being. */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {/* Grid */}
         <div
           className="absolute inset-0 opacity-[0.035]"
           style={{
@@ -27,12 +28,6 @@ export default function HomePage() {
             backgroundSize: "64px 64px",
           }}
         />
-
-        {/* Near the hero → Features transition */}
-        <div className="absolute left-1/2 top-[880px] h-[820px] w-[820px] -translate-x-1/2 rounded-full bg-violet-400/[0.07] blur-[190px]" />
-
-        {/* Near the Preview → Footer transition */}
-        <div className="absolute bottom-[260px] left-1/2 h-[760px] w-[760px] -translate-x-1/2 rounded-full bg-cyan-400/[0.06] blur-[190px]" />
       </div>
 
       <div className="relative z-10">
