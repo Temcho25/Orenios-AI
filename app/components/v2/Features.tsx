@@ -49,15 +49,15 @@ export default function Features() {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="text-center"
       >
-        <p className="text-sm font-medium uppercase tracking-[0.3em] text-violet-600">
+        <p className="text-sm font-medium uppercase tracking-[0.3em] text-violet-300">
           FEATURES
         </p>
 
-        <h2 className="mt-4 text-5xl font-bold text-black">
+        <h2 className="mt-4 text-5xl font-bold text-white">
           Everything you need.
         </h2>
 
-        <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-gray-500">
+        <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-zinc-400">
           Orenios AI becomes your personal operating system for life —
           helping you organize, plan and achieve more every day.
         </p>
@@ -86,7 +86,7 @@ export default function Features() {
             >
               <div
                 aria-hidden="true"
-                className={`pointer-events-none absolute -z-10 h-40 w-40 rounded-full bg-gradient-to-br from-violet-500 to-cyan-400 opacity-[0.13] blur-[60px] ${
+                className={`pointer-events-none absolute -z-10 h-40 w-40 rounded-full bg-gradient-to-br from-violet-500 to-cyan-400 opacity-[0.18] blur-[60px] ${
                   isAlt ? "-bottom-6 -left-6" : "-top-6 -right-6"
                 }`}
               />
@@ -95,15 +95,15 @@ export default function Features() {
                 whileHover={prefersReducedMotion ? undefined : { y: -4 }}
                 whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-all duration-300 hover:border-violet-300/80 hover:shadow-[0_0_0_1px_rgba(139,92,246,0.16),0_30px_65px_rgba(124,58,237,0.2)]"
+                className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-8 shadow-[0_10px_30px_rgba(0,0,0,0.2)] backdrop-blur-sm transition-all duration-300 hover:border-violet-400/40 hover:bg-white/[0.06] hover:shadow-[0_0_0_1px_rgba(139,92,246,0.25),0_30px_65px_rgba(124,58,237,0.3)]"
               >
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 -z-10 opacity-[0.02]"
+                  className="pointer-events-none absolute inset-0 -z-10 opacity-[0.03]"
                   style={{
                     backgroundImage: `
-                      linear-gradient(rgba(124,58,237,.8) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(124,58,237,.8) 1px, transparent 1px)
+                      linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)
                     `,
                     backgroundSize: "26px 26px",
                   }}
@@ -124,11 +124,11 @@ export default function Features() {
                   />
                 </div>
 
-                <h3 className="text-xl font-semibold text-black">
+                <h3 className="text-xl font-semibold text-white">
                   {feature.title}
                 </h3>
 
-                <p className="mt-3 leading-7 text-gray-500">
+                <p className="mt-3 leading-7 text-zinc-400">
                   {feature.description}
                 </p>
               </motion.div>

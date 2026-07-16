@@ -23,7 +23,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative overflow-hidden bg-[#fbfaff] pb-12 pt-4">
+    <footer className="relative overflow-hidden pb-12 pt-4">
       <div className="mx-auto max-w-6xl px-6">
         <motion.div
           initial={
@@ -84,14 +84,23 @@ export default function Footer() {
           </div>
         </motion.div>
 
-        <div className="mt-12 border-t border-zinc-200 pt-8 text-center">
-          <div className="flex flex-wrap justify-center gap-8 text-sm text-zinc-500">
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/terms">Terms</Link>
-            <a href="mailto:hello@orenios.com">Contact</a>
+        <div className="mt-12 border-t border-white/10 pt-8 text-center">
+          <div className="flex flex-wrap justify-center gap-8 text-sm text-zinc-400">
+            <Link href="/privacy" className="transition hover:text-white">
+              Privacy
+            </Link>
+            <Link href="/terms" className="transition hover:text-white">
+              Terms
+            </Link>
+            <a
+              href="mailto:hello@orenios.com"
+              className="transition hover:text-white"
+            >
+              Contact
+            </a>
           </div>
 
-          <p className="mt-6 text-sm text-zinc-400">
+          <p className="mt-6 text-sm text-zinc-500">
             © 2026 Orenios AI. All rights reserved.
           </p>
         </div>

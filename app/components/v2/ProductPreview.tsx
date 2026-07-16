@@ -44,17 +44,17 @@ export default function ProductPreview() {
         className="text-center"
       >
 
-        <div className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-5 py-2 text-sm font-medium text-violet-700">
+        <div className="inline-flex rounded-full border border-violet-400/30 bg-violet-500/10 px-5 py-2 text-sm font-medium text-violet-300">
           HOW IT WORKS
         </div>
 
-        <h2 className="mt-8 text-6xl font-bold tracking-tight text-black">
+        <h2 className="mt-8 text-6xl font-bold tracking-tight text-white">
           From a thought.
           <br />
           To a plan.
         </h2>
 
-        <p className="mx-auto mt-8 max-w-3xl text-xl leading-9 text-gray-600">
+        <p className="mx-auto mt-8 max-w-3xl text-xl leading-9 text-zinc-400">
           No manual sorting, no blank to-do list. Just tell Orenios what&apos;s
           going on.
         </p>
@@ -68,7 +68,7 @@ export default function ProductPreview() {
         {!prefersReducedMotion && (
           <div
             aria-hidden="true"
-            className="absolute bottom-0 left-14 top-0 w-px bg-gray-200 lg:hidden"
+            className="absolute bottom-0 left-14 top-0 w-px bg-white/10 lg:hidden"
           >
             <motion.div
               className="w-full origin-top bg-gradient-to-b from-violet-400 to-cyan-400"
@@ -99,7 +99,7 @@ export default function ProductPreview() {
                 prefersReducedMotion ? undefined : { y: -10, scale: 1.02 }
               }
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="relative h-full rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-all duration-300 hover:border-violet-300/80 hover:shadow-[0_0_0_1px_rgba(139,92,246,0.16),0_30px_65px_rgba(124,58,237,0.18)]"
+              className="relative h-full rounded-3xl border border-white/10 bg-white/[0.04] p-8 shadow-[0_10px_30px_rgba(0,0,0,0.2)] backdrop-blur-sm transition-all duration-300 hover:border-violet-400/40 hover:bg-white/[0.06] hover:shadow-[0_0_0_1px_rgba(139,92,246,0.25),0_30px_65px_rgba(124,58,237,0.28)]"
             >
               <motion.div
                 initial={
@@ -128,7 +128,7 @@ export default function ProductPreview() {
                 </span>
               </motion.div>
 
-              <p className="text-xl font-semibold leading-8 text-black">
+              <p className="text-xl font-semibold leading-8 text-white">
                 {step.text}
               </p>
             </motion.div>
