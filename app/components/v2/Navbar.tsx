@@ -60,10 +60,10 @@ export default function Navbar() {
             duration: 0.25,
             ease: "easeOut",
           }}
-          className={`mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-gray-200/60 px-3 backdrop-blur-xl transition-shadow duration-300 sm:px-6 ${
+          className={`mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-gray-200/60 bg-white px-3 transition-shadow duration-300 sm:px-6 ${
             isScrolled
-              ? "bg-white/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_20px_45px_rgba(15,23,42,0.12)]"
-              : "bg-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_10px_30px_rgba(15,23,42,0.06)]"
+              ? "shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_20px_45px_rgba(15,23,42,0.12)]"
+              : "shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_10px_30px_rgba(15,23,42,0.06)]"
           }`}
         >
           <button
@@ -181,7 +181,7 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="mx-auto mt-2 flex max-w-7xl flex-col overflow-hidden rounded-2xl border border-gray-200/60 bg-white/98 p-2 shadow-[0_20px_45px_rgba(15,23,42,0.16)] backdrop-blur-xl md:hidden"
+              className="mx-auto mt-2 flex max-w-7xl flex-col overflow-hidden rounded-2xl border border-gray-200/60 bg-white p-2 shadow-[0_20px_45px_rgba(15,23,42,0.16)] md:hidden"
             >
               {mobileLinks.map((link) => (
                 <a
