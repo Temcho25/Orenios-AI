@@ -10,7 +10,7 @@ export default function OrbitalRings() {
     >
       <motion.svg
         viewBox="0 0 520 520"
-        className="h-[440px] w-[440px] opacity-80 sm:h-[520px] sm:w-[520px] lg:h-[600px] lg:w-[600px]"
+        className="h-[300px] w-[300px] opacity-80 sm:h-[440px] sm:w-[440px] md:h-[520px] md:w-[520px] lg:h-[600px] lg:w-[600px]"
         initial={{ rotate: 0 }}
         animate={{ rotate: 360 }}
         transition={{ duration: 46, repeat: Infinity, ease: "linear" }}
@@ -41,7 +41,7 @@ export default function OrbitalRings() {
 
       <motion.svg
         viewBox="0 0 520 520"
-        className="absolute inset-0 h-[440px] w-[440px] opacity-90 sm:h-[520px] sm:w-[520px] lg:h-[600px] lg:w-[600px]"
+        className="absolute inset-0 h-[300px] w-[300px] opacity-90 sm:h-[440px] sm:w-[440px] md:h-[520px] md:w-[520px] lg:h-[600px] lg:w-[600px]"
         initial={{ rotate: 0 }}
         animate={{ rotate: -360 }}
         transition={{ duration: 32, repeat: Infinity, ease: "linear" }}

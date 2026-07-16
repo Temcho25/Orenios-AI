@@ -36,7 +36,7 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="relative mx-auto mt-28 max-w-6xl px-6"
+      className="relative mx-auto mt-32 max-w-6xl px-6 sm:mt-28"
     >
       <motion.div
         initial={
@@ -53,17 +53,17 @@ export default function Features() {
           FEATURES
         </p>
 
-        <h2 className="mt-4 text-5xl font-bold text-white">
+        <h2 className="mt-4 text-4xl font-bold text-white sm:text-5xl">
           Everything you need.
         </h2>
 
-        <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-zinc-400">
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-zinc-400 sm:text-lg sm:leading-8">
           Orenios AI becomes your personal operating system for life —
           helping you organize, plan and achieve more every day.
         </p>
       </motion.div>
 
-      <div className="mx-auto mt-16 grid max-w-5xl items-stretch gap-6 md:grid-cols-2">
+      <div className="mx-auto mt-12 grid max-w-5xl items-stretch gap-5 sm:mt-16 sm:gap-6 md:grid-cols-2">
         {features.map((feature, index) => {
           const isAlt = index % 2 === 1;
 
@@ -95,7 +95,7 @@ export default function Features() {
                 whileHover={prefersReducedMotion ? undefined : { y: -4 }}
                 whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-8 shadow-[0_10px_30px_rgba(0,0,0,0.2)] backdrop-blur-sm transition-all duration-300 hover:border-violet-400/40 hover:bg-white/[0.06] hover:shadow-[0_0_0_1px_rgba(139,92,246,0.25),0_30px_65px_rgba(124,58,237,0.3)]"
+                className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_10px_30px_rgba(0,0,0,0.2)] backdrop-blur-sm transition-all duration-300 hover:border-violet-400/40 hover:bg-white/[0.06] hover:shadow-[0_0_0_1px_rgba(139,92,246,0.25),0_30px_65px_rgba(124,58,237,0.3)] active:border-violet-400/40 active:bg-white/[0.06] active:shadow-[0_0_0_1px_rgba(139,92,246,0.25),0_30px_65px_rgba(124,58,237,0.3)] sm:p-8"
               >
                 <div
                   aria-hidden="true"

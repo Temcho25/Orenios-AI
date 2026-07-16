@@ -186,13 +186,14 @@ export default function ProductHero() {
                 delay: 0.22,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="mt-3 text-5xl font-black leading-[0.9] tracking-[-0.055em] text-white sm:mt-4 sm:text-6xl lg:text-[100px] xl:text-[116px]"
+              className="mt-3 text-[2.75rem] font-black leading-[1.02] tracking-[-0.03em] text-white sm:mt-4 sm:text-6xl sm:leading-[0.9] sm:tracking-[-0.055em] lg:text-[100px] xl:text-[116px]"
             >
               Your{" "}
               <span className="bg-gradient-to-r from-violet-400 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent">
                 AI
-              </span>{" "}
-              Life Admin
+              </span>
+              <br className="sm:hidden" />
+              {" "}Life Admin
             </motion.h1>
 
             <motion.p

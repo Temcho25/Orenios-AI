@@ -30,7 +30,7 @@ export default function ProductPreview() {
   return (
     <section
       id="preview"
-      className="relative mx-auto max-w-7xl px-6 py-32"
+      className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32"
     >
       <motion.div
         initial={
@@ -48,13 +48,13 @@ export default function ProductPreview() {
           HOW IT WORKS
         </div>
 
-        <h2 className="mt-8 text-6xl font-bold tracking-tight text-white">
+        <h2 className="mt-6 text-4xl font-bold tracking-tight text-white sm:mt-8 sm:text-6xl">
           From a thought.
           <br />
           To a plan.
         </h2>
 
-        <p className="mx-auto mt-8 max-w-3xl text-xl leading-9 text-zinc-400">
+        <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-zinc-400 sm:mt-8 sm:text-xl sm:leading-9">
           No manual sorting, no blank to-do list. Just tell Orenios what&apos;s
           going on.
         </p>
@@ -63,12 +63,12 @@ export default function ProductPreview() {
 
       <div
         ref={stepsRef}
-        className="relative mt-20 flex flex-col gap-6 lg:flex-row lg:items-stretch"
+        className="relative mt-16 flex flex-col gap-8 sm:mt-20 sm:gap-6 lg:flex-row lg:items-stretch"
       >
         {!prefersReducedMotion && (
           <div
             aria-hidden="true"
-            className="absolute bottom-0 left-14 top-0 w-px bg-white/10 lg:hidden"
+            className="absolute bottom-0 left-12 top-0 w-px bg-white/10 sm:left-14 lg:hidden"
           >
             <motion.div
               className="w-full origin-top bg-gradient-to-b from-violet-400 to-cyan-400"
@@ -98,8 +98,9 @@ export default function ProductPreview() {
               whileHover={
                 prefersReducedMotion ? undefined : { y: -10, scale: 1.02 }
               }
+              whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="relative h-full rounded-3xl border border-white/10 bg-white/[0.04] p-8 shadow-[0_10px_30px_rgba(0,0,0,0.2)] backdrop-blur-sm transition-all duration-300 hover:border-violet-400/40 hover:bg-white/[0.06] hover:shadow-[0_0_0_1px_rgba(139,92,246,0.25),0_30px_65px_rgba(124,58,237,0.28)]"
+              className="relative h-full rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_10px_30px_rgba(0,0,0,0.2)] backdrop-blur-sm transition-all duration-300 hover:border-violet-400/40 hover:bg-white/[0.06] hover:shadow-[0_0_0_1px_rgba(139,92,246,0.25),0_30px_65px_rgba(124,58,237,0.28)] active:border-violet-400/40 active:bg-white/[0.06] active:shadow-[0_0_0_1px_rgba(139,92,246,0.25),0_30px_65px_rgba(124,58,237,0.28)] sm:p-8"
             >
               <motion.div
                 initial={
@@ -135,14 +136,25 @@ export default function ProductPreview() {
             </motion.div>
 
             {index < steps.length - 1 && (
-              <div
-                className="hidden shrink-0 items-center gap-1.5 px-1 lg:flex"
-                aria-hidden="true"
-              >
-                <span className="h-px w-8 bg-gradient-to-r from-violet-300 to-cyan-300" />
-                <span className="text-2xl text-violet-300">→</span>
-                <span className="h-px w-8 bg-gradient-to-r from-cyan-300 to-violet-300" />
-              </div>
+              <>
+                <div
+                  className="hidden shrink-0 items-center gap-1.5 px-1 lg:flex"
+                  aria-hidden="true"
+                >
+                  <span className="h-px w-8 bg-gradient-to-r from-violet-300 to-cyan-300" />
+                  <span className="text-2xl text-violet-300">→</span>
+                  <span className="h-px w-8 bg-gradient-to-r from-cyan-300 to-violet-300" />
+                </div>
+
+                <div
+                  className="relative flex h-8 items-center pl-9 sm:h-6 sm:pl-11 lg:hidden"
+                  aria-hidden="true"
+                >
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full border border-violet-400/30 bg-[#0d0c14] text-sm leading-none text-violet-300">
+                    ↓
+                  </span>
+                </div>
+              </>
             )}
           </Fragment>
         ))}

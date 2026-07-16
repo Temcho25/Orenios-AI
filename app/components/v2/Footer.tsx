@@ -76,7 +76,7 @@ export default function Footer() {
               <a
                 href="#"
                 onClick={scrollToWaitlist}
-                className="inline-flex rounded-full bg-gradient-to-r from-violet-500 to-cyan-400 px-8 py-4 text-lg font-semibold text-white shadow-[0_20px_45px_rgba(124,58,237,0.35)] transition-all duration-300 hover:-translate-y-1 hover:from-violet-400 hover:to-cyan-300 hover:shadow-[0_26px_55px_rgba(124,58,237,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#101017]"
+                className="inline-flex min-h-[44px] items-center rounded-full bg-gradient-to-r from-violet-500 to-cyan-400 px-8 py-4 text-lg font-semibold text-white shadow-[0_20px_45px_rgba(124,58,237,0.35)] transition-all duration-300 hover:-translate-y-1 hover:from-violet-400 hover:to-cyan-300 hover:shadow-[0_26px_55px_rgba(124,58,237,0.45)] active:from-violet-400 active:to-cyan-300 active:shadow-[0_26px_55px_rgba(124,58,237,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#101017]"
               >
                 Join Waitlist
               </a>
@@ -85,16 +85,22 @@ export default function Footer() {
         </motion.div>
 
         <div className="mt-12 border-t border-white/10 pt-8 text-center">
-          <div className="flex flex-wrap justify-center gap-8 text-sm text-zinc-400">
-            <Link href="/privacy" className="transition hover:text-white">
+          <div className="flex flex-wrap justify-center gap-2 text-sm text-zinc-400 sm:gap-6">
+            <Link
+              href="/privacy"
+              className="flex min-h-[44px] items-center px-3 transition hover:text-white active:text-white"
+            >
               Privacy
             </Link>
-            <Link href="/terms" className="transition hover:text-white">
+            <Link
+              href="/terms"
+              className="flex min-h-[44px] items-center px-3 transition hover:text-white active:text-white"
+            >
               Terms
             </Link>
             <a
               href="mailto:hello@orenios.com"
-              className="transition hover:text-white"
+              className="flex min-h-[44px] items-center px-3 transition hover:text-white active:text-white"
             >
               Contact
             </a>
