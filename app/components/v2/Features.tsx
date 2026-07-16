@@ -53,12 +53,12 @@ export default function Features() {
         </p>
       </div>
 
-      <div className="mx-auto mt-16 grid max-w-5xl gap-6 md:grid-cols-2">
+      <div className="mx-auto mt-16 grid max-w-5xl items-stretch gap-6 md:grid-cols-2">
         {features.map((feature, index) => {
           const isAlt = index % 2 === 1;
 
           return (
-            <div key={feature.title} className="relative">
+            <div key={feature.title} className="relative h-full">
               <div
                 aria-hidden="true"
                 className={`pointer-events-none absolute -z-10 h-40 w-40 rounded-full bg-gradient-to-br from-violet-500 to-cyan-400 opacity-[0.13] blur-[60px] ${
@@ -70,7 +70,7 @@ export default function Features() {
                 whileHover={prefersReducedMotion ? undefined : { y: -4 }}
                 whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="relative overflow-hidden rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-shadow duration-300 hover:border-violet-200/70 hover:shadow-[0_30px_60px_rgba(124,58,237,0.14)]"
+                className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-shadow duration-300 hover:border-violet-200/70 hover:shadow-[0_30px_60px_rgba(124,58,237,0.14)]"
               >
                 <div
                   aria-hidden="true"
