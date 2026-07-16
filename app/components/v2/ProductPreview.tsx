@@ -32,14 +32,6 @@ export default function ProductPreview() {
       id="preview"
       className="relative mx-auto max-w-7xl px-6 py-32"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
-      >
-        <div className="absolute -right-40 top-0 h-[560px] w-[560px] rounded-full bg-cyan-400/[0.10] blur-[160px]" />
-        <div className="absolute -left-40 bottom-0 h-[520px] w-[520px] rounded-full bg-violet-400/[0.10] blur-[160px]" />
-      </div>
-
       <motion.div
         initial={
           prefersReducedMotion ? undefined : { opacity: 0, y: 24 }
@@ -107,7 +99,7 @@ export default function ProductPreview() {
                 prefersReducedMotion ? undefined : { y: -10, scale: 1.02 }
               }
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="relative h-full rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-shadow duration-300 hover:border-violet-200/70 hover:shadow-[0_30px_60px_rgba(124,58,237,0.12)]"
+              className="relative h-full rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-all duration-300 hover:border-violet-300/80 hover:shadow-[0_0_0_1px_rgba(139,92,246,0.16),0_30px_65px_rgba(124,58,237,0.18)]"
             >
               <motion.div
                 initial={
@@ -143,12 +135,14 @@ export default function ProductPreview() {
             </motion.div>
 
             {index < steps.length - 1 && (
-              <span
-                className="hidden shrink-0 items-center px-2 text-3xl text-gray-300 lg:flex"
+              <div
+                className="hidden shrink-0 items-center gap-1.5 px-1 lg:flex"
                 aria-hidden="true"
               >
-                →
-              </span>
+                <span className="h-px w-8 bg-gradient-to-r from-violet-300 to-cyan-300" />
+                <span className="text-2xl text-violet-300">→</span>
+                <span className="h-px w-8 bg-gradient-to-r from-cyan-300 to-violet-300" />
+              </div>
             )}
           </Fragment>
         ))}

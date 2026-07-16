@@ -95,7 +95,7 @@ export default function Features() {
                 whileHover={prefersReducedMotion ? undefined : { y: -4 }}
                 whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-shadow duration-300 hover:border-violet-200/70 hover:shadow-[0_30px_60px_rgba(124,58,237,0.14)]"
+                className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-gray-200/70 bg-white/80 p-8 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-all duration-300 hover:border-violet-300/80 hover:shadow-[0_0_0_1px_rgba(139,92,246,0.16),0_30px_65px_rgba(124,58,237,0.2)]"
               >
                 <div
                   aria-hidden="true"
