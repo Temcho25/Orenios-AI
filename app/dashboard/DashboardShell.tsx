@@ -1335,7 +1335,7 @@ function TasksSummaryCard({
     .slice(0, 3);
 
   return (
-    <div className="rounded-3xl border border-card-border bg-card p-6 backdrop-blur-[12px]">
+    <div className="min-w-0 rounded-3xl border border-card-border bg-card p-6 backdrop-blur-[12px]">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-foreground">Tasks</p>
@@ -1370,7 +1370,7 @@ function TasksSummaryCard({
               key={task.id}
               className="flex items-center justify-between gap-3 rounded-2xl border border-card-border bg-muted px-4 py-3"
             >
-              <p className="truncate text-sm font-medium text-foreground">
+              <p className="min-w-0 truncate text-sm font-medium text-foreground">
                 {task.title}
               </p>
 
@@ -1452,7 +1452,7 @@ function GoalsSummaryCard({
   const topGoals = activeGoals.slice(0, 3);
 
   return (
-    <div className="rounded-3xl border border-card-border bg-card p-6 backdrop-blur-[12px]">
+    <div className="min-w-0 rounded-3xl border border-card-border bg-card p-6 backdrop-blur-[12px]">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-foreground">Goals</p>
@@ -1488,7 +1488,7 @@ function GoalsSummaryCard({
               className="rounded-2xl border border-card-border bg-muted px-4 py-3"
             >
               <div className="flex items-center justify-between gap-3">
-                <p className="truncate text-sm font-medium text-foreground">
+                <p className="min-w-0 truncate text-sm font-medium text-foreground">
                   {goal.title}
                 </p>
 

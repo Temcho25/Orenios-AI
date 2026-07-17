@@ -1,5 +1,6 @@
 import { createClient } from "../../../lib/supabase-server";
 
+import { normalizeTitle } from "./task-matcher";
 import { parseSetDailyFocusArguments } from "./focus-parsers";
 
 import type { DailyFocusRecord } from "./types";
@@ -44,9 +45,21 @@ export async function executeFocusAction({
   const focusArguments = parseSetDailyFocusArguments(rawArguments);
 
   // Mirrors the manual Daily Focus form: one row per user per day,
-  // upserted on (user_id, focus_date). The chat path only lets the
-  // model set the objective/description, so an existing progress value
-  // is preserved rather than silently reset to 0.
+  // upserted on (user_id, focus_date). Progress tracks completion of a
+  // specific objective, so it only carries over when the title is
+  // unchanged (the user is just re-stating it or editing the "why it
+  // matters" description) — swapping to a genuinely different
+  // objective starts that objective's progress at 0 rather than
+  // showing stale, no-longer-meaningful progress against a new title.
+  const isSameObjective =
+    existingFocus !== null &&
+    normalizeTitle(existingFocus.title) ===
+      normalizeTitle(focusArguments.title);
+
+  const nextProgress = isSameObjective
+    ? existingFocus!.progress
+    : 0;
+
   const { data: savedFocus, error: saveFocusError } = await supabase
     .from("daily_focus")
     .upsert(
@@ -55,7 +68,7 @@ export async function executeFocusAction({
         focus_date: today,
         title: focusArguments.title,
         description: focusArguments.description,
-        progress: existingFocus?.progress ?? 0,
+        progress: nextProgress,
         updated_at: new Date().toISOString(),
       },
       {

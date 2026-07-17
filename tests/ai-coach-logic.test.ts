@@ -8,7 +8,13 @@ import {
 } from "../app/api/ai-coach/lib/goal-parsers";
 import { normalizeTitle } from "../app/api/ai-coach/lib/task-matcher";
 import { executeTaskAction } from "../app/api/ai-coach/lib/task-actions";
+import { executeEventAction } from "../app/api/ai-coach/lib/event-actions";
+import { executeFocusAction } from "../app/api/ai-coach/lib/focus-actions";
 import { runActionSafely } from "../app/api/ai-coach/lib/safe-execute";
+import type {
+  DailyFocusRecord,
+  EventRecord,
+} from "../app/api/ai-coach/lib/types";
 import {
   getGoalStatusForProgress,
   normalizeGoalState,
@@ -161,5 +167,236 @@ describe("AI Coach action error handling", () => {
 
     expect(result.handled).toBe(true);
     expect(result.reply.length).toBeGreaterThan(0);
+  });
+});
+
+describe("AI Coach event ambiguity handling", () => {
+  // Live testing against the real endpoint repeatedly showed the model
+  // reasoning its way to a clarifying question in plain text before
+  // ever calling delete_event/update_event when three same-titled
+  // events exist — a reasonable UX outcome, but it means the server's
+  // own ambiguous-match branch is rarely exercised by the model's
+  // choices. These tests call executeEventAction directly with the
+  // exact ambiguous shape (three "Team sync" events, no date given) to
+  // prove that branch is correct on its own, independent of whether
+  // the model happens to reach it.
+  const threeSameTitledEvents: EventRecord[] = [
+    {
+      id: "evt-1",
+      title: "Team sync",
+      description: null,
+      event_date: "2026-07-20",
+      start_time: "09:00:00",
+      end_time: null,
+      category: "Work",
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: "evt-2",
+      title: "Team sync",
+      description: null,
+      event_date: "2026-07-22",
+      start_time: "09:00:00",
+      end_time: null,
+      category: "Work",
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: "evt-3",
+      title: "Team sync",
+      description: null,
+      event_date: "2026-07-24",
+      start_time: "09:00:00",
+      end_time: null,
+      category: "Work",
+      created_at: new Date().toISOString(),
+    },
+  ];
+
+  it("asks which event to delete instead of guessing one, when no date narrows it down", async () => {
+    const result = await executeEventAction({
+      functionName: "delete_event",
+      rawArguments: JSON.stringify({
+        title: "Team sync",
+        event_date: null,
+      }),
+      supabase: {} as never,
+      userId: "test-user",
+      events: threeSameTitledEvents,
+    });
+
+    expect(result.handled).toBe(true);
+    expect(result.action).toBe("delete_event");
+    expect(result.reply).toMatch(/2026-07-20/);
+    expect(result.reply).toMatch(/2026-07-22/);
+    expect(result.reply).toMatch(/2026-07-24/);
+    expect(result.reply.toLowerCase()).toMatch(/which one/);
+  });
+
+  it("asks which event to update instead of guessing one, when no date narrows it down", async () => {
+    const result = await executeEventAction({
+      functionName: "update_event",
+      rawArguments: JSON.stringify({
+        title: "Team sync",
+        event_date: null,
+        new_title: null,
+        new_event_date: null,
+        start_time: "17:00",
+        end_time: null,
+        remove_end_time: false,
+        category: null,
+      }),
+      supabase: {} as never,
+      userId: "test-user",
+      events: threeSameTitledEvents,
+    });
+
+    expect(result.handled).toBe(true);
+    expect(result.action).toBe("update_event");
+    expect(result.reply).toMatch(/2026-07-20/);
+    expect(result.reply).toMatch(/2026-07-22/);
+    expect(result.reply).toMatch(/2026-07-24/);
+    expect(result.reply.toLowerCase()).toMatch(/which one/);
+  });
+
+  it("resolves unambiguously once a date narrows the match to exactly one event", async () => {
+    const result = await executeEventAction({
+      functionName: "delete_event",
+      rawArguments: JSON.stringify({
+        title: "Team sync",
+        event_date: "2026-07-22",
+      }),
+      supabase: {
+        from: () => ({
+          delete: () => ({
+            eq: () => ({
+              eq: () => ({
+                select: () => ({
+                  single: async () => ({
+                    data: threeSameTitledEvents[1],
+                    error: null,
+                  }),
+                }),
+              }),
+            }),
+          }),
+        }),
+      } as never,
+      userId: "test-user",
+      events: threeSameTitledEvents,
+    });
+
+    expect(result.handled).toBe(true);
+    expect(result.action).toBe("delete_event");
+    expect(result.reply).toMatch(/2026-07-22/);
+  });
+});
+
+describe("AI Coach daily focus progress handling", () => {
+  function buildFocusSupabaseMock() {
+    let capturedUpsert: Record<string, unknown> | null = null;
+
+    const supabase = {
+      from: () => ({
+        upsert: (payload: Record<string, unknown>) => {
+          capturedUpsert = payload;
+
+          return {
+            select: () => ({
+              single: async () => ({
+                data: {
+                  id: "focus-1",
+                  title: payload.title,
+                  description: payload.description,
+                  progress: payload.progress,
+                  focus_date: payload.focus_date,
+                },
+                error: null,
+              }),
+            }),
+          };
+        },
+      }),
+    };
+
+    return {
+      supabase: supabase as never,
+      getCapturedUpsert: () => capturedUpsert,
+    };
+  }
+
+  it("resets progress to 0 when the objective actually changes", async () => {
+    const { supabase, getCapturedUpsert } = buildFocusSupabaseMock();
+
+    const existingFocus: DailyFocusRecord = {
+      id: "focus-1",
+      title: "fixing the payment bug",
+      description: null,
+      progress: 45,
+      focus_date: "2026-07-17",
+    };
+
+    const result = await executeFocusAction({
+      functionName: "set_daily_focus",
+      rawArguments: JSON.stringify({
+        title: "answering support emails",
+        description: null,
+      }),
+      supabase,
+      userId: "test-user",
+      today: "2026-07-17",
+      existingFocus,
+    });
+
+    expect(result.handled).toBe(true);
+    expect(result.reply).toMatch(/updated/);
+    expect(getCapturedUpsert()?.progress).toBe(0);
+  });
+
+  it("preserves progress when the objective is only re-stated", async () => {
+    const { supabase, getCapturedUpsert } = buildFocusSupabaseMock();
+
+    const existingFocus: DailyFocusRecord = {
+      id: "focus-1",
+      title: "fixing the payment bug",
+      description: null,
+      progress: 45,
+      focus_date: "2026-07-17",
+    };
+
+    const result = await executeFocusAction({
+      functionName: "set_daily_focus",
+      rawArguments: JSON.stringify({
+        title: "Fixing the payment bug",
+        description: "top priority",
+      }),
+      supabase,
+      userId: "test-user",
+      today: "2026-07-17",
+      existingFocus,
+    });
+
+    expect(result.handled).toBe(true);
+    expect(getCapturedUpsert()?.progress).toBe(45);
+  });
+
+  it("starts a brand-new focus at 0 progress", async () => {
+    const { supabase, getCapturedUpsert } = buildFocusSupabaseMock();
+
+    const result = await executeFocusAction({
+      functionName: "set_daily_focus",
+      rawArguments: JSON.stringify({
+        title: "finishing the pitch deck",
+        description: null,
+      }),
+      supabase,
+      userId: "test-user",
+      today: "2026-07-17",
+      existingFocus: null,
+    });
+
+    expect(result.handled).toBe(true);
+    expect(result.reply).toMatch(/set/);
+    expect(getCapturedUpsert()?.progress).toBe(0);
   });
 });
