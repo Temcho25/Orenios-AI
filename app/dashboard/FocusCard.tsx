@@ -238,17 +238,17 @@ export default function FocusCard() {
 
   if (loadingFocus) {
     return (
-      <section className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+      <section className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-[12px]">
         <div className="animate-pulse">
-          <div className="h-4 w-28 rounded-full bg-gray-200" />
-          <div className="mt-3 h-3 w-48 rounded-full bg-gray-100" />
+          <div className="h-4 w-28 rounded-full bg-white/[0.08]" />
+          <div className="mt-3 h-3 w-48 rounded-full bg-white/[0.05]" />
 
-          <div className="mt-6 rounded-3xl border border-gray-100 bg-gray-50 p-5">
-            <div className="h-3 w-24 rounded-full bg-gray-200" />
-            <div className="mt-4 h-6 w-4/5 rounded-full bg-gray-200" />
-            <div className="mt-3 h-4 w-full rounded-full bg-gray-100" />
-            <div className="mt-2 h-4 w-3/4 rounded-full bg-gray-100" />
-            <div className="mt-6 h-2 w-full rounded-full bg-gray-200" />
+          <div className="mt-6 rounded-3xl border border-white/[0.06] bg-white/[0.03] p-5">
+            <div className="h-3 w-24 rounded-full bg-white/[0.08]" />
+            <div className="mt-4 h-6 w-4/5 rounded-full bg-white/[0.08]" />
+            <div className="mt-3 h-4 w-full rounded-full bg-white/[0.05]" />
+            <div className="mt-2 h-4 w-3/4 rounded-full bg-white/[0.05]" />
+            <div className="mt-6 h-2 w-full rounded-full bg-white/[0.08]" />
           </div>
         </div>
       </section>
@@ -256,14 +256,14 @@ export default function FocusCard() {
   }
 
   return (
-    <section className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+    <section className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-[12px]">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-gray-950">
+          <p className="text-sm font-semibold text-white">
             Today&apos;s Focus
           </p>
 
-          <p className="mt-1 text-xs text-gray-400">
+          <p className="mt-1 text-xs text-white/40">
             Your highest-impact priority for today
           </p>
         </div>
@@ -272,7 +272,7 @@ export default function FocusCard() {
           <button
             type="button"
             onClick={() => setEditing(true)}
-            className="flex min-h-[44px] items-center rounded-full bg-violet-50 px-4 text-xs font-semibold text-violet-600 transition hover:bg-violet-100"
+            className="flex min-h-[44px] items-center rounded-full bg-accent-violet/15 px-4 text-xs font-semibold text-accent-violet transition hover:bg-accent-violet/25"
           >
             Edit
           </button>
@@ -291,12 +291,12 @@ export default function FocusCard() {
               ease: [0.22, 1, 0.36, 1],
             }}
             onSubmit={handleSave}
-            className="mt-6 rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 to-cyan-50 p-5"
+            className="mt-6 rounded-3xl border border-accent-violet/15 bg-accent-violet/[0.04] p-5"
           >
             <div>
               <label
                 htmlFor="focus-title"
-                className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-500"
+                className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-300"
               >
                 Main objective
               </label>
@@ -309,14 +309,14 @@ export default function FocusCard() {
                 placeholder="What matters most today?"
                 maxLength={140}
                 disabled={saving || deleting}
-                className="mt-3 h-12 w-full rounded-2xl border border-white/80 bg-white/90 px-4 text-sm font-medium text-gray-950 outline-none transition placeholder:text-gray-400 focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-3 h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm font-medium text-white outline-none transition placeholder:text-white/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
               />
             </div>
 
             <div className="mt-4">
               <label
                 htmlFor="focus-description"
-                className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-500"
+                className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-300"
               >
                 Why it matters
               </label>
@@ -329,10 +329,10 @@ export default function FocusCard() {
                 maxLength={300}
                 rows={4}
                 disabled={saving || deleting}
-                className="mt-3 w-full resize-none rounded-2xl border border-white/80 bg-white/90 px-4 py-3 text-sm leading-6 text-gray-950 outline-none transition placeholder:text-gray-400 focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-3 w-full resize-none rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm leading-6 text-white outline-none transition placeholder:text-white/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
               />
 
-              <p className="mt-2 text-right text-xs text-gray-400">
+              <p className="mt-2 text-right text-xs text-white/30">
                 {description.length}/300
               </p>
             </div>
@@ -341,12 +341,12 @@ export default function FocusCard() {
               <div className="flex items-center justify-between gap-4">
                 <label
                   htmlFor="focus-progress"
-                  className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-500"
+                  className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-300"
                 >
                   Progress
                 </label>
 
-                <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-gray-600 shadow-sm">
+                <span className="rounded-full bg-white/[0.08] px-3 py-1 text-xs font-semibold text-white/70">
                   {progress}%
                 </span>
               </div>
@@ -362,10 +362,10 @@ export default function FocusCard() {
                   setProgress(Number(event.target.value))
                 }
                 disabled={saving || deleting}
-                className="mt-4 w-full cursor-pointer accent-violet-600 disabled:cursor-not-allowed"
+                className="mt-4 w-full cursor-pointer accent-accent-mint disabled:cursor-not-allowed"
               />
 
-              <div className="mt-2 flex justify-between text-[10px] font-medium uppercase tracking-[0.12em] text-gray-400">
+              <div className="mt-2 flex justify-between text-[10px] font-medium uppercase tracking-[0.12em] text-white/30">
                 <span>Not started</span>
                 <span>Complete</span>
               </div>
@@ -376,7 +376,7 @@ export default function FocusCard() {
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
                 role="alert"
-                className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-5 text-red-700"
+                className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm leading-5 text-red-300"
               >
                 {errorMessage}
               </motion.div>
@@ -388,7 +388,7 @@ export default function FocusCard() {
                 whileTap={saving ? undefined : { scale: 0.985 }}
                 type="submit"
                 disabled={saving || deleting || !title.trim()}
-                className="flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-2xl bg-gray-950 px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(15,23,42,0.16)] transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:flex-1"
+                className="cta-gradient flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(124,111,240,0.3)] transition disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:flex-1"
               >
                 {saving ? (
                   <>
@@ -408,7 +408,7 @@ export default function FocusCard() {
                   type="button"
                   onClick={cancelEditing}
                   disabled={saving || deleting}
-                  className="flex h-12 w-full shrink-0 items-center justify-center rounded-2xl border border-gray-200 bg-white px-5 text-sm font-semibold text-gray-600 transition hover:border-gray-300 hover:text-gray-950 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                  className="flex h-12 w-full shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] px-5 text-sm font-semibold text-white/60 transition hover:border-white/15 hover:text-white disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                 >
                   Cancel
                 </button>
@@ -425,48 +425,48 @@ export default function FocusCard() {
               duration: 0.25,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="mt-6 rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 to-cyan-50 p-5"
+            className="mt-6 rounded-3xl border border-accent-violet/15 bg-accent-violet/[0.04] p-5"
           >
             <div className="flex items-center justify-between gap-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-500">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-300">
                 Main objective
               </p>
 
-              <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-gray-600 shadow-sm">
+              <span className="rounded-full bg-white/[0.08] px-3 py-1 text-xs font-semibold text-white/70">
                 {focus.progress}%
               </span>
             </div>
 
-            <h3 className="mt-3 text-xl font-semibold tracking-[-0.025em] text-gray-950">
+            <h3 className="mt-3 text-xl font-semibold tracking-[-0.025em] text-white">
               {focus.title}
             </h3>
 
             {focus.description && (
-              <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-gray-500">
+              <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-white/50">
                 {focus.description}
               </p>
             )}
 
             <div className="mt-5 flex items-center gap-3">
-              <div className="h-2 flex-1 overflow-hidden rounded-full bg-white">
+              <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${focus.progress}%` }}
                   transition={{
-                    duration: 0.6,
-                    ease: [0.22, 1, 0.36, 1],
+                    duration: 0.5,
+                    ease: "easeOut",
                   }}
-                  className="h-full rounded-full bg-gradient-to-r from-violet-500 to-cyan-400"
+                  className="h-full rounded-full bg-accent-mint"
                 />
               </div>
 
-              <span className="text-xs font-semibold text-gray-500">
+              <span className="text-xs font-semibold text-white/50">
                 {focus.progress}%
               </span>
             </div>
 
-            <div className="mt-5 flex items-center justify-between border-t border-violet-100 pt-4">
-              <p className="text-xs text-gray-400">
+            <div className="mt-5 flex items-center justify-between border-t border-white/[0.06] pt-4">
+              <p className="text-xs text-white/40">
                 Saved securely to your account
               </p>
 
@@ -474,7 +474,7 @@ export default function FocusCard() {
                 type="button"
                 onClick={handleDelete}
                 disabled={deleting}
-                className="flex min-h-[44px] items-center text-xs font-semibold text-gray-400 transition hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex min-h-[44px] items-center text-xs font-semibold text-white/40 transition hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {deleting ? "Removing..." : "Remove"}
               </button>
@@ -488,7 +488,7 @@ export default function FocusCard() {
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
           role="status"
-          className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-5 text-emerald-700"
+          className="mt-4 rounded-2xl border border-accent-mint/20 bg-accent-mint/10 px-4 py-3 text-sm leading-5 text-accent-mint"
         >
           {successMessage}
         </motion.div>
@@ -499,7 +499,7 @@ export default function FocusCard() {
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
           role="alert"
-          className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-5 text-red-700"
+          className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm leading-5 text-red-300"
         >
           {errorMessage}
         </motion.div>

@@ -113,15 +113,15 @@ function formatTime(time: string | null) {
 function getCategoryClasses(category: EventCategory) {
   switch (category) {
     case "Work":
-      return "bg-blue-50 text-blue-700 border-blue-100";
+      return "bg-blue-500/10 text-blue-300 border-blue-500/20";
     case "Health":
-      return "bg-emerald-50 text-emerald-700 border-emerald-100";
+      return "bg-emerald-500/10 text-emerald-300 border-emerald-500/20";
     case "Fitness":
-      return "bg-orange-50 text-orange-700 border-orange-100";
+      return "bg-orange-500/10 text-orange-300 border-orange-500/20";
     case "Other":
-      return "bg-gray-100 text-gray-600 border-gray-200";
+      return "bg-white/[0.08] text-white/50 border-white/10";
     default:
-      return "bg-violet-50 text-violet-700 border-violet-100";
+      return "bg-accent-violet/10 text-accent-violet border-accent-violet/20";
   }
 }
 
@@ -134,7 +134,7 @@ function getCategoryDot(category: EventCategory) {
     case "Fitness":
       return "bg-orange-500";
     case "Other":
-      return "bg-gray-400";
+      return "bg-gray-300";
     default:
       return "bg-violet-500";
   }
@@ -510,15 +510,15 @@ export default function CalendarCard() {
   }
 
   return (
-    <section className="overflow-hidden rounded-3xl border border-gray-200/80 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.07)]">
-      <div className="border-b border-gray-100 px-5 py-5 sm:px-6">
+    <section className="overflow-hidden rounded-3xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-[12px]">
+      <div className="border-b border-white/[0.06] px-5 py-5 sm:px-6">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-semibold text-gray-950">
+            <p className="text-sm font-semibold text-white">
               Calendar
             </p>
 
-            <p className="mt-1 text-xs text-gray-400">
+            <p className="mt-1 text-xs text-white/40">
               Organize your time and see what&apos;s coming next
             </p>
           </div>
@@ -527,7 +527,7 @@ export default function CalendarCard() {
             <button
               type="button"
               onClick={goToToday}
-              className="flex h-11 items-center rounded-xl border border-gray-200 bg-white px-4 text-xs font-semibold text-gray-600 transition hover:border-gray-300 hover:text-gray-950"
+              className="flex h-11 items-center rounded-xl border border-white/10 bg-white/[0.05] px-4 text-xs font-semibold text-white/60 transition hover:border-white/15 hover:text-white"
             >
               Today
             </button>
@@ -536,7 +536,7 @@ export default function CalendarCard() {
               type="button"
               onClick={goToPreviousMonth}
               aria-label="Previous month"
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition hover:border-gray-300 hover:text-gray-950"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-white/50 transition hover:border-white/15 hover:text-white"
             >
               <svg
                 width="18"
@@ -559,7 +559,7 @@ export default function CalendarCard() {
               type="button"
               onClick={goToNextMonth}
               aria-label="Next month"
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition hover:border-gray-300 hover:text-gray-950"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-white/50 transition hover:border-white/15 hover:text-white"
             >
               <svg
                 width="18"
@@ -585,14 +585,14 @@ export default function CalendarCard() {
             key={monthTitle}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-2xl font-semibold tracking-[-0.04em] text-gray-950 sm:text-3xl"
+            className="text-2xl font-semibold tracking-[-0.04em] text-white sm:text-3xl"
           >
             {monthTitle}
           </motion.h2>
 
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-white/40">
             Selected:{" "}
-            <span className="font-semibold text-gray-700">
+            <span className="font-semibold text-white/70">
               {selectedDateTitle}
             </span>
           </p>
@@ -600,7 +600,7 @@ export default function CalendarCard() {
       </div>
 
       {errorMessage && (
-        <div className="border-b border-red-100 bg-red-50 px-5 py-3 text-sm text-red-700 sm:px-6">
+        <div className="border-b border-red-500/20 bg-red-500/10 px-5 py-3 text-sm text-red-300 sm:px-6">
           {errorMessage}
         </div>
       )}
@@ -610,11 +610,11 @@ export default function CalendarCard() {
           width instead of forcing horizontal scroll on a 720px-wide desktop
           grid. Tablet/desktop (sm+) keeps the original rich cell with
           event text previews, unchanged. */}
-      <div className="grid grid-cols-7 border-b border-gray-100 bg-gray-50/70">
+      <div className="grid grid-cols-7 border-b border-white/[0.06] bg-white/[0.02]">
         {weekDays.map((day) => (
           <div
             key={day}
-            className="px-1 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-gray-400 sm:px-3 sm:py-3 sm:text-[11px] sm:tracking-[0.14em]"
+            className="px-1 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-white/30 sm:px-3 sm:py-3 sm:text-[11px] sm:tracking-[0.14em]"
           >
             <span className="sm:hidden">{day.slice(0, 1)}</span>
             <span className="hidden sm:inline">{day}</span>
@@ -650,14 +650,14 @@ export default function CalendarCard() {
               key={dateKey}
               type="button"
               onClick={() => selectDate(date)}
-              className={`group relative min-h-[64px] border-b border-r border-gray-100 p-1.5 text-left transition hover:bg-violet-50/40 active:bg-violet-50/60 sm:min-h-[128px] sm:p-3 ${
-                selected ? "bg-violet-50/70" : "bg-white"
+              className={`group relative min-h-[64px] border-b border-r border-white/[0.06] p-1.5 text-left transition hover:bg-accent-violet/10 active:bg-accent-violet/15 sm:min-h-[128px] sm:p-3 ${
+                selected ? "bg-accent-violet/10" : ""
               }`}
             >
               {selected && (
                 <motion.div
                   layoutId="selected-calendar-day"
-                  className="absolute inset-1 rounded-2xl border border-violet-200 bg-violet-50/70"
+                  className="absolute inset-1 rounded-2xl border border-accent-violet/25 bg-accent-violet/10"
                   transition={{
                     duration: 0.22,
                     ease: [0.22, 1, 0.36, 1],
@@ -670,19 +670,19 @@ export default function CalendarCard() {
                   <span
                     className={`flex h-7 w-7 items-center justify-center rounded-lg text-xs font-semibold transition sm:h-8 sm:w-8 sm:rounded-xl sm:text-sm ${
                       isToday
-                        ? "bg-gray-950 text-white shadow-sm"
+                        ? "bg-accent-violet text-white"
                         : selected
-                          ? "bg-violet-600 text-white"
+                          ? "bg-accent-violet/70 text-white"
                           : isCurrentMonth
-                            ? "text-gray-800 group-hover:bg-white"
-                            : "text-gray-300"
+                            ? "text-white/70 group-hover:bg-white/[0.08]"
+                            : "text-white/20"
                     }`}
                   >
                     {date.getDate()}
                   </span>
 
                   {isToday && (
-                    <span className="hidden text-[10px] font-semibold uppercase tracking-[0.12em] text-violet-500 sm:inline">
+                    <span className="hidden text-[10px] font-semibold uppercase tracking-[0.12em] text-violet-300 sm:inline">
                       Today
                     </span>
                   )}
@@ -705,7 +705,7 @@ export default function CalendarCard() {
                   {dayEvents.map((calendarEvent) => (
                     <div
                       key={calendarEvent.id}
-                      className="flex min-w-0 items-center gap-2 rounded-lg bg-white/85 px-2 py-1.5 text-[10px] font-medium text-gray-600 shadow-sm"
+                      className="flex min-w-0 items-center gap-2 rounded-lg bg-white/[0.06] px-2 py-1.5 text-[10px] font-medium text-white/60"
                     >
                       <span
                         className={`h-2 w-2 shrink-0 rounded-full ${getCategoryDot(
@@ -725,14 +725,14 @@ export default function CalendarCard() {
                   ))}
 
                   {hiddenEventsCount > 0 && (
-                    <p className="px-2 text-[10px] font-semibold text-violet-600">
+                    <p className="px-2 text-[10px] font-semibold text-accent-violet">
                       +{hiddenEventsCount} more
                     </p>
                   )}
                 </div>
 
                 {loadingEvents && (
-                  <div className="mt-2 hidden h-2 w-12 animate-pulse rounded-full bg-gray-200 sm:block" />
+                  <div className="mt-2 hidden h-2 w-12 animate-pulse rounded-full bg-white/[0.08] sm:block" />
                 )}
               </div>
             </button>
@@ -740,14 +740,14 @@ export default function CalendarCard() {
         })}
       </motion.div>
 
-      <div className="border-t border-gray-100 bg-gray-50/60 px-5 py-5 sm:px-6">
+      <div className="border-t border-white/[0.06] bg-white/[0.02] px-5 py-5 sm:px-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-semibold text-gray-800">
+            <p className="text-sm font-semibold text-white/80">
               {selectedDateTitle}
             </p>
 
-            <p className="mt-1 text-xs text-gray-400">
+            <p className="mt-1 text-xs text-white/40">
               {selectedDateEvents.length === 0
                 ? "No events scheduled for this day"
                 : `${selectedDateEvents.length} ${
@@ -761,7 +761,7 @@ export default function CalendarCard() {
           <button
             type="button"
             onClick={openEventForm}
-            className="flex h-11 items-center justify-center gap-2 rounded-2xl bg-gray-950 px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(15,23,42,0.16)] transition hover:bg-black"
+            className="cta-gradient flex h-11 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(124,111,240,0.3)] transition"
           >
             Add event
             <span aria-hidden="true">+</span>
@@ -775,15 +775,15 @@ export default function CalendarCard() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               onSubmit={handleCreateEvent}
-              className="mt-5 rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 to-cyan-50 p-5"
+              className="mt-5 rounded-3xl border border-accent-violet/15 bg-accent-violet/[0.04] p-5"
             >
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-sm font-semibold text-gray-950">
+                  <p className="text-sm font-semibold text-white">
                     New event
                   </p>
 
-                  <p className="mt-1 text-xs text-gray-400">
+                  <p className="mt-1 text-xs text-white/40">
                     Add something important to your schedule
                   </p>
                 </div>
@@ -792,7 +792,7 @@ export default function CalendarCard() {
                   type="button"
                   onClick={closeEventForm}
                   disabled={savingEvent}
-                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-gray-400 transition hover:text-gray-950"
+                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.06] text-white/40 transition hover:text-white"
                   aria-label="Close event form"
                 >
                   ×
@@ -803,7 +803,7 @@ export default function CalendarCard() {
                 <div>
                   <label
                     htmlFor="event-title"
-                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-500"
+                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
                   >
                     Event title
                   </label>
@@ -818,14 +818,14 @@ export default function CalendarCard() {
                     placeholder="Boxing training"
                     maxLength={140}
                     disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-white/80 bg-white px-4 text-sm text-gray-950 outline-none transition placeholder:text-gray-400 focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+                    className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="event-date"
-                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-500"
+                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
                   >
                     Date
                   </label>
@@ -838,7 +838,7 @@ export default function CalendarCard() {
                       setEventDate(event.target.value)
                     }
                     disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-white/80 bg-white px-4 text-sm text-gray-950 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+                    className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
                   />
                 </div>
               </div>
@@ -846,7 +846,7 @@ export default function CalendarCard() {
               <div className="mt-4">
                 <label
                   htmlFor="event-description"
-                  className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-500"
+                  className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
                 >
                   Description
                 </label>
@@ -861,7 +861,7 @@ export default function CalendarCard() {
                   maxLength={500}
                   rows={3}
                   disabled={savingEvent}
-                  className="w-full resize-none rounded-2xl border border-white/80 bg-white px-4 py-3 text-sm leading-6 text-gray-950 outline-none transition placeholder:text-gray-400 focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+                  className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm leading-6 text-white outline-none transition placeholder:text-white/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
                 />
               </div>
 
@@ -869,7 +869,7 @@ export default function CalendarCard() {
                 <div>
                   <label
                     htmlFor="event-start-time"
-                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-500"
+                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
                   >
                     Start time
                   </label>
@@ -882,14 +882,14 @@ export default function CalendarCard() {
                       setStartTime(event.target.value)
                     }
                     disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-white/80 bg-white px-4 text-sm text-gray-950 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+                    className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="event-end-time"
-                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-500"
+                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
                   >
                     End time
                   </label>
@@ -902,14 +902,14 @@ export default function CalendarCard() {
                       setEndTime(event.target.value)
                     }
                     disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-white/80 bg-white px-4 text-sm text-gray-950 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+                    className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="event-category"
-                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-500"
+                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
                   >
                     Category
                   </label>
@@ -923,12 +923,13 @@ export default function CalendarCard() {
                       )
                     }
                     disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-white/80 bg-white px-4 text-sm text-gray-950 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+                    className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
                   >
                     {categories.map((categoryOption) => (
                       <option
                         key={categoryOption}
                         value={categoryOption}
+                        className="bg-surface-workspace text-white"
                       >
                         {categoryOption}
                       </option>
@@ -947,7 +948,7 @@ export default function CalendarCard() {
                   }
                   type="submit"
                   disabled={savingEvent || !title.trim()}
-                  className="flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-gray-950 px-5 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] px-5 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {savingEvent ? (
                     <>
@@ -966,7 +967,7 @@ export default function CalendarCard() {
                   type="button"
                   onClick={closeEventForm}
                   disabled={savingEvent}
-                  className="h-12 rounded-2xl border border-gray-200 bg-white px-5 text-sm font-semibold text-gray-600 transition hover:text-gray-950"
+                  className="h-12 rounded-2xl border border-white/10 bg-white/[0.05] px-5 text-sm font-semibold text-white/60 transition hover:text-white"
                 >
                   Cancel
                 </button>
@@ -980,12 +981,12 @@ export default function CalendarCard() {
             [1, 2].map((item) => (
               <div
                 key={item}
-                className="flex animate-pulse items-center gap-4 rounded-2xl border border-gray-100 bg-white px-4 py-4"
+                className="flex animate-pulse items-center gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] px-4 py-4"
               >
-                <div className="h-10 w-10 rounded-xl bg-gray-200" />
+                <div className="h-10 w-10 rounded-xl bg-white/[0.08]" />
                 <div className="flex-1">
-                  <div className="h-4 w-40 rounded-full bg-gray-200" />
-                  <div className="mt-2 h-3 w-24 rounded-full bg-gray-100" />
+                  <div className="h-4 w-40 rounded-full bg-white/[0.08]" />
+                  <div className="mt-2 h-3 w-24 rounded-full bg-white/[0.05]" />
                 </div>
               </div>
             ))
@@ -1006,7 +1007,7 @@ export default function CalendarCard() {
                       y: 0,
                     }}
                     exit={{ opacity: 0, y: -8 }}
-                    className="flex items-start gap-4 rounded-2xl border border-gray-200 bg-white px-4 py-4"
+                    className="flex items-start gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] px-4 py-4 backdrop-blur-[12px] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-violet/25 hover:bg-white/[0.05] hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]"
                   >
                     <div
                       className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-xs font-bold ${getCategoryClasses(
@@ -1020,7 +1021,7 @@ export default function CalendarCard() {
 
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="text-sm font-semibold text-gray-950">
+                        <h3 className="text-sm font-semibold text-white">
                           {calendarEvent.title}
                         </h3>
 
@@ -1033,7 +1034,7 @@ export default function CalendarCard() {
                         </span>
                       </div>
 
-                      <p className="mt-1 text-xs text-gray-400">
+                      <p className="mt-1 text-xs text-white/40">
                         {calendarEvent.start_time
                           ? `${formatTime(
                               calendarEvent.start_time
@@ -1048,7 +1049,7 @@ export default function CalendarCard() {
                       </p>
 
                       {calendarEvent.description && (
-                        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-500">
+                        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-white/50">
                           {calendarEvent.description}
                         </p>
                       )}
@@ -1061,10 +1062,10 @@ export default function CalendarCard() {
                       }
                       disabled={eventPending}
                       aria-label={`Delete "${calendarEvent.title}"`}
-                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-gray-300 transition hover:bg-red-50 hover:text-red-500 disabled:cursor-wait"
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white/25 transition hover:bg-red-500/10 hover:text-red-400 disabled:cursor-wait"
                     >
                       {eventPending ? (
-                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white/60" />
                       ) : (
                         <svg
                           width="17"
@@ -1088,16 +1089,16 @@ export default function CalendarCard() {
               })}
             </AnimatePresence>
           ) : (
-            <div className="rounded-3xl border border-dashed border-gray-200 bg-white px-6 py-9 text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
+            <div className="rounded-3xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-9 text-center">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-violet/15 text-accent-violet">
                 <span className="text-xl">+</span>
               </div>
 
-              <p className="mt-4 text-sm font-semibold text-gray-800">
+              <p className="mt-4 text-sm font-semibold text-white/80">
                 Your schedule is clear.
               </p>
 
-              <p className="mt-2 text-sm text-gray-400">
+              <p className="mt-2 text-sm text-white/40">
                 Add an event when something important comes up.
               </p>
             </div>

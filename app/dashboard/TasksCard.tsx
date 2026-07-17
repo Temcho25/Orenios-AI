@@ -63,11 +63,11 @@ function formatDueDate(date: string | null) {
 function getPriorityClasses(priority: TaskPriority) {
   switch (priority) {
     case "high":
-      return "border-red-100 bg-red-50 text-red-600";
+      return "border-red-500/20 bg-red-500/10 text-red-300";
     case "low":
-      return "border-blue-100 bg-blue-50 text-blue-600";
+      return "border-blue-500/20 bg-blue-500/10 text-blue-300";
     default:
-      return "border-amber-100 bg-amber-50 text-amber-600";
+      return "border-amber-500/20 bg-amber-500/10 text-amber-300";
   }
 }
 
@@ -358,51 +358,51 @@ export default function TasksCard() {
   }
 
   return (
-    <section className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+    <section className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-[12px]">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-gray-950">
+          <p className="text-sm font-semibold text-white">
             Today&apos;s Tasks
           </p>
 
-          <p className="mt-1 text-xs text-gray-400">
+          <p className="mt-1 text-xs text-white/40">
             Prioritize your work and keep deadlines visible
           </p>
         </div>
 
-        <div className="rounded-full bg-violet-50 px-3 py-1.5 text-xs font-semibold text-violet-600">
+        <div className="rounded-full bg-accent-violet/15 px-3 py-1.5 text-xs font-semibold text-accent-violet">
           {completedCount} of {tasks.length} completed
         </div>
       </div>
 
       <div className="mt-6">
         <div className="flex items-center justify-between gap-4">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-gray-400">
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-white/40">
             Daily progress
           </p>
 
-          <span className="text-xs font-semibold text-gray-500">
+          <span className="text-xs font-semibold text-white/50">
             {progress}%
           </span>
         </div>
 
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-100">
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/[0.08]">
           <motion.div
             animate={{
               width: `${progress}%`,
             }}
             transition={{
-              duration: 0.45,
-              ease: [0.22, 1, 0.36, 1],
+              duration: 0.5,
+              ease: "easeOut",
             }}
-            className="h-full rounded-full bg-gradient-to-r from-violet-500 to-cyan-400"
+            className="h-full rounded-full bg-accent-mint"
           />
         </div>
       </div>
 
       <form
         onSubmit={handleAddTask}
-        className="mt-6 rounded-3xl border border-gray-200 bg-gray-50 p-4"
+        className="mt-6 rounded-3xl border border-white/[0.06] bg-white/[0.03] p-4"
       >
         <input
           ref={newTaskInputRef}
@@ -414,7 +414,7 @@ export default function TasksCard() {
           placeholder="Add a task..."
           maxLength={120}
           disabled={addingTask}
-          className="h-12 w-full rounded-2xl border border-gray-200 bg-white px-4 text-sm text-gray-950 outline-none transition placeholder:text-gray-400 focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:cursor-not-allowed disabled:opacity-60"
+          className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
         />
 
         <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
@@ -426,12 +426,13 @@ export default function TasksCard() {
               )
             }
             disabled={addingTask}
-            className="h-12 rounded-2xl border border-gray-200 bg-white px-4 text-sm text-gray-950 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:opacity-60"
+            className="h-12 rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:opacity-60"
           >
             {priorityOptions.map((option) => (
               <option
                 key={option.value}
                 value={option.value}
+                className="bg-surface-workspace text-white"
               >
                 {option.label} priority
               </option>
@@ -445,7 +446,7 @@ export default function TasksCard() {
               setDueDate(event.target.value)
             }
             disabled={addingTask}
-            className="h-12 rounded-2xl border border-gray-200 bg-white px-4 text-sm text-gray-950 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:opacity-60"
+            className="h-12 rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:opacity-60"
           />
 
           <motion.button
@@ -457,7 +458,7 @@ export default function TasksCard() {
             }
             type="submit"
             disabled={addingTask || !newTask.trim()}
-            className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-gray-950 px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(15,23,42,0.16)] transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
+            className="cta-gradient flex h-12 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(124,111,240,0.3)] transition disabled:cursor-not-allowed disabled:opacity-60"
           >
             {addingTask ? (
               <>
@@ -485,7 +486,7 @@ export default function TasksCard() {
             y: 0,
           }}
           role="alert"
-          className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-5 text-red-700"
+          className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm leading-5 text-red-300"
         >
           {errorMessage}
         </motion.div>
@@ -497,10 +498,10 @@ export default function TasksCard() {
             {[1, 2, 3].map((item) => (
               <div
                 key={item}
-                className="flex animate-pulse items-center gap-3 rounded-2xl border border-gray-100 bg-gray-50 px-4 py-4"
+                className="flex animate-pulse items-center gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.03] px-4 py-4"
               >
-                <div className="h-6 w-6 rounded-lg bg-gray-200" />
-                <div className="h-4 flex-1 rounded-full bg-gray-200" />
+                <div className="h-6 w-6 rounded-lg bg-white/[0.08]" />
+                <div className="h-4 flex-1 rounded-full bg-white/[0.08]" />
               </div>
             ))}
           </div>
@@ -538,12 +539,12 @@ export default function TasksCard() {
                     duration: 0.25,
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  className={`group rounded-2xl border px-4 py-4 transition ${
+                  className={`group rounded-2xl border px-4 py-4 backdrop-blur-[12px] transition-all duration-300 ${
                     task.completed
-                      ? "border-emerald-100 bg-emerald-50/60"
+                      ? "border-accent-mint/20 bg-accent-mint/[0.06]"
                       : isOverdue
-                        ? "border-red-200 bg-red-50/60"
-                        : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
+                        ? "border-red-500/20 bg-red-500/[0.06]"
+                        : "border-white/[0.06] bg-white/[0.03] hover:-translate-y-0.5 hover:border-accent-violet/25 hover:bg-white/[0.05] hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]"
                   }`}
                 >
                   <div className="flex items-start gap-3">
@@ -561,8 +562,8 @@ export default function TasksCard() {
                       <span
                         className={`flex h-6 w-6 items-center justify-center rounded-lg border transition ${
                           task.completed
-                            ? "border-emerald-500 bg-emerald-500 text-white"
-                            : "border-gray-300 bg-white text-transparent group-hover/check:border-violet-400"
+                            ? "border-accent-mint bg-accent-mint text-white"
+                            : "border-white/15 bg-white/[0.05] text-transparent group-hover/check:border-accent-violet"
                         }`}
                       >
                         <svg
@@ -587,8 +588,8 @@ export default function TasksCard() {
                       <p
                         className={`text-sm leading-6 transition ${
                           task.completed
-                            ? "text-gray-400 line-through"
-                            : "text-gray-700"
+                            ? "text-white/30 line-through"
+                            : "text-white/80"
                         }`}
                       >
                         {task.title}
@@ -606,8 +607,8 @@ export default function TasksCard() {
                         <span
                           className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${
                             isOverdue
-                              ? "bg-red-100 text-red-600"
-                              : "bg-gray-100 text-gray-500"
+                              ? "bg-red-500/15 text-red-300"
+                              : "bg-white/[0.06] text-white/50"
                           }`}
                         >
                           {isOverdue
@@ -624,10 +625,10 @@ export default function TasksCard() {
                       onClick={() => deleteTask(task)}
                       disabled={taskPending}
                       aria-label={`Delete "${task.title}"`}
-                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-gray-300 opacity-100 transition hover:bg-red-50 hover:text-red-500 disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white/25 opacity-100 transition hover:bg-red-500/10 hover:text-red-400 disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
                     >
                       {taskPending ? (
-                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white/60" />
                       ) : (
                         <svg
                           width="17"
@@ -663,17 +664,17 @@ export default function TasksCard() {
               opacity: 1,
               y: 0,
             }}
-            className="rounded-3xl border border-dashed border-gray-200 bg-gray-50 px-6 py-10 text-center"
+            className="rounded-3xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-10 text-center"
           >
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-violet-500 shadow-sm">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-violet/15 text-accent-violet">
               <span className="text-xl">✓</span>
             </div>
 
-            <p className="mt-4 text-sm font-semibold text-gray-800">
+            <p className="mt-4 text-sm font-semibold text-white/80">
               You don&apos;t have any tasks yet.
             </p>
 
-            <p className="mt-2 text-sm leading-6 text-gray-400">
+            <p className="mt-2 text-sm leading-6 text-white/40">
               Add your first task, or ask the AI Coach to turn a goal
               into a plan for you.
             </p>
@@ -681,7 +682,7 @@ export default function TasksCard() {
             <button
               type="button"
               onClick={() => newTaskInputRef.current?.focus()}
-              className="mt-5 rounded-2xl bg-gray-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-black"
+              className="mt-5 rounded-2xl border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-semibold text-white transition hover:border-white/15 hover:bg-white/10"
             >
               Add your first task
             </button>

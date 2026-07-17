@@ -349,14 +349,14 @@ export default function NotesCard() {
   }
 
   return (
-    <section className="rounded-3xl border border-gray-200/80 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.07)] sm:p-6">
+    <section className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-5 backdrop-blur-[12px] sm:p-6">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <p className="text-sm font-semibold text-gray-950">
+          <p className="text-sm font-semibold text-white">
             Notes
           </p>
 
-          <p className="mt-1 text-xs text-gray-400">
+          <p className="mt-1 text-xs text-white/40">
             Capture ideas, thoughts and information you want to
             remember
           </p>
@@ -370,7 +370,7 @@ export default function NotesCard() {
               viewBox="0 0 24 24"
               fill="none"
               aria-hidden="true"
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/30"
             >
               <circle
                 cx="11"
@@ -394,7 +394,7 @@ export default function NotesCard() {
                 setSearchQuery(event.target.value)
               }
               placeholder="Search notes..."
-              className="h-11 w-full rounded-2xl border border-gray-200 bg-gray-50 pl-11 pr-4 text-sm text-gray-950 outline-none transition placeholder:text-gray-400 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-100 sm:w-64"
+              className="h-11 w-full rounded-2xl border border-white/10 bg-white/[0.05] pl-11 pr-4 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 sm:w-64"
             />
           </div>
 
@@ -403,7 +403,7 @@ export default function NotesCard() {
             whileTap={{ scale: 0.985 }}
             type="button"
             onClick={openCreateEditor}
-            className="flex h-11 items-center justify-center gap-2 rounded-2xl bg-gray-950 px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(15,23,42,0.16)] transition hover:bg-black"
+            className="cta-gradient flex h-11 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(124,111,240,0.3)]"
           >
             New note
             <span aria-hidden="true">+</span>
@@ -416,7 +416,7 @@ export default function NotesCard() {
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
           role="alert"
-          className="mt-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-5 text-red-700"
+          className="mt-5 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm leading-5 text-red-300"
         >
           {errorMessage}
         </motion.div>
@@ -427,7 +427,7 @@ export default function NotesCard() {
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
           role="status"
-          className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-5 text-emerald-700"
+          className="mt-5 rounded-2xl border border-accent-mint/20 bg-accent-mint/10 px-4 py-3 text-sm leading-5 text-accent-mint"
         >
           {successMessage}
         </motion.div>
@@ -444,16 +444,16 @@ export default function NotesCard() {
               ease: [0.22, 1, 0.36, 1],
             }}
             onSubmit={handleSaveNote}
-            className="mt-6 overflow-hidden rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 to-cyan-50"
+            className="mt-6 overflow-hidden rounded-3xl border border-accent-violet/15 bg-accent-violet/[0.04]"
           >
             <div className="p-5 sm:p-6">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-500">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-300">
                     {editingNoteId ? "Edit note" : "New note"}
                   </p>
 
-                  <p className="mt-1 text-xs text-gray-400">
+                  <p className="mt-1 text-xs text-white/40">
                     Write freely — everything is saved to your
                     account
                   </p>
@@ -464,7 +464,7 @@ export default function NotesCard() {
                   onClick={resetEditor}
                   disabled={savingNote}
                   aria-label="Close note editor"
-                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-xl text-gray-400 shadow-sm transition hover:text-gray-950 disabled:cursor-not-allowed"
+                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.06] text-xl text-white/40 transition hover:text-white disabled:cursor-not-allowed"
                 >
                   ×
                 </button>
@@ -473,7 +473,7 @@ export default function NotesCard() {
               <div className="mt-5">
                 <label
                   htmlFor="note-title"
-                  className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-500"
+                  className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
                 >
                   Title
                 </label>
@@ -489,7 +489,7 @@ export default function NotesCard() {
                   maxLength={140}
                   disabled={savingNote}
                   autoFocus
-                  className="h-12 w-full rounded-2xl border border-white/80 bg-white px-4 text-sm font-medium text-gray-950 outline-none transition placeholder:text-gray-400 focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm font-medium text-white outline-none transition placeholder:text-white/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
                 />
               </div>
 
@@ -497,12 +497,12 @@ export default function NotesCard() {
                 <div className="mb-2 flex items-center justify-between gap-4">
                   <label
                     htmlFor="note-content"
-                    className="text-xs font-semibold uppercase tracking-[0.14em] text-violet-500"
+                    className="text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
                   >
                     Content
                   </label>
 
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-white/30">
                     {content.length} characters
                   </span>
                 </div>
@@ -516,7 +516,7 @@ export default function NotesCard() {
                   placeholder="Start writing your note..."
                   rows={10}
                   disabled={savingNote}
-                  className="w-full resize-y rounded-2xl border border-white/80 bg-white px-4 py-4 text-sm leading-7 text-gray-950 outline-none transition placeholder:text-gray-400 focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="w-full resize-y rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-4 text-sm leading-7 text-white outline-none transition placeholder:text-white/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
                 />
               </div>
 
@@ -530,7 +530,7 @@ export default function NotesCard() {
                   }
                   type="submit"
                   disabled={savingNote || !title.trim()}
-                  className="flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-gray-950 px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(15,23,42,0.16)] transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] px-5 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {savingNote ? (
                     <>
@@ -551,7 +551,7 @@ export default function NotesCard() {
                   type="button"
                   onClick={resetEditor}
                   disabled={savingNote}
-                  className="h-12 rounded-2xl border border-gray-200 bg-white px-5 text-sm font-semibold text-gray-600 transition hover:border-gray-300 hover:text-gray-950 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="h-12 rounded-2xl border border-white/10 bg-white/[0.05] px-5 text-sm font-semibold text-white/60 transition hover:border-white/15 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   Cancel
                 </button>
@@ -567,13 +567,13 @@ export default function NotesCard() {
             {[1, 2, 3].map((item) => (
               <div
                 key={item}
-                className="animate-pulse rounded-3xl border border-gray-100 bg-gray-50 p-5"
+                className="animate-pulse rounded-3xl border border-white/[0.06] bg-white/[0.03] p-5"
               >
-                <div className="h-4 w-2/3 rounded-full bg-gray-200" />
-                <div className="mt-4 h-3 w-full rounded-full bg-gray-200" />
-                <div className="mt-2 h-3 w-5/6 rounded-full bg-gray-100" />
-                <div className="mt-2 h-3 w-3/4 rounded-full bg-gray-100" />
-                <div className="mt-7 h-3 w-28 rounded-full bg-gray-100" />
+                <div className="h-4 w-2/3 rounded-full bg-white/[0.08]" />
+                <div className="mt-4 h-3 w-full rounded-full bg-white/[0.08]" />
+                <div className="mt-2 h-3 w-5/6 rounded-full bg-white/[0.05]" />
+                <div className="mt-2 h-3 w-3/4 rounded-full bg-white/[0.05]" />
+                <div className="mt-7 h-3 w-28 rounded-full bg-white/[0.05]" />
               </div>
             ))}
           </div>
@@ -608,10 +608,10 @@ export default function NotesCard() {
                       duration: 0.25,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="group flex min-h-[240px] flex-col rounded-3xl border border-gray-200 bg-white p-5 transition hover:border-violet-200 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)]"
+                    className="group flex min-h-[240px] flex-col rounded-3xl border border-white/[0.06] bg-white/[0.03] p-5 backdrop-blur-[12px] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-violet/25 hover:bg-white/[0.05] hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]"
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent-violet/15 text-accent-violet">
                         <svg
                           width="18"
                           height="18"
@@ -640,7 +640,7 @@ export default function NotesCard() {
                           onClick={() => openEditEditor(note)}
                           disabled={notePending}
                           aria-label={`Edit "${note.title}"`}
-                          className="flex h-11 w-11 items-center justify-center rounded-xl text-gray-300 opacity-100 transition hover:bg-violet-50 hover:text-violet-600 disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
+                          className="flex h-11 w-11 items-center justify-center rounded-xl text-white/25 opacity-100 transition hover:bg-accent-violet/15 hover:text-accent-violet disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
                         >
                           <svg
                             width="16"
@@ -664,10 +664,10 @@ export default function NotesCard() {
                           onClick={() => deleteNote(note)}
                           disabled={notePending}
                           aria-label={`Delete "${note.title}"`}
-                          className="flex h-11 w-11 items-center justify-center rounded-xl text-gray-300 opacity-100 transition hover:bg-red-50 hover:text-red-500 disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
+                          className="flex h-11 w-11 items-center justify-center rounded-xl text-white/25 opacity-100 transition hover:bg-red-500/10 hover:text-red-400 disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
                         >
                           {notePending ? (
-                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
+                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white/60" />
                           ) : (
                             <svg
                               width="16"
@@ -689,16 +689,16 @@ export default function NotesCard() {
                       </div>
                     </div>
 
-                    <h3 className="mt-5 text-lg font-semibold tracking-[-0.025em] text-gray-950">
+                    <h3 className="mt-5 text-lg font-semibold tracking-[-0.025em] text-white">
                       {note.title}
                     </h3>
 
-                    <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-gray-500">
+                    <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-white/50">
                       {getPreview(note.content)}
                     </p>
 
-                    <div className="mt-auto border-t border-gray-100 pt-4">
-                      <p className="text-xs text-gray-400">
+                    <div className="mt-auto border-t border-white/[0.06] pt-4">
+                      <p className="text-xs text-white/40">
                         Updated {formatUpdatedDate(note.updated_at)}
                       </p>
                     </div>
@@ -711,9 +711,9 @@ export default function NotesCard() {
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-3xl border border-dashed border-gray-200 bg-gray-50 px-6 py-12 text-center"
+            className="rounded-3xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-12 text-center"
           >
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-violet-600 shadow-sm">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-violet/15 text-accent-violet">
               <svg
                 width="22"
                 height="22"
@@ -736,13 +736,13 @@ export default function NotesCard() {
               </svg>
             </div>
 
-            <p className="mt-5 text-sm font-semibold text-gray-800">
+            <p className="mt-5 text-sm font-semibold text-white/80">
               {searchQuery
                 ? "No notes matched your search."
                 : "You don’t have any notes yet."}
             </p>
 
-            <p className="mt-2 text-sm leading-6 text-gray-400">
+            <p className="mt-2 text-sm leading-6 text-white/40">
               {searchQuery
                 ? "Try searching with a different word."
                 : "Create your first note and keep important thoughts inside Orenios."}
@@ -752,7 +752,7 @@ export default function NotesCard() {
               <button
                 type="button"
                 onClick={openCreateEditor}
-                className="mt-5 rounded-2xl bg-gray-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-black"
+                className="mt-5 rounded-2xl border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-semibold text-white transition hover:border-white/15 hover:bg-white/10"
               >
                 Create first note
               </button>
