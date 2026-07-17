@@ -113,13 +113,13 @@ function formatTime(time: string | null) {
 function getCategoryClasses(category: EventCategory) {
   switch (category) {
     case "Work":
-      return "bg-blue-500/10 text-blue-300 border-blue-500/20";
+      return "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/20";
     case "Health":
-      return "bg-emerald-500/10 text-emerald-300 border-emerald-500/20";
+      return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20";
     case "Fitness":
-      return "bg-orange-500/10 text-orange-300 border-orange-500/20";
+      return "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/10 dark:text-orange-300 dark:border-orange-500/20";
     case "Other":
-      return "bg-white/[0.08] text-white/50 border-white/10";
+      return "bg-surface-strong text-foreground/50 border-muted-border";
     default:
       return "bg-accent-violet/10 text-accent-violet border-accent-violet/20";
   }
@@ -510,15 +510,15 @@ export default function CalendarCard() {
   }
 
   return (
-    <section className="overflow-hidden rounded-3xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-[12px]">
-      <div className="border-b border-white/[0.06] px-5 py-5 sm:px-6">
+    <section className="overflow-hidden rounded-3xl border border-card-border bg-card backdrop-blur-[12px]">
+      <div className="border-b border-card-border px-5 py-5 sm:px-6">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-semibold text-white">
+            <p className="text-sm font-semibold text-foreground">
               Calendar
             </p>
 
-            <p className="mt-1 text-xs text-white/40">
+            <p className="mt-1 text-xs text-foreground/40">
               Organize your time and see what&apos;s coming next
             </p>
           </div>
@@ -527,7 +527,7 @@ export default function CalendarCard() {
             <button
               type="button"
               onClick={goToToday}
-              className="flex h-11 items-center rounded-xl border border-white/10 bg-white/[0.05] px-4 text-xs font-semibold text-white/60 transition hover:border-white/15 hover:text-white"
+              className="flex h-11 items-center rounded-xl border border-muted-border bg-muted px-4 text-xs font-semibold text-foreground/60 transition hover:border-border-strong hover:text-foreground"
             >
               Today
             </button>
@@ -536,7 +536,7 @@ export default function CalendarCard() {
               type="button"
               onClick={goToPreviousMonth}
               aria-label="Previous month"
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-white/50 transition hover:border-white/15 hover:text-white"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-muted-border bg-muted text-foreground/50 transition hover:border-border-strong hover:text-foreground"
             >
               <svg
                 width="18"
@@ -559,7 +559,7 @@ export default function CalendarCard() {
               type="button"
               onClick={goToNextMonth}
               aria-label="Next month"
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-white/50 transition hover:border-white/15 hover:text-white"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-muted-border bg-muted text-foreground/50 transition hover:border-border-strong hover:text-foreground"
             >
               <svg
                 width="18"
@@ -585,14 +585,14 @@ export default function CalendarCard() {
             key={monthTitle}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-2xl font-semibold tracking-[-0.04em] text-white sm:text-3xl"
+            className="text-2xl font-semibold tracking-[-0.04em] text-foreground sm:text-3xl"
           >
             {monthTitle}
           </motion.h2>
 
-          <p className="text-sm text-white/40">
+          <p className="text-sm text-foreground/40">
             Selected:{" "}
-            <span className="font-semibold text-white/70">
+            <span className="font-semibold text-foreground/70">
               {selectedDateTitle}
             </span>
           </p>
@@ -600,7 +600,7 @@ export default function CalendarCard() {
       </div>
 
       {errorMessage && (
-        <div className="border-b border-red-500/20 bg-red-500/10 px-5 py-3 text-sm text-red-300 sm:px-6">
+        <div className="border-b border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300 sm:px-6">
           {errorMessage}
         </div>
       )}
@@ -610,11 +610,11 @@ export default function CalendarCard() {
           width instead of forcing horizontal scroll on a 720px-wide desktop
           grid. Tablet/desktop (sm+) keeps the original rich cell with
           event text previews, unchanged. */}
-      <div className="grid grid-cols-7 border-b border-white/[0.06] bg-white/[0.02]">
+      <div className="grid grid-cols-7 border-b border-card-border bg-card">
         {weekDays.map((day) => (
           <div
             key={day}
-            className="px-1 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-white/30 sm:px-3 sm:py-3 sm:text-[11px] sm:tracking-[0.14em]"
+            className="px-1 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-foreground/30 sm:px-3 sm:py-3 sm:text-[11px] sm:tracking-[0.14em]"
           >
             <span className="sm:hidden">{day.slice(0, 1)}</span>
             <span className="hidden sm:inline">{day}</span>
@@ -650,7 +650,7 @@ export default function CalendarCard() {
               key={dateKey}
               type="button"
               onClick={() => selectDate(date)}
-              className={`group relative min-h-[64px] border-b border-r border-white/[0.06] p-1.5 text-left transition hover:bg-accent-violet/10 active:bg-accent-violet/15 sm:min-h-[128px] sm:p-3 ${
+              className={`group relative min-h-[64px] border-b border-r border-card-border p-1.5 text-left transition hover:bg-accent-violet/10 active:bg-accent-violet/15 sm:min-h-[128px] sm:p-3 ${
                 selected ? "bg-accent-violet/10" : ""
               }`}
             >
@@ -674,8 +674,8 @@ export default function CalendarCard() {
                         : selected
                           ? "bg-accent-violet/70 text-white"
                           : isCurrentMonth
-                            ? "text-white/70 group-hover:bg-white/[0.08]"
-                            : "text-white/20"
+                            ? "text-foreground/70 group-hover:bg-surface-strong"
+                            : "text-foreground/20"
                     }`}
                   >
                     {date.getDate()}
@@ -705,7 +705,7 @@ export default function CalendarCard() {
                   {dayEvents.map((calendarEvent) => (
                     <div
                       key={calendarEvent.id}
-                      className="flex min-w-0 items-center gap-2 rounded-lg bg-white/[0.06] px-2 py-1.5 text-[10px] font-medium text-white/60"
+                      className="flex min-w-0 items-center gap-2 rounded-lg bg-surface-strong px-2 py-1.5 text-[10px] font-medium text-foreground/60"
                     >
                       <span
                         className={`h-2 w-2 shrink-0 rounded-full ${getCategoryDot(
@@ -732,7 +732,7 @@ export default function CalendarCard() {
                 </div>
 
                 {loadingEvents && (
-                  <div className="mt-2 hidden h-2 w-12 animate-pulse rounded-full bg-white/[0.08] sm:block" />
+                  <div className="mt-2 hidden h-2 w-12 animate-pulse rounded-full bg-surface-strong sm:block" />
                 )}
               </div>
             </button>
@@ -740,14 +740,14 @@ export default function CalendarCard() {
         })}
       </motion.div>
 
-      <div className="border-t border-white/[0.06] bg-white/[0.02] px-5 py-5 sm:px-6">
+      <div className="border-t border-card-border bg-card px-5 py-5 sm:px-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-semibold text-white/80">
+            <p className="text-sm font-semibold text-foreground/80">
               {selectedDateTitle}
             </p>
 
-            <p className="mt-1 text-xs text-white/40">
+            <p className="mt-1 text-xs text-foreground/40">
               {selectedDateEvents.length === 0
                 ? "No events scheduled for this day"
                 : `${selectedDateEvents.length} ${
@@ -779,11 +779,11 @@ export default function CalendarCard() {
             >
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-sm font-semibold text-white">
+                  <p className="text-sm font-semibold text-foreground">
                     New event
                   </p>
 
-                  <p className="mt-1 text-xs text-white/40">
+                  <p className="mt-1 text-xs text-foreground/40">
                     Add something important to your schedule
                   </p>
                 </div>
@@ -792,7 +792,7 @@ export default function CalendarCard() {
                   type="button"
                   onClick={closeEventForm}
                   disabled={savingEvent}
-                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.06] text-white/40 transition hover:text-white"
+                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface-strong text-foreground/40 transition hover:text-foreground"
                   aria-label="Close event form"
                 >
                   ×
@@ -818,7 +818,7 @@ export default function CalendarCard() {
                     placeholder="Boxing training"
                     maxLength={140}
                     disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
+                    className="h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm text-foreground outline-none transition placeholder:text-foreground/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
                   />
                 </div>
 
@@ -838,7 +838,7 @@ export default function CalendarCard() {
                       setEventDate(event.target.value)
                     }
                     disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
+                    className="h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm text-foreground outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
                   />
                 </div>
               </div>
@@ -861,7 +861,7 @@ export default function CalendarCard() {
                   maxLength={500}
                   rows={3}
                   disabled={savingEvent}
-                  className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm leading-6 text-white outline-none transition placeholder:text-white/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
+                  className="w-full resize-none rounded-2xl border border-muted-border bg-muted px-4 py-3 text-sm leading-6 text-foreground outline-none transition placeholder:text-foreground/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
                 />
               </div>
 
@@ -882,7 +882,7 @@ export default function CalendarCard() {
                       setStartTime(event.target.value)
                     }
                     disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
+                    className="h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm text-foreground outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
                   />
                 </div>
 
@@ -902,7 +902,7 @@ export default function CalendarCard() {
                       setEndTime(event.target.value)
                     }
                     disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
+                    className="h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm text-foreground outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
                   />
                 </div>
 
@@ -923,13 +923,13 @@ export default function CalendarCard() {
                       )
                     }
                     disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
+                    className="h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm text-foreground outline-none transition focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
                   >
                     {categories.map((categoryOption) => (
                       <option
                         key={categoryOption}
                         value={categoryOption}
-                        className="bg-surface-workspace text-white"
+                        className="bg-background text-foreground"
                       >
                         {categoryOption}
                       </option>
@@ -948,11 +948,11 @@ export default function CalendarCard() {
                   }
                   type="submit"
                   disabled={savingEvent || !title.trim()}
-                  className="flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] px-5 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl border border-muted-border bg-surface-strong px-5 text-sm font-semibold text-foreground transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {savingEvent ? (
                     <>
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-border-strong border-t-foreground" />
                       Saving event...
                     </>
                   ) : (
@@ -967,7 +967,7 @@ export default function CalendarCard() {
                   type="button"
                   onClick={closeEventForm}
                   disabled={savingEvent}
-                  className="h-12 rounded-2xl border border-white/10 bg-white/[0.05] px-5 text-sm font-semibold text-white/60 transition hover:text-white"
+                  className="h-12 rounded-2xl border border-muted-border bg-muted px-5 text-sm font-semibold text-foreground/60 transition hover:text-foreground"
                 >
                   Cancel
                 </button>
@@ -981,12 +981,12 @@ export default function CalendarCard() {
             [1, 2].map((item) => (
               <div
                 key={item}
-                className="flex animate-pulse items-center gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] px-4 py-4"
+                className="flex animate-pulse items-center gap-4 rounded-2xl border border-card-border bg-card px-4 py-4"
               >
-                <div className="h-10 w-10 rounded-xl bg-white/[0.08]" />
+                <div className="h-10 w-10 rounded-xl bg-surface-strong" />
                 <div className="flex-1">
-                  <div className="h-4 w-40 rounded-full bg-white/[0.08]" />
-                  <div className="mt-2 h-3 w-24 rounded-full bg-white/[0.05]" />
+                  <div className="h-4 w-40 rounded-full bg-surface-strong" />
+                  <div className="mt-2 h-3 w-24 rounded-full bg-muted" />
                 </div>
               </div>
             ))
@@ -1007,7 +1007,7 @@ export default function CalendarCard() {
                       y: 0,
                     }}
                     exit={{ opacity: 0, y: -8 }}
-                    className="flex items-start gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] px-4 py-4 backdrop-blur-[12px] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-violet/25 hover:bg-white/[0.05] hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]"
+                    className="flex items-start gap-4 rounded-2xl border border-card-border bg-card px-4 py-4 backdrop-blur-[12px] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-violet/25 hover:bg-muted hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]"
                   >
                     <div
                       className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-xs font-bold ${getCategoryClasses(
@@ -1021,7 +1021,7 @@ export default function CalendarCard() {
 
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="text-sm font-semibold text-white">
+                        <h3 className="text-sm font-semibold text-foreground">
                           {calendarEvent.title}
                         </h3>
 
@@ -1034,7 +1034,7 @@ export default function CalendarCard() {
                         </span>
                       </div>
 
-                      <p className="mt-1 text-xs text-white/40">
+                      <p className="mt-1 text-xs text-foreground/40">
                         {calendarEvent.start_time
                           ? `${formatTime(
                               calendarEvent.start_time
@@ -1049,7 +1049,7 @@ export default function CalendarCard() {
                       </p>
 
                       {calendarEvent.description && (
-                        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-white/50">
+                        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-foreground/50">
                           {calendarEvent.description}
                         </p>
                       )}
@@ -1062,10 +1062,10 @@ export default function CalendarCard() {
                       }
                       disabled={eventPending}
                       aria-label={`Delete "${calendarEvent.title}"`}
-                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white/25 transition hover:bg-red-500/10 hover:text-red-400 disabled:cursor-wait"
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-foreground/25 transition hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 disabled:cursor-wait"
                     >
                       {eventPending ? (
-                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white/60" />
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-border-strong border-t-foreground/60" />
                       ) : (
                         <svg
                           width="17"
@@ -1089,16 +1089,16 @@ export default function CalendarCard() {
               })}
             </AnimatePresence>
           ) : (
-            <div className="rounded-3xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-9 text-center">
+            <div className="rounded-3xl border border-dashed border-muted-border bg-card px-6 py-9 text-center">
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-violet/15 text-accent-violet">
                 <span className="text-xl">+</span>
               </div>
 
-              <p className="mt-4 text-sm font-semibold text-white/80">
+              <p className="mt-4 text-sm font-semibold text-foreground/80">
                 Your schedule is clear.
               </p>
 
-              <p className="mt-2 text-sm text-white/40">
+              <p className="mt-2 text-sm text-foreground/40">
                 Add an event when something important comes up.
               </p>
             </div>

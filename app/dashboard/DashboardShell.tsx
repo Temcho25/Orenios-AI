@@ -1,8 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";import LogoutButton from "./LogoutButton";
+import AnimatedLogo from "../components/v2/AnimatedLogo";
+import ThemeToggle from "./ThemeToggle";
 import TasksCard from "./TasksCard";
 import FocusCard from "./FocusCard";
 import GoalsCard from "./GoalsCard";
@@ -260,11 +261,11 @@ useEffect(() => {
 }, [activeItem, navigationRestored]);
 if (!navigationRestored) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface-workspace">
+    <main className="flex min-h-screen items-center justify-center bg-background">
       <div className="flex flex-col items-center gap-4">
-        <span className="h-7 w-7 animate-spin rounded-full border-2 border-white/10 border-t-accent-violet" />
+        <span className="h-7 w-7 animate-spin rounded-full border-2 border-muted-border border-t-accent-violet" />
 
-        <p className="text-sm font-medium text-white/40">
+        <p className="text-sm font-medium text-foreground/40">
           Restoring your workspace...
         </p>
       </div>
@@ -282,7 +283,7 @@ if (!navigationRestored) {
   }
 
   return (
-    <main className="min-h-screen bg-surface-workspace text-white">
+    <main className="min-h-screen bg-background text-foreground">
       <div className="flex min-h-screen">
         <aside className="fixed inset-y-0 left-0 z-40 hidden w-[278px] border-r border-white/[0.06] bg-surface-dark-card/60 px-5 py-6 backdrop-blur-2xl lg:flex lg:flex-col">
           <SidebarContent
@@ -326,7 +327,7 @@ if (!navigationRestored) {
         </motion.aside>
 
         <section className="min-w-0 flex-1 lg:pl-[278px]">
-          <header className="sticky top-0 z-30 border-b border-white/[0.06] bg-surface-workspace/85 px-4 py-3 backdrop-blur-2xl sm:px-6 sm:py-4 lg:px-8">
+          <header className="sticky top-0 z-30 border-b border-card-border bg-background/85 px-4 py-3 backdrop-blur-2xl sm:px-6 sm:py-4 lg:px-8">
             <div className="mx-auto max-w-[1500px]">
               {/* Mobile: icon row on top, title on its own full-width row below —
                   a dedicated stacked layout instead of squeezing everything into
@@ -338,7 +339,7 @@ if (!navigationRestored) {
                     type="button"
                     onClick={() => setMobileMenuOpen(true)}
                     aria-label="Open navigation"
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/[0.06] bg-white/[0.04] text-white/70 backdrop-blur-md transition hover:bg-white/[0.08]"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-card-border bg-muted text-foreground/70 backdrop-blur-md transition hover:bg-surface-strong"
                   >
                     <svg
                       width="20"
@@ -357,10 +358,12 @@ if (!navigationRestored) {
                   </button>
 
                   <div className="flex items-center gap-2">
+                    <ThemeToggle />
+
                     <button
                       type="button"
                       aria-label="Notifications"
-                      className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.06] bg-white/[0.04] text-white/60 backdrop-blur-md transition hover:border-white/10 hover:text-white"
+                      className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-card-border bg-muted text-foreground/60 backdrop-blur-md transition hover:border-muted-border hover:text-foreground"
                     >
                       <svg
                         width="19"
@@ -379,7 +382,7 @@ if (!navigationRestored) {
                       </svg>
                     </button>
 
-                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.06] bg-white/[0.04] backdrop-blur-md">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-card-border bg-muted backdrop-blur-md">
                       <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent-violet text-xs font-bold text-white">
                         {firstName.charAt(0).toUpperCase()}
                       </div>
@@ -388,13 +391,13 @@ if (!navigationRestored) {
                 </div>
 
                 <div className="min-w-0">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/40">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/40">
                     {activeItem === "Overview"
                       ? "Personal workspace"
                       : activeItem}
                   </p>
 
-                  <h1 className="text-xl font-semibold tracking-[-0.025em] text-white">
+                  <h1 className="text-xl font-semibold tracking-[-0.025em] text-foreground">
                     {activeItem === "Overview"
                       ? `Good to see you, ${firstName}.`
                       : getSectionTitle(activeItem)}
@@ -409,7 +412,7 @@ if (!navigationRestored) {
                     type="button"
                     onClick={() => setMobileMenuOpen(true)}
                     aria-label="Open navigation"
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/[0.06] bg-white/[0.04] text-white/70 backdrop-blur-md transition hover:bg-white/[0.08] lg:hidden"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-card-border bg-muted text-foreground/70 backdrop-blur-md transition hover:bg-surface-strong lg:hidden"
                   >
                     <svg
                       width="20"
@@ -428,13 +431,13 @@ if (!navigationRestored) {
                   </button>
 
                   <div className="min-w-0">
-                    <p className="truncate text-xs font-semibold uppercase tracking-[0.18em] text-white/40">
+                    <p className="truncate text-xs font-semibold uppercase tracking-[0.18em] text-foreground/40">
                       {activeItem === "Overview"
                         ? "Personal workspace"
                         : activeItem}
                     </p>
 
-                    <h1 className="truncate text-2xl font-semibold tracking-[-0.025em] text-white">
+                    <h1 className="truncate text-2xl font-semibold tracking-[-0.025em] text-foreground">
                       {activeItem === "Overview"
                         ? `Good to see you, ${firstName}.`
                         : getSectionTitle(activeItem)}
@@ -443,10 +446,12 @@ if (!navigationRestored) {
                 </div>
 
                 <div className="flex items-center gap-3">
+                  <ThemeToggle />
+
                   <button
                     type="button"
                     aria-label="Notifications"
-                    className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.06] bg-white/[0.04] text-white/60 backdrop-blur-md transition hover:border-white/10 hover:text-white"
+                    className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-card-border bg-muted text-foreground/60 backdrop-blur-md transition hover:border-muted-border hover:text-foreground"
                   >
                     <svg
                       width="19"
@@ -465,17 +470,17 @@ if (!navigationRestored) {
                     </svg>
                   </button>
 
-                  <div className="flex h-11 items-center gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.04] px-2 pr-3 backdrop-blur-md">
+                  <div className="flex h-11 items-center gap-3 rounded-2xl border border-card-border bg-muted px-2 pr-3 backdrop-blur-md">
                     <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent-violet text-xs font-bold text-white">
                       {firstName.charAt(0).toUpperCase()}
                     </div>
 
                     <div>
-                      <p className="max-w-[150px] truncate text-sm font-semibold text-white">
+                      <p className="max-w-[150px] truncate text-sm font-semibold text-foreground">
                         {firstName}
                       </p>
 
-                      <p className="max-w-[150px] truncate text-xs text-white/40">
+                      <p className="max-w-[150px] truncate text-xs text-foreground/40">
                         Personal account
                       </p>
                     </div>
@@ -629,6 +634,10 @@ function SectionPage({
 }: SectionPageProps) {
   return (
     <div className="space-y-6">
+      {/* Always dark, regardless of the workspace theme toggle — this is a
+          fixed brand accent band (same idea as landing's dark surfaces and
+          the cta-gradient buttons), not a themed surface, so its text stays
+          hardcoded white rather than following --foreground. */}
       <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-surface-dark-card px-6 py-7 text-white shadow-[0_30px_80px_rgba(0,0,0,0.3)] sm:px-8 sm:py-9">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-16 -top-20 h-64 w-64 rounded-full bg-violet-600/35 blur-[85px]" />
@@ -707,14 +716,7 @@ function SidebarContent({
             }}
             className="drop-shadow-[0_0_18px_rgba(124,58,237,0.35)]"
           >
-            <Image
-              src="/logo2.PNG"
-              alt="Orenios AI"
-              width={48}
-              height={48}
-              priority
-              className="rounded-full"
-            />
+            <AnimatedLogo className="h-12 w-12" />
           </motion.div>
 
           <div>
@@ -729,6 +731,9 @@ function SidebarContent({
         </button>
       </div>
 
+      {/* The sidebar is a fixed dark brand rail — it doesn't follow the
+          workspace theme toggle, so everything below stays hardcoded
+          white/dark rather than tracking --foreground/--card. */}
       <nav className="mt-9 space-y-1.5">
         {navigationItems.map((item) => {
           const isActive = activeItem === item.label;
@@ -902,11 +907,11 @@ function OverviewContent({
         className="flex items-center justify-between gap-4 pt-2"
       >
         <div>
-          <p className="text-lg font-semibold tracking-[-0.025em] text-white">
+          <p className="text-lg font-semibold tracking-[-0.025em] text-foreground">
             Your goals
           </p>
 
-          <p className="mt-1 text-sm text-white/40">
+          <p className="mt-1 text-sm text-foreground/40">
             Keep long-term progress connected to today.
           </p>
         </div>
@@ -914,7 +919,7 @@ function OverviewContent({
         <button
           type="button"
           onClick={() => onNavigate("Goals")}
-          className="flex min-h-[44px] shrink-0 items-center rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 text-sm font-semibold text-white/70 backdrop-blur-md transition hover:border-white/15 hover:text-white"
+          className="flex min-h-[44px] shrink-0 items-center rounded-2xl border border-muted-border bg-muted px-4 text-sm font-semibold text-foreground/70 backdrop-blur-md transition hover:border-border-strong hover:text-foreground"
         >
           Open Goals
         </button>
@@ -1089,13 +1094,13 @@ function ProductivityScore() {
       : `${completedToday} of ${totalToday} tasks due today are done.`;
 
   return (
-    <div className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-[12px] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-violet/25 hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]">
+    <div className="rounded-3xl border border-card-border bg-card p-6 backdrop-blur-[12px] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-violet/25 hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]">
       <div>
-        <p className="text-sm font-semibold text-white">
+        <p className="text-sm font-semibold text-foreground">
           Productivity Score
         </p>
 
-        <p className="mt-1 text-xs text-white/40">
+        <p className="mt-1 text-xs text-foreground/40">
           Based on today&apos;s activity
         </p>
       </div>
@@ -1127,13 +1132,13 @@ function ProductivityScore() {
             />
           </svg>
 
-          <div className="absolute flex h-[86px] w-[86px] items-center justify-center rounded-full bg-surface-workspace">
+          <div className="absolute flex h-[86px] w-[86px] items-center justify-center rounded-full bg-background">
             <div className="text-center">
-              <p className="text-2xl font-bold tracking-[-0.04em] text-white">
+              <p className="text-2xl font-bold tracking-[-0.04em] text-foreground">
                 {loading ? "—" : score === null ? "—" : score}
               </p>
 
-              <p className="text-[10px] uppercase tracking-[0.12em] text-white/40">
+              <p className="text-[10px] uppercase tracking-[0.12em] text-foreground/40">
                 Score
               </p>
             </div>
@@ -1141,11 +1146,11 @@ function ProductivityScore() {
         </div>
 
         <div>
-          <p className="text-sm font-semibold text-white/90">
+          <p className="text-sm font-semibold text-foreground/90">
             {loading ? "Loading..." : momentumLabel}
           </p>
 
-          <p className="mt-2 text-sm leading-6 text-white/50">
+          <p className="mt-2 text-sm leading-6 text-foreground/50">
             {loading ? "Checking today's tasks..." : momentumDescription}
           </p>
         </div>
@@ -1211,14 +1216,14 @@ function AIActionsCard() {
   const loading = counts === null;
 
   return (
-    <div className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-[12px] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-violet/25 hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]">
+    <div className="rounded-3xl border border-card-border bg-card p-6 backdrop-blur-[12px] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-violet/25 hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-white">
+          <p className="text-sm font-semibold text-foreground">
             AI actions taken
           </p>
 
-          <p className="mt-1 text-xs text-white/40">
+          <p className="mt-1 text-xs text-foreground/40">
             Real changes AI made in your workspace
           </p>
         </div>
@@ -1243,23 +1248,23 @@ function AIActionsCard() {
 
       <div className="mt-6 grid grid-cols-2 gap-4">
         <div>
-          <p className="text-3xl font-semibold tracking-[-0.05em] text-white">
+          <p className="text-3xl font-semibold tracking-[-0.05em] text-foreground">
             {loading ? "—" : counts.last7}
           </p>
 
-          <p className="mt-1 text-xs text-white/40">Last 7 days</p>
+          <p className="mt-1 text-xs text-foreground/40">Last 7 days</p>
         </div>
 
         <div>
-          <p className="text-3xl font-semibold tracking-[-0.05em] text-white">
+          <p className="text-3xl font-semibold tracking-[-0.05em] text-foreground">
             {loading ? "—" : counts.last30}
           </p>
 
-          <p className="mt-1 text-xs text-white/40">Last 30 days</p>
+          <p className="mt-1 text-xs text-foreground/40">Last 30 days</p>
         </div>
       </div>
 
-      <p className="mt-4 text-xs leading-5 text-white/40">
+      <p className="mt-4 text-xs leading-5 text-foreground/40">
         Tasks created, goals updated, deadlines moved — every real
         change Orenios made for you, not just messages sent.
       </p>
@@ -1281,23 +1286,23 @@ function DashboardCard({
   accent,
 }: DashboardCardProps) {
   return (
-    <div className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-[12px] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-violet/25 hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]">
+    <div className="rounded-3xl border border-card-border bg-card p-6 backdrop-blur-[12px] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-violet/25 hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-white/90">
+          <p className="text-sm font-semibold text-foreground/90">
             {title}
           </p>
 
-          <p className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-white">
+          <p className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-foreground">
             {value}
           </p>
 
-          <p className="mt-2 text-sm text-white/40">
+          <p className="mt-2 text-sm text-foreground/40">
             {description}
           </p>
         </div>
 
-        <span className="rounded-full bg-white/[0.06] px-3 py-1.5 text-xs font-semibold text-white/60">
+        <span className="rounded-full bg-surface-strong px-3 py-1.5 text-xs font-semibold text-foreground/60">
           {accent}
         </span>
       </div>
@@ -1308,16 +1313,16 @@ function DashboardCard({
 function ComingSoonContent({ title }: { title: string }) {
   return (
     <div className="flex min-h-[65vh] items-center justify-center">
-      <div className="w-full max-w-xl rounded-3xl border border-white/[0.06] bg-white/[0.03] p-10 text-center backdrop-blur-[12px]">
+      <div className="w-full max-w-xl rounded-3xl border border-card-border bg-card p-10 text-center backdrop-blur-[12px]">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-violet/15 text-accent-violet">
           <span className="text-xl">✦</span>
         </div>
 
-        <h2 className="mt-6 text-3xl font-semibold tracking-[-0.04em] text-white">
+        <h2 className="mt-6 text-3xl font-semibold tracking-[-0.04em] text-foreground">
           {title} is coming next.
         </h2>
 
-        <p className="mt-4 text-sm leading-6 text-white/50">
+        <p className="mt-4 text-sm leading-6 text-foreground/50">
           This section is already part of the Orenios workspace and will be
           connected to real user data as we build the product.
         </p>

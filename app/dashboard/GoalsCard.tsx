@@ -52,7 +52,7 @@ function getStatusClasses(status: GoalStatus) {
     return "bg-accent-violet/15 text-accent-violet";
   }
 
-  return "bg-white/[0.08] text-white/50";
+  return "bg-surface-strong text-foreground/50";
 }
 
 export default function GoalsCard() {
@@ -309,12 +309,12 @@ export default function GoalsCard() {
   }
 
   return (
-    <section className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-[12px]">
+    <section className="rounded-3xl border border-card-border bg-card p-6 backdrop-blur-[12px]">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-white">Goals</p>
+          <p className="text-sm font-semibold text-foreground">Goals</p>
 
-          <p className="mt-1 text-xs text-white/40">
+          <p className="mt-1 text-xs text-foreground/40">
             Long-term outcomes connected to your daily work
           </p>
         </div>
@@ -329,7 +329,7 @@ export default function GoalsCard() {
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
           role="alert"
-          className="mt-5 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm leading-5 text-red-300"
+          className="mt-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-5 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300"
         >
           {errorMessage}
         </motion.div>
@@ -341,13 +341,13 @@ export default function GoalsCard() {
             {[1, 2].map((item) => (
               <div
                 key={item}
-                className="animate-pulse rounded-3xl border border-white/[0.06] bg-white/[0.03] p-5"
+                className="animate-pulse rounded-3xl border border-card-border bg-card p-5"
               >
-                <div className="h-4 w-24 rounded-full bg-white/[0.08]" />
-                <div className="mt-4 h-6 w-3/4 rounded-full bg-white/[0.08]" />
-                <div className="mt-3 h-4 w-full rounded-full bg-white/[0.05]" />
-                <div className="mt-2 h-4 w-2/3 rounded-full bg-white/[0.05]" />
-                <div className="mt-6 h-2 w-full rounded-full bg-white/[0.08]" />
+                <div className="h-4 w-24 rounded-full bg-surface-strong" />
+                <div className="mt-4 h-6 w-3/4 rounded-full bg-surface-strong" />
+                <div className="mt-3 h-4 w-full rounded-full bg-muted" />
+                <div className="mt-2 h-4 w-2/3 rounded-full bg-muted" />
+                <div className="mt-6 h-2 w-full rounded-full bg-surface-strong" />
               </div>
             ))}
           </div>
@@ -372,7 +372,7 @@ export default function GoalsCard() {
                       duration: 0.25,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-5 backdrop-blur-[12px] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-violet/25 hover:bg-white/[0.05] hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]"
+                    className="rounded-3xl border border-card-border bg-card p-5 backdrop-blur-[12px] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-violet/25 hover:bg-muted hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <span
@@ -388,7 +388,7 @@ export default function GoalsCard() {
                           type="button"
                           onClick={() => startEditing(goal)}
                           disabled={goalPending}
-                          className="flex h-11 w-11 items-center justify-center rounded-xl text-white/30 transition hover:bg-accent-violet/15 hover:text-accent-violet disabled:cursor-wait disabled:opacity-50"
+                          className="flex h-11 w-11 items-center justify-center rounded-xl text-foreground/30 transition hover:bg-accent-violet/15 hover:text-accent-violet disabled:cursor-wait disabled:opacity-50"
                           aria-label={`Edit "${goal.title}"`}
                         >
                           <svg
@@ -412,11 +412,11 @@ export default function GoalsCard() {
                           type="button"
                           onClick={() => deleteGoal(goal)}
                           disabled={goalPending}
-                          className="flex h-11 w-11 items-center justify-center rounded-xl text-white/25 transition hover:bg-red-500/10 hover:text-red-400 disabled:cursor-wait"
+                          className="flex h-11 w-11 items-center justify-center rounded-xl text-foreground/25 transition hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 disabled:cursor-wait"
                           aria-label={`Delete "${goal.title}"`}
                         >
                           {goalPending ? (
-                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white/60" />
+                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-border-strong border-t-foreground/60" />
                           ) : (
                             <svg
                               width="16"
@@ -438,28 +438,28 @@ export default function GoalsCard() {
                       </div>
                     </div>
 
-                    <h3 className="mt-4 text-xl font-semibold tracking-[-0.025em] text-white">
+                    <h3 className="mt-4 text-xl font-semibold tracking-[-0.025em] text-foreground">
                       {goal.title}
                     </h3>
 
                     {goal.description && (
-                      <p className="mt-3 text-sm leading-6 text-white/50">
+                      <p className="mt-3 text-sm leading-6 text-foreground/50">
                         {goal.description}
                       </p>
                     )}
 
                     <div className="mt-5">
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-xs font-medium uppercase tracking-[0.14em] text-white/40">
+                        <span className="text-xs font-medium uppercase tracking-[0.14em] text-foreground/40">
                           Progress
                         </span>
 
-                        <span className="text-xs font-semibold text-white/60">
+                        <span className="text-xs font-semibold text-foreground/60">
                           {goal.progress}%
                         </span>
                       </div>
 
-                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/[0.08]">
+                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-strong">
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: `${goal.progress}%` }}
@@ -472,10 +472,10 @@ export default function GoalsCard() {
                       </div>
                     </div>
 
-                    <div className="mt-5 flex items-center justify-between border-t border-white/[0.06] pt-4">
-                      <p className="text-xs text-white/40">Deadline</p>
+                    <div className="mt-5 flex items-center justify-between border-t border-card-border pt-4">
+                      <p className="text-xs text-foreground/40">Deadline</p>
 
-                      <p className="text-xs font-semibold text-white/70">
+                      <p className="text-xs font-semibold text-foreground/70">
                         {formatDeadline(goal.deadline)}
                       </p>
                     </div>
@@ -485,16 +485,16 @@ export default function GoalsCard() {
             </AnimatePresence>
           </div>
         ) : (
-          <div className="rounded-3xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-10 text-center">
+          <div className="rounded-3xl border border-dashed border-muted-border bg-card px-6 py-10 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-violet/15 text-accent-violet">
               <span className="text-xl">◎</span>
             </div>
 
-            <p className="mt-4 text-sm font-semibold text-white/80">
+            <p className="mt-4 text-sm font-semibold text-foreground/80">
               You don&apos;t have any goals yet.
             </p>
 
-            <p className="mt-2 text-sm leading-6 text-white/40">
+            <p className="mt-2 text-sm leading-6 text-foreground/40">
               Create your first goal, or ask the AI Coach to build
               one from what you tell it.
             </p>
@@ -502,7 +502,7 @@ export default function GoalsCard() {
             <button
               type="button"
               onClick={focusNewGoalForm}
-              className="mt-5 rounded-2xl border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-semibold text-white transition hover:border-white/15 hover:bg-white/10"
+              className="mt-5 rounded-2xl border border-muted-border bg-muted px-5 py-3 text-sm font-semibold text-foreground transition hover:border-border-strong hover:bg-surface-strong"
             >
               Create your first goal
             </button>
@@ -520,7 +520,7 @@ export default function GoalsCard() {
               {editingGoalId ? "Edit goal" : "New goal"}
             </p>
 
-            <p className="mt-1 text-xs text-white/40">
+            <p className="mt-1 text-xs text-foreground/40">
               Define an outcome and track progress over time
             </p>
           </div>
@@ -529,7 +529,7 @@ export default function GoalsCard() {
             <button
               type="button"
               onClick={resetForm}
-              className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-xs font-semibold text-white/60 transition hover:border-white/15 hover:text-white"
+              className="rounded-full border border-muted-border bg-muted px-3 py-1.5 text-xs font-semibold text-foreground/60 transition hover:border-border-strong hover:text-foreground"
             >
               Cancel edit
             </button>
@@ -554,7 +554,7 @@ export default function GoalsCard() {
               placeholder="Launch Orenios MVP"
               maxLength={140}
               disabled={saving}
-              className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm font-medium text-white outline-none transition placeholder:text-white/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
+              className="h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm font-medium text-foreground outline-none transition placeholder:text-foreground/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
             />
           </div>
 
@@ -572,7 +572,7 @@ export default function GoalsCard() {
               value={deadline}
               onChange={(event) => setDeadline(event.target.value)}
               disabled={saving}
-              className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
+              className="h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm text-foreground outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
             />
           </div>
         </div>
@@ -593,7 +593,7 @@ export default function GoalsCard() {
             maxLength={300}
             rows={3}
             disabled={saving}
-            className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm leading-6 text-white outline-none transition placeholder:text-white/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full resize-none rounded-2xl border border-muted-border bg-muted px-4 py-3 text-sm leading-6 text-foreground outline-none transition placeholder:text-foreground/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
           />
         </div>
 
@@ -607,7 +607,7 @@ export default function GoalsCard() {
                 Progress
               </label>
 
-              <span className="rounded-full bg-white/[0.08] px-3 py-1 text-xs font-semibold text-white/70">
+              <span className="rounded-full bg-surface-strong px-3 py-1 text-xs font-semibold text-foreground/70">
                 {progress}%
               </span>
             </div>
@@ -653,13 +653,13 @@ export default function GoalsCard() {
                 setProgress(nextState.progress);
               }}
               disabled={saving}
-              className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm text-white outline-none transition focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
+              className="h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm text-foreground outline-none transition focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {statusOptions.map((statusOption) => (
                 <option
                   key={statusOption}
                   value={statusOption}
-                  className="bg-surface-workspace text-white"
+                  className="bg-background text-foreground"
                 >
                   {statusOption}
                 </option>

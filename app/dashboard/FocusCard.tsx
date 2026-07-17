@@ -238,17 +238,17 @@ export default function FocusCard() {
 
   if (loadingFocus) {
     return (
-      <section className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-[12px]">
+      <section className="rounded-3xl border border-card-border bg-card p-6 backdrop-blur-[12px]">
         <div className="animate-pulse">
-          <div className="h-4 w-28 rounded-full bg-white/[0.08]" />
-          <div className="mt-3 h-3 w-48 rounded-full bg-white/[0.05]" />
+          <div className="h-4 w-28 rounded-full bg-surface-strong" />
+          <div className="mt-3 h-3 w-48 rounded-full bg-muted" />
 
-          <div className="mt-6 rounded-3xl border border-white/[0.06] bg-white/[0.03] p-5">
-            <div className="h-3 w-24 rounded-full bg-white/[0.08]" />
-            <div className="mt-4 h-6 w-4/5 rounded-full bg-white/[0.08]" />
-            <div className="mt-3 h-4 w-full rounded-full bg-white/[0.05]" />
-            <div className="mt-2 h-4 w-3/4 rounded-full bg-white/[0.05]" />
-            <div className="mt-6 h-2 w-full rounded-full bg-white/[0.08]" />
+          <div className="mt-6 rounded-3xl border border-card-border bg-card p-5">
+            <div className="h-3 w-24 rounded-full bg-surface-strong" />
+            <div className="mt-4 h-6 w-4/5 rounded-full bg-surface-strong" />
+            <div className="mt-3 h-4 w-full rounded-full bg-muted" />
+            <div className="mt-2 h-4 w-3/4 rounded-full bg-muted" />
+            <div className="mt-6 h-2 w-full rounded-full bg-surface-strong" />
           </div>
         </div>
       </section>
@@ -256,14 +256,14 @@ export default function FocusCard() {
   }
 
   return (
-    <section className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-[12px]">
+    <section className="rounded-3xl border border-card-border bg-card p-6 backdrop-blur-[12px]">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-white">
+          <p className="text-sm font-semibold text-foreground">
             Today&apos;s Focus
           </p>
 
-          <p className="mt-1 text-xs text-white/40">
+          <p className="mt-1 text-xs text-foreground/40">
             Your highest-impact priority for today
           </p>
         </div>
@@ -309,7 +309,7 @@ export default function FocusCard() {
                 placeholder="What matters most today?"
                 maxLength={140}
                 disabled={saving || deleting}
-                className="mt-3 h-12 w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm font-medium text-white outline-none transition placeholder:text-white/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-3 h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm font-medium text-foreground outline-none transition placeholder:text-foreground/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
               />
             </div>
 
@@ -329,10 +329,10 @@ export default function FocusCard() {
                 maxLength={300}
                 rows={4}
                 disabled={saving || deleting}
-                className="mt-3 w-full resize-none rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm leading-6 text-white outline-none transition placeholder:text-white/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-3 w-full resize-none rounded-2xl border border-muted-border bg-muted px-4 py-3 text-sm leading-6 text-foreground outline-none transition placeholder:text-foreground/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
               />
 
-              <p className="mt-2 text-right text-xs text-white/30">
+              <p className="mt-2 text-right text-xs text-foreground/30">
                 {description.length}/300
               </p>
             </div>
@@ -346,7 +346,7 @@ export default function FocusCard() {
                   Progress
                 </label>
 
-                <span className="rounded-full bg-white/[0.08] px-3 py-1 text-xs font-semibold text-white/70">
+                <span className="rounded-full bg-surface-strong px-3 py-1 text-xs font-semibold text-foreground/70">
                   {progress}%
                 </span>
               </div>
@@ -365,7 +365,7 @@ export default function FocusCard() {
                 className="mt-4 w-full cursor-pointer accent-accent-mint disabled:cursor-not-allowed"
               />
 
-              <div className="mt-2 flex justify-between text-[10px] font-medium uppercase tracking-[0.12em] text-white/30">
+              <div className="mt-2 flex justify-between text-[10px] font-medium uppercase tracking-[0.12em] text-foreground/30">
                 <span>Not started</span>
                 <span>Complete</span>
               </div>
@@ -376,7 +376,7 @@ export default function FocusCard() {
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
                 role="alert"
-                className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm leading-5 text-red-300"
+                className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-5 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300"
               >
                 {errorMessage}
               </motion.div>
@@ -408,7 +408,7 @@ export default function FocusCard() {
                   type="button"
                   onClick={cancelEditing}
                   disabled={saving || deleting}
-                  className="flex h-12 w-full shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] px-5 text-sm font-semibold text-white/60 transition hover:border-white/15 hover:text-white disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                  className="flex h-12 w-full shrink-0 items-center justify-center rounded-2xl border border-muted-border bg-muted px-5 text-sm font-semibold text-foreground/60 transition hover:border-border-strong hover:text-foreground disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                 >
                   Cancel
                 </button>
@@ -432,23 +432,23 @@ export default function FocusCard() {
                 Main objective
               </p>
 
-              <span className="rounded-full bg-white/[0.08] px-3 py-1 text-xs font-semibold text-white/70">
+              <span className="rounded-full bg-surface-strong px-3 py-1 text-xs font-semibold text-foreground/70">
                 {focus.progress}%
               </span>
             </div>
 
-            <h3 className="mt-3 text-xl font-semibold tracking-[-0.025em] text-white">
+            <h3 className="mt-3 text-xl font-semibold tracking-[-0.025em] text-foreground">
               {focus.title}
             </h3>
 
             {focus.description && (
-              <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-white/50">
+              <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-foreground/50">
                 {focus.description}
               </p>
             )}
 
             <div className="mt-5 flex items-center gap-3">
-              <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
+              <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-strong">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${focus.progress}%` }}
@@ -460,13 +460,13 @@ export default function FocusCard() {
                 />
               </div>
 
-              <span className="text-xs font-semibold text-white/50">
+              <span className="text-xs font-semibold text-foreground/50">
                 {focus.progress}%
               </span>
             </div>
 
-            <div className="mt-5 flex items-center justify-between border-t border-white/[0.06] pt-4">
-              <p className="text-xs text-white/40">
+            <div className="mt-5 flex items-center justify-between border-t border-card-border pt-4">
+              <p className="text-xs text-foreground/40">
                 Saved securely to your account
               </p>
 
@@ -474,7 +474,7 @@ export default function FocusCard() {
                 type="button"
                 onClick={handleDelete}
                 disabled={deleting}
-                className="flex min-h-[44px] items-center text-xs font-semibold text-white/40 transition hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex min-h-[44px] items-center text-xs font-semibold text-foreground/40 transition hover:text-red-600 dark:hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {deleting ? "Removing..." : "Remove"}
               </button>
@@ -488,7 +488,7 @@ export default function FocusCard() {
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
           role="status"
-          className="mt-4 rounded-2xl border border-accent-mint/20 bg-accent-mint/10 px-4 py-3 text-sm leading-5 text-accent-mint"
+          className="mt-4 rounded-2xl border border-accent-mint/30 bg-accent-mint/10 px-4 py-3 text-sm leading-5 text-emerald-700 dark:text-accent-mint"
         >
           {successMessage}
         </motion.div>
@@ -499,7 +499,7 @@ export default function FocusCard() {
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
           role="alert"
-          className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm leading-5 text-red-300"
+          className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-5 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300"
         >
           {errorMessage}
         </motion.div>

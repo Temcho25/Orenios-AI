@@ -1,37 +1,78 @@
 @import "tailwindcss";
 
-:root {
-  --background: #fafafe;
-  --foreground: #111827;
+/* next-themes toggles a "dark"/"light" class on <html>. Tell Tailwind's
+   dark: variant to key off that class (instead of the OS-level
+   prefers-color-scheme media query it uses by default), since the
+   dashboard theme toggle is a manual, persisted user choice. */
+@custom-variant dark (&:where(.dark, .dark *));
 
-  /* Shared brand surface tokens — single source of truth for the dark
-     landing page and the dashboard workspace, instead of each repeating
-     the same raw hex values locally. The dashboard workspace is now a
-     dark surface too ("energy in micro-details, calm in structure"),
-     distinct from surface-dark-card which is the deeper accent-banner
-     tone reused from landing. */
+:root,
+.light {
+  /* Dashboard workspace theme — light values. These are the tokens the
+     theme toggle actually switches; every dashboard component reads
+     colors through the Tailwind utilities generated below (bg-background,
+     bg-card, text-foreground, ...) instead of hardcoding hex/opacity. */
+  --background: #f5f6fa;
+  --foreground: #0a0a0f;
+  --card: #ffffff;
+  --card-border: rgba(15, 23, 42, 0.08);
+  --muted: #f1f2f6;
+  --muted-border: rgba(15, 23, 42, 0.12);
+  --border-strong: rgba(15, 23, 42, 0.18);
+  --surface-strong: #e9ebf1;
+  --shadow-color: rgba(15, 23, 42, 0.08);
+
+  /* Landing page dark surface tokens — unrelated to the dashboard
+     theme toggle. Landing is always dark regardless of the
+     dashboard's light/dark setting. */
   --surface-dark: #0e0f13;
   --surface-dark-card: #101017;
-  --surface-workspace: #16181f;
 
-  /* Accent gradient + single "alive" progress/success color. Scoped to
-     the dashboard for now (CTA buttons, active card state, hover
-     border-glow, progress fills) — landing keeps its existing violet/
-     cyan Tailwind stock shades unless asked to match. */
+  /* Accent gradient + single "alive" progress/success color. Same
+     hues in both dashboard themes on purpose, so the brand identity
+     doesn't shift when the user switches — only the surfaces around
+     them do. */
   --accent-violet: #7c6ff0;
   --accent-cyan: #4fd1e8;
   --accent-mint: #3ecf8e;
+  --accent-violet-soft: rgba(124, 111, 240, 0.1);
+}
+
+.dark {
+  --background: #16181f;
+  --foreground: #ffffff;
+  --card: rgba(255, 255, 255, 0.03);
+  --card-border: rgba(255, 255, 255, 0.06);
+  --muted: rgba(255, 255, 255, 0.05);
+  --muted-border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --surface-strong: rgba(255, 255, 255, 0.08);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+
+  --accent-violet: #7c6ff0;
+  --accent-cyan: #4fd1e8;
+  --accent-mint: #3ecf8e;
+  --accent-violet-soft: rgba(124, 111, 240, 0.15);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
+  --color-muted: var(--muted);
+  --color-muted-border: var(--muted-border);
+  --color-border-strong: var(--border-strong);
+  --color-surface-strong: var(--surface-strong);
+
   --color-surface-dark: var(--surface-dark);
   --color-surface-dark-card: var(--surface-dark-card);
-  --color-surface-workspace: var(--surface-workspace);
+
   --color-accent-violet: var(--accent-violet);
   --color-accent-cyan: var(--accent-cyan);
   --color-accent-mint: var(--accent-mint);
+  --color-accent-violet-soft: var(--accent-violet-soft);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

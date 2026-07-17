@@ -82,7 +82,7 @@ function formatAssistantResponse(content: string) {
       return (
         <h3
           key={`${trimmedLine}-${index}`}
-          className="mt-5 text-sm font-semibold text-white/90 first:mt-0"
+          className="mt-5 text-sm font-semibold text-foreground/90 first:mt-0"
         >
           {trimmedLine}
         </h3>
@@ -93,7 +93,7 @@ function formatAssistantResponse(content: string) {
       return (
         <p
           key={`${trimmedLine}-${index}`}
-          className="ml-2 mt-2 text-sm leading-6 text-white/60"
+          className="ml-2 mt-2 text-sm leading-6 text-foreground/60"
         >
           {trimmedLine}
         </p>
@@ -103,7 +103,7 @@ function formatAssistantResponse(content: string) {
     return (
       <p
         key={`${trimmedLine}-${index}`}
-        className="mt-2 text-sm leading-6 text-white/60"
+        className="mt-2 text-sm leading-6 text-foreground/60"
       >
         {trimmedLine}
       </p>
@@ -364,7 +364,9 @@ export default function AICoach() {
   }
 
   return (
-    <section className="overflow-hidden rounded-3xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-[12px]">
+    <section className="overflow-hidden rounded-3xl border border-card-border bg-card backdrop-blur-[12px]">
+      {/* Always dark, regardless of the workspace theme toggle — same fixed
+          brand-accent band as SectionPage/OverviewContent's hero. */}
       <div className="relative overflow-hidden border-b border-white/10 bg-surface-dark-card px-5 py-6 text-white sm:px-7 sm:py-7">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-20 -top-24 h-64 w-64 rounded-full bg-violet-600/35 blur-[90px]" />
@@ -438,7 +440,7 @@ export default function AICoach() {
             >
               {clearingConversation ? (
                 <>
-                  <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/25 border-t-white" />
+                  <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/10 border-t-white" />
                   Clearing...
                 </>
               ) : (
@@ -449,18 +451,18 @@ export default function AICoach() {
         </div>
       </div>
 
-      <div className="bg-white/[0.015] p-4 sm:p-6">
+      <div className="bg-card p-4 sm:p-6">
         {loadingHistory ? (
-          <div className="rounded-3xl border border-white/[0.06] bg-white/[0.03] px-5 py-14 text-center backdrop-blur-[12px]">
+          <div className="rounded-3xl border border-card-border bg-card px-5 py-14 text-center backdrop-blur-[12px]">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-violet/15 text-accent-violet">
               <span className="h-5 w-5 animate-spin rounded-full border-2 border-accent-violet/25 border-t-accent-violet" />
             </div>
 
-            <p className="mt-5 text-sm font-semibold text-white/80">
+            <p className="mt-5 text-sm font-semibold text-foreground/80">
               Loading your conversation
             </p>
 
-            <p className="mt-2 text-sm text-white/40">
+            <p className="mt-2 text-sm text-foreground/40">
               Orenios is restoring your recent messages.
             </p>
           </div>
@@ -474,7 +476,7 @@ export default function AICoach() {
               opacity: 1,
               y: 0,
             }}
-            className="rounded-3xl border border-white/[0.06] bg-white/[0.03] px-5 py-10 text-center backdrop-blur-[12px] sm:px-8"
+            className="rounded-3xl border border-card-border bg-card px-5 py-10 text-center backdrop-blur-[12px] sm:px-8"
           >
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-violet/15 text-accent-violet">
               <svg
@@ -493,11 +495,11 @@ export default function AICoach() {
               </svg>
             </div>
 
-            <h3 className="mt-6 text-2xl font-semibold tracking-[-0.04em] text-white">
+            <h3 className="mt-6 text-2xl font-semibold tracking-[-0.04em] text-foreground">
               How can I help you today?
             </h3>
 
-            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-white/50">
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-foreground/50">
               Ask Orenios to organize your priorities,
               build an action plan, improve your focus or
               help you make a clearer decision.
@@ -512,7 +514,7 @@ export default function AICoach() {
                     void sendMessage(quickPrompt)
                   }
                   disabled={loading}
-                  className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-left text-sm font-medium text-white/70 transition hover:border-accent-violet/25 hover:bg-accent-violet/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-2xl border border-muted-border bg-muted px-4 py-3 text-left text-sm font-medium text-foreground/70 transition hover:border-accent-violet/25 hover:bg-accent-violet/10 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {quickPrompt}
                 </button>
@@ -522,7 +524,7 @@ export default function AICoach() {
         ) : (
           <div
             ref={conversationContainerRef}
-            className="max-h-[620px] space-y-5 overflow-y-auto rounded-3xl border border-white/[0.06] bg-white/[0.03] p-4 backdrop-blur-[12px] sm:p-6"
+            className="max-h-[620px] space-y-5 overflow-y-auto rounded-3xl border border-card-border bg-card p-4 backdrop-blur-[12px] sm:p-6"
           >
             <AnimatePresence initial={false}>
               {messages.map((chatMessage) => {
@@ -560,15 +562,15 @@ export default function AICoach() {
                     <div
                       className={`max-w-[92%] rounded-3xl px-5 py-4 sm:max-w-[78%] ${
                         isUser
-                          ? "rounded-br-md bg-accent-violet/20 text-white"
-                          : "rounded-bl-md border border-white/[0.06] bg-white/[0.04] text-white/70"
+                          ? "rounded-br-md bg-accent-violet/20 text-foreground"
+                          : "rounded-bl-md border border-card-border bg-muted text-foreground/70"
                       }`}
                     >
                       <div className="mb-3 flex items-center gap-2">
                         <div
                           className={`flex h-7 w-7 items-center justify-center rounded-lg text-[10px] font-bold ${
                             isUser
-                              ? "bg-white/10 text-white"
+                              ? "bg-surface-strong text-foreground"
                               : "bg-accent-violet/15 text-accent-violet"
                           }`}
                         >
@@ -578,8 +580,8 @@ export default function AICoach() {
                         <p
                           className={`text-xs font-semibold ${
                             isUser
-                              ? "text-white/60"
-                              : "text-white/40"
+                              ? "text-foreground/60"
+                              : "text-foreground/40"
                           }`}
                         >
                           {isUser
@@ -589,7 +591,7 @@ export default function AICoach() {
                       </div>
 
                       {isUser ? (
-                        <p className="whitespace-pre-wrap text-sm leading-6 text-white">
+                        <p className="whitespace-pre-wrap text-sm leading-6 text-foreground">
                           {chatMessage.content}
                         </p>
                       ) : (
@@ -617,7 +619,7 @@ export default function AICoach() {
                 }}
                 className="flex justify-start"
               >
-                <div className="rounded-3xl rounded-bl-md border border-white/[0.06] bg-white/[0.04] px-5 py-4">
+                <div className="rounded-3xl rounded-bl-md border border-card-border bg-muted px-5 py-4">
                   <div className="flex items-center gap-3">
                     <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent-violet/15 text-accent-violet">
                       <span className="text-sm">✦</span>
@@ -641,7 +643,7 @@ export default function AICoach() {
                       ))}
                     </div>
 
-                    <p className="text-xs font-medium text-white/40">
+                    <p className="text-xs font-medium text-foreground/40">
                       Orenios is thinking...
                     </p>
                   </div>
@@ -662,7 +664,7 @@ export default function AICoach() {
               y: 0,
             }}
             role="alert"
-            className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm leading-5 text-red-300"
+            className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-5 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300"
           >
             {errorMessage}
           </motion.div>
@@ -670,7 +672,7 @@ export default function AICoach() {
 
         <form
           onSubmit={handleSubmit}
-          className="mt-4 rounded-3xl border border-white/10 bg-white/[0.04] p-3 backdrop-blur-[12px]"
+          className="mt-4 rounded-3xl border border-muted-border bg-muted p-3 backdrop-blur-[12px]"
         >
           <textarea
             value={message}
@@ -687,22 +689,22 @@ export default function AICoach() {
               loadingHistory ||
               clearingConversation
             }
-            className="w-full resize-none bg-transparent px-3 py-2 text-sm leading-6 text-white outline-none placeholder:text-white/30 disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full resize-none bg-transparent px-3 py-2 text-sm leading-6 text-foreground outline-none placeholder:text-foreground/30 disabled:cursor-not-allowed disabled:opacity-60"
           />
 
-          <div className="mt-2 flex flex-col gap-3 border-t border-white/[0.06] px-2 pt-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-2 flex flex-col gap-3 border-t border-card-border px-2 pt-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <p
                 className={`text-xs ${
                   remainingCharacters < 100
                     ? "text-orange-400"
-                    : "text-white/30"
+                    : "text-foreground/30"
                 }`}
               >
                 {remainingCharacters} characters left
               </p>
 
-              <p className="hidden text-xs text-white/20 sm:block">
+              <p className="hidden text-xs text-foreground/20 sm:block">
                 Enter to send · Shift + Enter for a new
                 line
               </p>
@@ -747,7 +749,7 @@ export default function AICoach() {
           </div>
         </form>
 
-        <p className="mt-3 text-center text-[11px] leading-5 text-white/30">
+        <p className="mt-3 text-center text-[11px] leading-5 text-foreground/30">
           Orenios may make mistakes. Review important
           information before acting on it.
         </p>
