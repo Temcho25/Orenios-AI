@@ -12,15 +12,15 @@
      theme toggle actually switches; every dashboard component reads
      colors through the Tailwind utilities generated below (bg-background,
      bg-card, text-foreground, ...) instead of hardcoding hex/opacity. */
-  --background: #f5f6fa;
+  --background: #f6f4fc;
   --foreground: #0a0a0f;
-  --card: #ffffff;
-  --card-border: rgba(15, 23, 42, 0.08);
-  --muted: #f1f2f6;
-  --muted-border: rgba(15, 23, 42, 0.12);
-  --border-strong: rgba(15, 23, 42, 0.18);
-  --surface-strong: #e9ebf1;
-  --shadow-color: rgba(15, 23, 42, 0.08);
+  --card: #fbfaff;
+  --card-border: rgba(124, 111, 240, 0.12);
+  --muted: #efebf9;
+  --muted-border: rgba(124, 111, 240, 0.18);
+  --border-strong: rgba(124, 111, 240, 0.24);
+  --surface-strong: #e6e0f5;
+  --shadow-color: rgba(124, 111, 240, 0.1);
 
   /* Landing page dark surface tokens — unrelated to the dashboard
      theme toggle. Landing is always dark regardless of the
