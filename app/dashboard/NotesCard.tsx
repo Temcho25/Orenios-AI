@@ -349,7 +349,7 @@ export default function NotesCard() {
   }
 
   return (
-    <section className="rounded-[30px] border border-gray-200/80 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.07)] sm:p-6">
+    <section className="rounded-3xl border border-gray-200/80 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.07)] sm:p-6">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <p className="text-sm font-semibold text-gray-950">
@@ -444,7 +444,7 @@ export default function NotesCard() {
               ease: [0.22, 1, 0.36, 1],
             }}
             onSubmit={handleSaveNote}
-            className="mt-6 overflow-hidden rounded-[26px] border border-violet-100 bg-gradient-to-br from-violet-50 to-blue-50"
+            className="mt-6 overflow-hidden rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 to-cyan-50"
           >
             <div className="p-5 sm:p-6">
               <div className="flex items-center justify-between gap-4">
@@ -567,7 +567,7 @@ export default function NotesCard() {
             {[1, 2, 3].map((item) => (
               <div
                 key={item}
-                className="animate-pulse rounded-[24px] border border-gray-100 bg-gray-50 p-5"
+                className="animate-pulse rounded-3xl border border-gray-100 bg-gray-50 p-5"
               >
                 <div className="h-4 w-2/3 rounded-full bg-gray-200" />
                 <div className="mt-4 h-3 w-full rounded-full bg-gray-200" />
@@ -608,7 +608,7 @@ export default function NotesCard() {
                       duration: 0.25,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="group flex min-h-[240px] flex-col rounded-[24px] border border-gray-200 bg-white p-5 transition hover:border-violet-200 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)]"
+                    className="group flex min-h-[240px] flex-col rounded-3xl border border-gray-200 bg-white p-5 transition hover:border-violet-200 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)]"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
@@ -711,7 +711,7 @@ export default function NotesCard() {
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-[26px] border border-dashed border-gray-200 bg-gray-50 px-6 py-12 text-center"
+            className="rounded-3xl border border-dashed border-gray-200 bg-gray-50 px-6 py-12 text-center"
           >
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-violet-600 shadow-sm">
               <svg

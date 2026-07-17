@@ -260,7 +260,7 @@ useEffect(() => {
 }, [activeItem, navigationRestored]);
 if (!navigationRestored) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f5f6fa]">
+    <main className="flex min-h-screen items-center justify-center bg-surface-workspace">
       <div className="flex flex-col items-center gap-4">
         <span className="h-7 w-7 animate-spin rounded-full border-2 border-violet-200 border-t-violet-600" />
 
@@ -282,7 +282,7 @@ if (!navigationRestored) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f5f6fa] text-gray-950">
+    <main className="min-h-screen bg-surface-workspace text-gray-950">
       <div className="flex min-h-screen">
         <aside className="fixed inset-y-0 left-0 z-40 hidden w-[278px] border-r border-gray-200/80 bg-white/90 px-5 py-6 backdrop-blur-2xl lg:flex lg:flex-col">
           <SidebarContent
@@ -326,7 +326,7 @@ if (!navigationRestored) {
         </motion.aside>
 
         <section className="min-w-0 flex-1 lg:pl-[278px]">
-          <header className="sticky top-0 z-30 border-b border-gray-200/70 bg-[#f5f6fa]/85 px-4 py-3 backdrop-blur-2xl sm:px-6 sm:py-4 lg:px-8">
+          <header className="sticky top-0 z-30 border-b border-gray-200/70 bg-surface-workspace/85 px-4 py-3 backdrop-blur-2xl sm:px-6 sm:py-4 lg:px-8">
             <div className="mx-auto max-w-[1500px]">
               {/* Mobile: icon row on top, title on its own full-width row below —
                   a dedicated stacked layout instead of squeezing everything into
@@ -380,7 +380,7 @@ if (!navigationRestored) {
                     </button>
 
                     <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white shadow-sm">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-blue-500 text-xs font-bold text-white">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-cyan-400 text-xs font-bold text-white">
                         {firstName.charAt(0).toUpperCase()}
                       </div>
                     </div>
@@ -466,7 +466,7 @@ if (!navigationRestored) {
                   </button>
 
                   <div className="flex h-11 items-center gap-3 rounded-2xl border border-gray-200 bg-white px-2 pr-3 shadow-sm">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-blue-500 text-xs font-bold text-white">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-cyan-400 text-xs font-bold text-white">
                       {firstName.charAt(0).toUpperCase()}
                     </div>
 
@@ -629,10 +629,10 @@ function SectionPage({
 }: SectionPageProps) {
   return (
     <div className="space-y-6">
-      <section className="relative overflow-hidden rounded-[32px] border border-white/80 bg-[#101017] px-6 py-7 text-white shadow-[0_30px_80px_rgba(15,23,42,0.15)] sm:px-8 sm:py-9">
+      <section className="relative overflow-hidden rounded-3xl border border-white/80 bg-surface-dark-card px-6 py-7 text-white shadow-[0_30px_80px_rgba(15,23,42,0.15)] sm:px-8 sm:py-9">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-16 -top-20 h-64 w-64 rounded-full bg-violet-600/35 blur-[85px]" />
-          <div className="absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-blue-600/25 blur-[95px]" />
+          <div className="absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-cyan-500/25 blur-[95px]" />
         </div>
 
         <div className="relative z-10">
@@ -772,7 +772,7 @@ function SidebarContent({
         })}
       </nav>
 
-      <div className="mt-8 rounded-3xl bg-[#101017] p-5 text-white shadow-[0_20px_50px_rgba(15,23,42,0.16)]">
+      <div className="mt-8 rounded-3xl bg-surface-dark-card p-5 text-white shadow-[0_20px_50px_rgba(15,23,42,0.16)]">
         <div className="flex items-center justify-between">
           <span className="text-xs font-medium text-white/55">
             Daily progress
@@ -792,7 +792,7 @@ function SidebarContent({
               delay: 0.3,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="h-full rounded-full bg-gradient-to-r from-violet-500 to-blue-500"
+            className="h-full rounded-full bg-gradient-to-r from-violet-500 to-cyan-400"
           />
         </div>
 
@@ -829,10 +829,10 @@ function OverviewContent({
 }: OverviewContentProps) {
   return (
     <div className="space-y-6">
-      <section className="relative overflow-hidden rounded-[32px] border border-white/80 bg-[#101017] px-6 py-7 text-white shadow-[0_30px_80px_rgba(15,23,42,0.15)] sm:px-8 sm:py-9">
+      <section className="relative overflow-hidden rounded-3xl border border-white/80 bg-surface-dark-card px-6 py-7 text-white shadow-[0_30px_80px_rgba(15,23,42,0.15)] sm:px-8 sm:py-9">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-16 -top-20 h-64 w-64 rounded-full bg-violet-600/35 blur-[85px]" />
-          <div className="absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-blue-600/25 blur-[95px]" />
+          <div className="absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-cyan-500/25 blur-[95px]" />
         </div>
 
         <div className="relative z-10 flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
@@ -1057,7 +1057,7 @@ function ProductivityScore() {
       : `${completedToday} of ${totalToday} tasks due today are done.`;
 
   return (
-    <div className="rounded-[28px] border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+    <div className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
       <div>
         <p className="text-sm font-semibold text-gray-950">
           Productivity Score
@@ -1102,8 +1102,8 @@ function ProductivityScore() {
                 x2="1"
                 y2="1"
               >
-                <stop offset="0%" stopColor="#7c3aed" />
-                <stop offset="100%" stopColor="#3b82f6" />
+                <stop offset="0%" stopColor="#8b5cf6" />
+                <stop offset="100%" stopColor="#22d3ee" />
               </linearGradient>
             </defs>
           </svg>
@@ -1192,7 +1192,7 @@ function AIActionsCard() {
   const loading = counts === null;
 
   return (
-    <div className="rounded-[28px] border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+    <div className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-gray-950">
@@ -1204,7 +1204,7 @@ function AIActionsCard() {
           </p>
         </div>
 
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-blue-500 text-white shadow-[0_8px_20px_rgba(124,58,237,0.35)]">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400 text-white shadow-[0_8px_20px_rgba(124,58,237,0.35)]">
           <svg
             width="18"
             height="18"
@@ -1262,7 +1262,7 @@ function DashboardCard({
   accent,
 }: DashboardCardProps) {
   return (
-    <div className="rounded-[26px] border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)] transition hover:border-gray-300 hover:shadow-[0_22px_60px_rgba(15,23,42,0.08)]">
+    <div className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)] transition hover:border-gray-300 hover:shadow-[0_22px_60px_rgba(15,23,42,0.08)]">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-gray-900">
@@ -1289,7 +1289,7 @@ function DashboardCard({
 function ComingSoonContent({ title }: { title: string }) {
   return (
     <div className="flex min-h-[65vh] items-center justify-center">
-      <div className="w-full max-w-xl rounded-[32px] border border-gray-200/80 bg-white p-10 text-center shadow-[0_25px_70px_rgba(15,23,42,0.08)]">
+      <div className="w-full max-w-xl rounded-3xl border border-gray-200/80 bg-white p-10 text-center shadow-[0_25px_70px_rgba(15,23,42,0.08)]">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-100 text-violet-600">
           <span className="text-xl">✦</span>
         </div>

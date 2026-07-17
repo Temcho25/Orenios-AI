@@ -238,7 +238,7 @@ export default function FocusCard() {
 
   if (loadingFocus) {
     return (
-      <section className="rounded-[28px] border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+      <section className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
         <div className="animate-pulse">
           <div className="h-4 w-28 rounded-full bg-gray-200" />
           <div className="mt-3 h-3 w-48 rounded-full bg-gray-100" />
@@ -256,7 +256,7 @@ export default function FocusCard() {
   }
 
   return (
-    <section className="rounded-[28px] border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+    <section className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-gray-950">
@@ -291,7 +291,7 @@ export default function FocusCard() {
               ease: [0.22, 1, 0.36, 1],
             }}
             onSubmit={handleSave}
-            className="mt-6 rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 to-blue-50 p-5"
+            className="mt-6 rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 to-cyan-50 p-5"
           >
             <div>
               <label
@@ -425,7 +425,7 @@ export default function FocusCard() {
               duration: 0.25,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="mt-6 rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 to-blue-50 p-5"
+            className="mt-6 rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 to-cyan-50 p-5"
           >
             <div className="flex items-center justify-between gap-4">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-500">
@@ -456,7 +456,7 @@ export default function FocusCard() {
                     duration: 0.6,
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  className="h-full rounded-full bg-gradient-to-r from-violet-500 to-blue-500"
+                  className="h-full rounded-full bg-gradient-to-r from-violet-500 to-cyan-400"
                 />
               </div>
 

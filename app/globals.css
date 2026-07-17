@@ -4,13 +4,20 @@
   --background: #fafafe;
   --foreground: #111827;
 
-  --purple: #7c3aed;
-  --blue: #22c3ff;
+  /* Shared brand surface tokens — single source of truth for the dark
+     landing page and the light dashboard workspace, instead of each
+     repeating the same raw hex values locally. */
+  --surface-dark: #08070f;
+  --surface-dark-card: #101017;
+  --surface-workspace: #f5f6fa;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface-dark: var(--surface-dark);
+  --color-surface-dark-card: var(--surface-dark-card);
+  --color-surface-workspace: var(--surface-workspace);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

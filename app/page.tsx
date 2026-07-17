@@ -8,7 +8,7 @@ import ScrollToTop from "./components/v2/ScrollToTop";
 
 export default function HomePage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#08070f]">
+    <main className="relative min-h-screen overflow-hidden bg-surface-dark">
       <ScrollToTop />
 
       {/* Premium Background — one continuous dark atmosphere layer for the

@@ -364,11 +364,11 @@ export default function AICoach() {
   }
 
   return (
-    <section className="overflow-hidden rounded-[30px] border border-gray-200/80 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.07)]">
-      <div className="relative overflow-hidden border-b border-white/10 bg-[#101017] px-5 py-6 text-white sm:px-7 sm:py-7">
+    <section className="overflow-hidden rounded-3xl border border-gray-200/80 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.07)]">
+      <div className="relative overflow-hidden border-b border-white/10 bg-surface-dark-card px-5 py-6 text-white sm:px-7 sm:py-7">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-20 -top-24 h-64 w-64 rounded-full bg-violet-600/35 blur-[90px]" />
-          <div className="absolute -bottom-28 right-0 h-72 w-72 rounded-full bg-blue-600/25 blur-[100px]" />
+          <div className="absolute -bottom-28 right-0 h-72 w-72 rounded-full bg-cyan-500/25 blur-[100px]" />
         </div>
 
         <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -451,7 +451,7 @@ export default function AICoach() {
 
       <div className="bg-[#f8f9fc] p-4 sm:p-6">
         {loadingHistory ? (
-          <div className="rounded-[26px] border border-gray-200/80 bg-white px-5 py-14 text-center shadow-[0_15px_40px_rgba(15,23,42,0.04)]">
+          <div className="rounded-3xl border border-gray-200/80 bg-white px-5 py-14 text-center shadow-[0_15px_40px_rgba(15,23,42,0.04)]">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
               <span className="h-5 w-5 animate-spin rounded-full border-2 border-violet-200 border-t-violet-600" />
             </div>
@@ -474,9 +474,9 @@ export default function AICoach() {
               opacity: 1,
               y: 0,
             }}
-            className="rounded-[26px] border border-gray-200/80 bg-white px-5 py-10 text-center shadow-[0_15px_40px_rgba(15,23,42,0.04)] sm:px-8"
+            className="rounded-3xl border border-gray-200/80 bg-white px-5 py-10 text-center shadow-[0_15px_40px_rgba(15,23,42,0.04)] sm:px-8"
           >
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[22px] bg-gradient-to-br from-violet-100 to-blue-100 text-violet-600">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-100 to-cyan-100 text-violet-600">
               <svg
                 width="28"
                 height="28"
@@ -522,7 +522,7 @@ export default function AICoach() {
         ) : (
           <div
             ref={conversationContainerRef}
-            className="max-h-[620px] space-y-5 overflow-y-auto rounded-[26px] border border-gray-200/80 bg-white p-4 shadow-[0_15px_40px_rgba(15,23,42,0.04)] sm:p-6"
+            className="max-h-[620px] space-y-5 overflow-y-auto rounded-3xl border border-gray-200/80 bg-white p-4 shadow-[0_15px_40px_rgba(15,23,42,0.04)] sm:p-6"
           >
             <AnimatePresence initial={false}>
               {messages.map((chatMessage) => {
@@ -558,7 +558,7 @@ export default function AICoach() {
                     }`}
                   >
                     <div
-                      className={`max-w-[92%] rounded-[24px] px-5 py-4 sm:max-w-[78%] ${
+                      className={`max-w-[92%] rounded-3xl px-5 py-4 sm:max-w-[78%] ${
                         isUser
                           ? "rounded-br-md bg-gray-950 text-white shadow-[0_14px_35px_rgba(15,23,42,0.16)]"
                           : "rounded-bl-md border border-gray-200 bg-gray-50 text-gray-700"
@@ -617,7 +617,7 @@ export default function AICoach() {
                 }}
                 className="flex justify-start"
               >
-                <div className="rounded-[24px] rounded-bl-md border border-gray-200 bg-gray-50 px-5 py-4">
+                <div className="rounded-3xl rounded-bl-md border border-gray-200 bg-gray-50 px-5 py-4">
                   <div className="flex items-center gap-3">
                     <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-100 text-violet-600">
                       <span className="text-sm">✦</span>
@@ -670,7 +670,7 @@ export default function AICoach() {
 
         <form
           onSubmit={handleSubmit}
-          className="mt-4 rounded-[24px] border border-gray-200 bg-white p-3 shadow-[0_15px_40px_rgba(15,23,42,0.05)]"
+          className="mt-4 rounded-3xl border border-gray-200 bg-white p-3 shadow-[0_15px_40px_rgba(15,23,42,0.05)]"
         >
           <textarea
             value={message}

@@ -309,7 +309,7 @@ export default function GoalsCard() {
   }
 
   return (
-    <section className="rounded-[28px] border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+    <section className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-sm font-semibold text-gray-950">Goals</p>
@@ -467,7 +467,7 @@ export default function GoalsCard() {
                             duration: 0.55,
                             ease: [0.22, 1, 0.36, 1],
                           }}
-                          className="h-full rounded-full bg-gradient-to-r from-violet-500 to-blue-500"
+                          className="h-full rounded-full bg-gradient-to-r from-violet-500 to-cyan-400"
                         />
                       </div>
                     </div>
@@ -512,7 +512,7 @@ export default function GoalsCard() {
 
       <form
         onSubmit={handleSaveGoal}
-        className="mt-6 rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 to-blue-50 p-5"
+        className="mt-6 rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 to-cyan-50 p-5"
       >
         <div className="flex items-center justify-between gap-4">
           <div>

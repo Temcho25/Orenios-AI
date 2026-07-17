@@ -90,7 +90,7 @@ export default function ProductHero() {
   return (
     <section
       id="waitlist"
-      className="relative isolate overflow-hidden bg-[#08070f]"
+      className="relative isolate overflow-hidden bg-surface-dark"
     >
       {/* Aurora background */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">

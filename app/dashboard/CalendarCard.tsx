@@ -510,7 +510,7 @@ export default function CalendarCard() {
   }
 
   return (
-    <section className="overflow-hidden rounded-[30px] border border-gray-200/80 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.07)]">
+    <section className="overflow-hidden rounded-3xl border border-gray-200/80 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.07)]">
       <div className="border-b border-gray-100 px-5 py-5 sm:px-6">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -775,7 +775,7 @@ export default function CalendarCard() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               onSubmit={handleCreateEvent}
-              className="mt-5 rounded-[26px] border border-violet-100 bg-gradient-to-br from-violet-50 to-blue-50 p-5"
+              className="mt-5 rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 to-cyan-50 p-5"
             >
               <div className="flex items-center justify-between gap-4">
                 <div>

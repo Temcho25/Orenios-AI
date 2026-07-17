@@ -34,7 +34,7 @@ export default function Footer() {
           }
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-[40px] border border-white/10 bg-[#101017] px-6 py-16 text-center text-white shadow-[0_40px_100px_rgba(15,23,42,0.35)] sm:px-12 sm:py-20"
+          className="relative overflow-hidden rounded-[40px] border border-white/10 bg-surface-dark-card px-6 py-16 text-center text-white shadow-[0_40px_100px_rgba(15,23,42,0.35)] sm:px-12 sm:py-20"
         >
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute left-1/2 top-0 h-[420px] w-[620px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-violet-600/30 blur-[140px]" />
@@ -76,7 +76,7 @@ export default function Footer() {
               <a
                 href="#"
                 onClick={scrollToWaitlist}
-                className="inline-flex min-h-[44px] items-center rounded-full bg-gradient-to-r from-violet-500 to-cyan-400 px-8 py-4 text-lg font-semibold text-white shadow-[0_20px_45px_rgba(124,58,237,0.35)] transition-all duration-300 hover:-translate-y-1 hover:from-violet-400 hover:to-cyan-300 hover:shadow-[0_26px_55px_rgba(124,58,237,0.45)] active:from-violet-400 active:to-cyan-300 active:shadow-[0_26px_55px_rgba(124,58,237,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#101017]"
+                className="inline-flex min-h-[44px] items-center rounded-full bg-gradient-to-r from-violet-500 to-cyan-400 px-8 py-4 text-lg font-semibold text-white shadow-[0_20px_45px_rgba(124,58,237,0.35)] transition-all duration-300 hover:-translate-y-1 hover:from-violet-400 hover:to-cyan-300 hover:shadow-[0_26px_55px_rgba(124,58,237,0.45)] active:from-violet-400 active:to-cyan-300 active:shadow-[0_26px_55px_rgba(124,58,237,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-dark-card"
               >
                 Join Waitlist
               </a>
