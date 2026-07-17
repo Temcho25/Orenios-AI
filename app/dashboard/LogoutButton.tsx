@@ -41,11 +41,11 @@ export default function LogoutButton() {
         type="button"
         onClick={handleLogout}
         disabled={loading}
-        className="flex h-12 w-full items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] px-5 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+        className="flex h-12 w-full items-center justify-center rounded-2xl border border-card-border bg-muted px-5 text-sm font-semibold text-foreground transition hover:bg-surface-strong disabled:cursor-not-allowed disabled:opacity-60"
       >
         {loading ? (
           <span className="flex items-center gap-2">
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/10 border-t-white" />
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-muted-border border-t-foreground" />
             Signing out...
           </span>
         ) : (
@@ -54,7 +54,7 @@ export default function LogoutButton() {
       </button>
 
       {errorMessage && (
-        <p className="mt-3 text-center text-sm text-red-400">
+        <p className="mt-3 text-center text-sm text-red-600 dark:text-red-400">
           {errorMessage}
         </p>
       )}

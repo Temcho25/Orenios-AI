@@ -285,7 +285,7 @@ if (!navigationRestored) {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="flex min-h-screen">
-        <aside className="fixed inset-y-0 left-0 z-40 hidden w-[278px] border-r border-white/[0.06] bg-surface-dark-card/60 px-5 py-6 backdrop-blur-2xl lg:flex lg:flex-col">
+        <aside className="fixed inset-y-0 left-0 z-40 hidden w-[278px] border-r border-card-border bg-background/80 px-5 py-6 backdrop-blur-2xl lg:flex lg:flex-col">
           <SidebarContent
             activeItem={activeItem}
             email={email}
@@ -315,7 +315,7 @@ if (!navigationRestored) {
             duration: 0.3,
             ease: [0.22, 1, 0.36, 1],
           }}
-          className="fixed inset-y-0 left-0 z-50 flex w-[285px] flex-col border-r border-white/[0.06] bg-surface-dark-card px-5 py-6 shadow-2xl lg:hidden"
+          className="fixed inset-y-0 left-0 z-50 flex w-[285px] flex-col border-r border-card-border bg-background px-5 py-6 shadow-2xl lg:hidden"
         >
           <SidebarContent
             activeItem={activeItem}
@@ -720,20 +720,17 @@ function SidebarContent({
           </motion.div>
 
           <div>
-            <p className="text-base font-bold tracking-[-0.02em] text-white">
+            <p className="text-base font-bold tracking-[-0.02em] text-foreground">
               Orenios AI
             </p>
 
-            <p className="text-xs text-white/40">
+            <p className="text-xs text-foreground/40">
               Your Life Admin
             </p>
           </div>
         </button>
       </div>
 
-      {/* The sidebar is a fixed dark brand rail — it doesn't follow the
-          workspace theme toggle, so everything below stays hardcoded
-          white/dark rather than tracking --foreground/--card. */}
       <nav className="mt-9 space-y-1.5">
         {navigationItems.map((item) => {
           const isActive = activeItem === item.label;
@@ -745,15 +742,15 @@ function SidebarContent({
               onClick={() => onSelect(item.label)}
               className={`group flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-medium transition ${
                 isActive
-                  ? "border-accent-violet/25 bg-gradient-to-r from-accent-violet/20 to-accent-cyan/10 text-white"
-                  : "border-transparent text-white/50 hover:bg-white/[0.05] hover:text-white"
+                  ? "border-accent-violet/25 bg-gradient-to-r from-accent-violet/20 to-accent-cyan/10 text-foreground"
+                  : "border-transparent text-foreground/50 hover:bg-muted hover:text-foreground"
               }`}
             >
               <span
                 className={
                   isActive
                     ? "text-accent-cyan"
-                    : "text-white/30 transition group-hover:text-accent-violet"
+                    : "text-foreground/30 transition group-hover:text-accent-violet"
                 }
               >
                 {item.icon}
@@ -765,7 +762,7 @@ function SidebarContent({
                 <span
                   className={`ml-auto rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
                     isActive
-                      ? "bg-white/10 text-white/70"
+                      ? "bg-surface-strong text-foreground/70"
                       : "bg-accent-violet/15 text-accent-violet"
                   }`}
                 >
@@ -777,18 +774,18 @@ function SidebarContent({
         })}
       </nav>
 
-      <div className="mt-8 rounded-3xl border border-white/[0.06] bg-white/[0.03] p-5 text-white backdrop-blur-[12px]">
+      <div className="mt-8 rounded-3xl border border-card-border bg-card p-5 text-foreground backdrop-blur-[12px]">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-white/55">
+          <span className="text-xs font-medium text-foreground/55">
             Daily progress
           </span>
 
-          <span className="text-xs font-semibold text-accent-mint">
+          <span className="text-xs font-semibold text-emerald-600 dark:text-accent-mint">
             {progressLabel}
           </span>
         </div>
 
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: progressWidth }}
@@ -801,18 +798,18 @@ function SidebarContent({
           />
         </div>
 
-        <p className="mt-4 text-xs leading-5 text-white/45">
+        <p className="mt-4 text-xs leading-5 text-foreground/45">
           {progressCaption}
         </p>
       </div>
 
       <div className="mt-auto pt-6">
-        <div className="mb-3 rounded-2xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 backdrop-blur-[12px]">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/40">
+        <div className="mb-3 rounded-2xl border border-card-border bg-card px-4 py-3 backdrop-blur-[12px]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground/40">
             Signed in as
           </p>
 
-          <p className="mt-1 truncate text-xs font-medium text-white/70">
+          <p className="mt-1 truncate text-xs font-medium text-foreground/70">
             {email}
           </p>
         </div>
