@@ -18,11 +18,27 @@ export type ParsedPlanItem = {
   priority: TaskPriority;
 };
 
+// Describes one thing a parsed event overlaps with — either a real
+// existing calendar_events row, or another item from the same parsed
+// batch. "new_item" conflicts are symmetric: if item A overlaps item
+// B, both A's and B's conflict lists reference each other.
+export type PlanItemConflict = {
+  kind: "existing_event" | "new_item";
+  title: string;
+  date: string;
+  start_time: string;
+  end_time: string | null;
+};
+
+export type PlanItemWithConflicts = ParsedPlanItem & {
+  conflicts: PlanItemConflict[];
+};
+
 export type VoicePlanResponse =
   | {
       status: "ok";
       transcript: string;
-      items: ParsedPlanItem[];
+      items: PlanItemWithConflicts[];
     }
   | {
       status: "empty_transcript";

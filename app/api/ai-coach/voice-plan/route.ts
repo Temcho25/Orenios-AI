@@ -11,6 +11,7 @@ import {
 import { buildVoicePlanPrompt } from "../lib/voice-plan/prompt";
 import { voicePlanJsonSchema } from "../lib/voice-plan/schema";
 import { sanitizeParsedPlanItems } from "../lib/voice-plan/parse-response";
+import { detectConflicts } from "../lib/voice-plan/conflicts";
 import type { VoicePlanResponse } from "../lib/voice-plan/types";
 
 // This route is intentionally separate from /api/ai-coach: multi-item
@@ -170,10 +171,33 @@ export async function POST(request: Request) {
       });
     }
 
+    const distinctDates = Array.from(
+      new Set(items.map((item) => item.date))
+    );
+
+    const { data: existingEventsData, error: existingEventsError } =
+      await supabase
+        .from("calendar_events")
+        .select("title, event_date, start_time, end_time")
+        .eq("user_id", user.id)
+        .in("event_date", distinctDates);
+
+    if (existingEventsError) {
+      console.error(
+        "Voice plan: could not load existing calendar events for conflict check:",
+        existingEventsError
+      );
+    }
+
+    const itemsWithConflicts = detectConflicts(
+      items,
+      existingEventsData ?? []
+    );
+
     return NextResponse.json<VoicePlanResponse>({
       status: "ok",
       transcript,
-      items,
+      items: itemsWithConflicts,
     });
   } catch (error) {
     console.error("Voice plan route error:", error);

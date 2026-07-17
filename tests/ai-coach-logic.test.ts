@@ -12,6 +12,11 @@ import { executeEventAction } from "../app/api/ai-coach/lib/event-actions";
 import { executeFocusAction } from "../app/api/ai-coach/lib/focus-actions";
 import { runActionSafely } from "../app/api/ai-coach/lib/safe-execute";
 import { sanitizeParsedPlanItems } from "../app/api/ai-coach/lib/voice-plan/parse-response";
+import {
+  detectConflicts,
+  doTimeRangesOverlap,
+} from "../app/api/ai-coach/lib/voice-plan/conflicts";
+import type { ParsedPlanItem } from "../app/api/ai-coach/lib/voice-plan/types";
 import type {
   DailyFocusRecord,
   EventRecord,
@@ -539,5 +544,194 @@ describe("Voice plan item sanitization", () => {
       items: [],
       droppedCount: 0,
     });
+  });
+});
+
+function buildPlanItem(
+  overrides: Partial<ParsedPlanItem>
+): ParsedPlanItem {
+  return {
+    type: "event",
+    title: "Untitled",
+    date: "2026-07-18",
+    start_time: "10:00",
+    end_time: null,
+    time_is_approximate: false,
+    category: "Other",
+    priority: "medium",
+    ...overrides,
+  };
+}
+
+describe("Voice plan conflict detection", () => {
+  it("flags the real new-vs-new overlap found in the part 2 checkpoint (landing page work ending 12:30 vs. lunch starting 12:00)", () => {
+    const landingPageWork = buildPlanItem({
+      title: "Work on landing page",
+      start_time: "10:30",
+      end_time: "12:30",
+    });
+
+    const lunchMeeting = buildPlanItem({
+      title: "Lunch meeting with client",
+      start_time: "12:00",
+      end_time: null, // no stated end -> assumed duration applies
+    });
+
+    const result = detectConflicts(
+      [landingPageWork, lunchMeeting],
+      []
+    );
+
+    const [landingResult, lunchResult] = result;
+
+    expect(landingResult.conflicts).toEqual([
+      {
+        kind: "new_item",
+        title: "Lunch meeting with client",
+        date: "2026-07-18",
+        start_time: "12:00",
+        end_time: null,
+      },
+    ]);
+
+    expect(lunchResult.conflicts).toEqual([
+      {
+        kind: "new_item",
+        title: "Work on landing page",
+        date: "2026-07-18",
+        start_time: "10:30",
+        end_time: "12:30",
+      },
+    ]);
+  });
+
+  it("flags a new item overlapping a real existing calendar event", () => {
+    const newEvent = buildPlanItem({
+      title: "Team sync",
+      start_time: "10:00",
+      end_time: "11:00",
+    });
+
+    const result = detectConflicts(
+      [newEvent],
+      [
+        {
+          title: "Dentist appointment",
+          event_date: "2026-07-18",
+          start_time: "10:30",
+          end_time: "11:15",
+        },
+      ]
+    );
+
+    expect(result[0].conflicts).toEqual([
+      {
+        kind: "existing_event",
+        title: "Dentist appointment",
+        date: "2026-07-18",
+        start_time: "10:30",
+        end_time: "11:15",
+      },
+    ]);
+  });
+
+  it("does not flag events that are clearly separated in time", () => {
+    const morningCall = buildPlanItem({
+      title: "Morning call",
+      start_time: "09:00",
+      end_time: "09:30",
+    });
+
+    const afternoonWork = buildPlanItem({
+      title: "Afternoon work block",
+      start_time: "14:00",
+      end_time: "16:00",
+    });
+
+    const result = detectConflicts([morningCall, afternoonWork], []);
+
+    expect(result[0].conflicts).toEqual([]);
+    expect(result[1].conflicts).toEqual([]);
+  });
+
+  it("never flags tasks, since they carry no time", () => {
+    const task = buildPlanItem({
+      type: "task",
+      title: "Buy groceries",
+      start_time: null,
+      end_time: null,
+    });
+
+    const overlappingEvent = buildPlanItem({
+      title: "Something at the same nominal time",
+      start_time: "10:00",
+      end_time: "11:00",
+    });
+
+    const result = detectConflicts([task, overlappingEvent], []);
+
+    expect(result[0].conflicts).toEqual([]);
+  });
+
+  it("applies the default assumed duration when comparing two events with no end_time", () => {
+    // Both start at 10:00 with no stated end — under the assumed
+    // 30-minute default they occupy the same slot and must conflict.
+    const first = buildPlanItem({
+      title: "First call",
+      start_time: "10:00",
+      end_time: null,
+    });
+
+    const second = buildPlanItem({
+      title: "Second call",
+      start_time: "10:15",
+      end_time: null,
+    });
+
+    const result = detectConflicts([first, second], []);
+
+    expect(result[0].conflicts).toHaveLength(1);
+    expect(result[1].conflicts).toHaveLength(1);
+  });
+
+  it("does not flag same-time items on different dates", () => {
+    const today = buildPlanItem({
+      title: "Today's call",
+      date: "2026-07-18",
+      start_time: "10:00",
+      end_time: "11:00",
+    });
+
+    const tomorrow = buildPlanItem({
+      title: "Tomorrow's call",
+      date: "2026-07-19",
+      start_time: "10:00",
+      end_time: "11:00",
+    });
+
+    const result = detectConflicts([today, tomorrow], []);
+
+    expect(result[0].conflicts).toEqual([]);
+    expect(result[1].conflicts).toEqual([]);
+  });
+});
+
+describe("doTimeRangesOverlap", () => {
+  it("treats touching intervals (end === start) as non-overlapping", () => {
+    expect(doTimeRangesOverlap("10:00", "11:00", "11:00", "12:00")).toBe(
+      false
+    );
+  });
+
+  it("detects a partial overlap", () => {
+    expect(doTimeRangesOverlap("10:00", "12:00", "11:00", "13:00")).toBe(
+      true
+    );
+  });
+
+  it("detects one interval fully containing another", () => {
+    expect(doTimeRangesOverlap("09:00", "17:00", "12:00", "13:00")).toBe(
+      true
+    );
   });
 });

@@ -45,3 +45,12 @@ export const TIME_OF_DAY_DEFAULTS: Record<string, TimeOfDayWindow> = {
   evening: { label: "evening", start: "18:00", end: "20:00" },
   night: { label: "night", start: "20:00", end: "22:00" },
 };
+
+// Neither a parsed item nor an existing calendar_events row is
+// required to have an end_time (a bare "call at 10" is valid and
+// common). Treating a missing end_time as zero duration for conflict
+// purposes would under-detect real conflicts — two events 5 minutes
+// apart with no stated end would never flag. This assumed duration is
+// used ONLY inside the conflict-detection math; it is never written to
+// the database or shown as the item's actual end_time.
+export const DEFAULT_CONFLICT_CHECK_DURATION_MINUTES = 30;
