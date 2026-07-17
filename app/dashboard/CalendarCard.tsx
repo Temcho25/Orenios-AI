@@ -527,7 +527,7 @@ export default function CalendarCard() {
             <button
               type="button"
               onClick={goToToday}
-              className="h-10 rounded-xl border border-gray-200 bg-white px-4 text-xs font-semibold text-gray-600 transition hover:border-gray-300 hover:text-gray-950"
+              className="flex h-11 items-center rounded-xl border border-gray-200 bg-white px-4 text-xs font-semibold text-gray-600 transition hover:border-gray-300 hover:text-gray-950"
             >
               Today
             </button>
@@ -536,7 +536,7 @@ export default function CalendarCard() {
               type="button"
               onClick={goToPreviousMonth}
               aria-label="Previous month"
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition hover:border-gray-300 hover:text-gray-950"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition hover:border-gray-300 hover:text-gray-950"
             >
               <svg
                 width="18"
@@ -559,7 +559,7 @@ export default function CalendarCard() {
               type="button"
               onClick={goToNextMonth}
               aria-label="Next month"
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition hover:border-gray-300 hover:text-gray-950"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition hover:border-gray-300 hover:text-gray-950"
             >
               <svg
                 width="18"
@@ -605,130 +605,140 @@ export default function CalendarCard() {
         </div>
       )}
 
-      <div className="overflow-x-auto">
-        <div className="min-w-[720px]">
-          <div className="grid grid-cols-7 border-b border-gray-100 bg-gray-50/70">
-            {weekDays.map((day) => (
-              <div
-                key={day}
-                className="px-3 py-3 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-gray-400"
-              >
-                {day}
-              </div>
-            ))}
-          </div>
-
-          <motion.div
-            key={`${currentMonth.getFullYear()}-${currentMonth.getMonth()}`}
-            initial={{ opacity: 0, x: 8 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{
-              duration: 0.28,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="grid grid-cols-7"
+      {/* Mobile gets its own compact grid: day number + up to 3 category
+          dots, no per-event text preview, so all 7 columns fit the screen
+          width instead of forcing horizontal scroll on a 720px-wide desktop
+          grid. Tablet/desktop (sm+) keeps the original rich cell with
+          event text previews, unchanged. */}
+      <div className="grid grid-cols-7 border-b border-gray-100 bg-gray-50/70">
+        {weekDays.map((day) => (
+          <div
+            key={day}
+            className="px-1 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-gray-400 sm:px-3 sm:py-3 sm:text-[11px] sm:tracking-[0.14em]"
           >
-            {calendarDays.map(({ date, isCurrentMonth }) => {
-              const selected = isSameDay(date, selectedDate);
-              const isToday = isSameDay(date, today);
-              const dateKey = getLocalDateKey(date);
-
-              const dayEvents = events
-                .filter(
-                  (calendarEvent) =>
-                    calendarEvent.event_date === dateKey
-                )
-                .slice(0, 2);
-
-              const hiddenEventsCount =
-                events.filter(
-                  (calendarEvent) =>
-                    calendarEvent.event_date === dateKey
-                ).length - dayEvents.length;
-
-              return (
-                <button
-                  key={dateKey}
-                  type="button"
-                  onClick={() => selectDate(date)}
-                  className={`group relative min-h-[128px] border-b border-r border-gray-100 p-3 text-left transition hover:bg-violet-50/40 ${
-                    selected ? "bg-violet-50/70" : "bg-white"
-                  }`}
-                >
-                  {selected && (
-                    <motion.div
-                      layoutId="selected-calendar-day"
-                      className="absolute inset-1 rounded-2xl border border-violet-200 bg-violet-50/70"
-                      transition={{
-                        duration: 0.22,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                    />
-                  )}
-
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between">
-                      <span
-                        className={`flex h-8 w-8 items-center justify-center rounded-xl text-sm font-semibold transition ${
-                          isToday
-                            ? "bg-gray-950 text-white shadow-sm"
-                            : selected
-                              ? "bg-violet-600 text-white"
-                              : isCurrentMonth
-                                ? "text-gray-800 group-hover:bg-white"
-                                : "text-gray-300"
-                        }`}
-                      >
-                        {date.getDate()}
-                      </span>
-
-                      {isToday && (
-                        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-violet-500">
-                          Today
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="mt-3 space-y-1.5">
-                      {dayEvents.map((calendarEvent) => (
-                        <div
-                          key={calendarEvent.id}
-                          className="flex min-w-0 items-center gap-2 rounded-lg bg-white/85 px-2 py-1.5 text-[10px] font-medium text-gray-600 shadow-sm"
-                        >
-                          <span
-                            className={`h-2 w-2 shrink-0 rounded-full ${getCategoryDot(
-                              calendarEvent.category
-                            )}`}
-                          />
-
-                          <span className="truncate">
-                            {calendarEvent.start_time
-                              ? `${formatTime(
-                                  calendarEvent.start_time
-                                )} `
-                              : ""}
-                            {calendarEvent.title}
-                          </span>
-                        </div>
-                      ))}
-
-                      {hiddenEventsCount > 0 && (
-                        <p className="px-2 text-[10px] font-semibold text-violet-600">
-                          +{hiddenEventsCount} more
-                        </p>
-                      )}
-                    </div>
-
-                    {loadingEvents && (
-                      <div className="mt-4 h-2 w-12 animate-pulse rounded-full bg-gray-200" />
-                    )}
-                  </div>
-                </button>
-              );
-            })}
-          </motion.div>
-        </div>
+            <span className="sm:hidden">{day.slice(0, 1)}</span>
+            <span className="hidden sm:inline">{day}</span>
+          </div>
+        ))}
       </div>
+
+      <motion.div
+        key={`${currentMonth.getFullYear()}-${currentMonth.getMonth()}`}
+        initial={{ opacity: 0, x: 8 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{
+          duration: 0.28,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className="grid grid-cols-7"
+      >
+        {calendarDays.map(({ date, isCurrentMonth }) => {
+          const selected = isSameDay(date, selectedDate);
+          const isToday = isSameDay(date, today);
+          const dateKey = getLocalDateKey(date);
+
+          const allDayEvents = events.filter(
+            (calendarEvent) => calendarEvent.event_date === dateKey
+          );
+
+          const dayEvents = allDayEvents.slice(0, 2);
+          const hiddenEventsCount = allDayEvents.length - dayEvents.length;
+          const dotEvents = allDayEvents.slice(0, 3);
+
+          return (
+            <button
+              key={dateKey}
+              type="button"
+              onClick={() => selectDate(date)}
+              className={`group relative min-h-[64px] border-b border-r border-gray-100 p-1.5 text-left transition hover:bg-violet-50/40 active:bg-violet-50/60 sm:min-h-[128px] sm:p-3 ${
+                selected ? "bg-violet-50/70" : "bg-white"
+              }`}
+            >
+              {selected && (
+                <motion.div
+                  layoutId="selected-calendar-day"
+                  className="absolute inset-1 rounded-2xl border border-violet-200 bg-violet-50/70"
+                  transition={{
+                    duration: 0.22,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                />
+              )}
+
+              <div className="relative z-10">
+                <div className="flex items-center justify-center sm:justify-between">
+                  <span
+                    className={`flex h-7 w-7 items-center justify-center rounded-lg text-xs font-semibold transition sm:h-8 sm:w-8 sm:rounded-xl sm:text-sm ${
+                      isToday
+                        ? "bg-gray-950 text-white shadow-sm"
+                        : selected
+                          ? "bg-violet-600 text-white"
+                          : isCurrentMonth
+                            ? "text-gray-800 group-hover:bg-white"
+                            : "text-gray-300"
+                    }`}
+                  >
+                    {date.getDate()}
+                  </span>
+
+                  {isToday && (
+                    <span className="hidden text-[10px] font-semibold uppercase tracking-[0.12em] text-violet-500 sm:inline">
+                      Today
+                    </span>
+                  )}
+                </div>
+
+                {dotEvents.length > 0 && (
+                  <div className="mt-1.5 flex justify-center gap-1 sm:hidden">
+                    {dotEvents.map((calendarEvent) => (
+                      <span
+                        key={calendarEvent.id}
+                        className={`h-1.5 w-1.5 rounded-full ${getCategoryDot(
+                          calendarEvent.category
+                        )}`}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-3 hidden space-y-1.5 sm:block">
+                  {dayEvents.map((calendarEvent) => (
+                    <div
+                      key={calendarEvent.id}
+                      className="flex min-w-0 items-center gap-2 rounded-lg bg-white/85 px-2 py-1.5 text-[10px] font-medium text-gray-600 shadow-sm"
+                    >
+                      <span
+                        className={`h-2 w-2 shrink-0 rounded-full ${getCategoryDot(
+                          calendarEvent.category
+                        )}`}
+                      />
+
+                      <span className="truncate">
+                        {calendarEvent.start_time
+                          ? `${formatTime(
+                              calendarEvent.start_time
+                            )} `
+                          : ""}
+                        {calendarEvent.title}
+                      </span>
+                    </div>
+                  ))}
+
+                  {hiddenEventsCount > 0 && (
+                    <p className="px-2 text-[10px] font-semibold text-violet-600">
+                      +{hiddenEventsCount} more
+                    </p>
+                  )}
+                </div>
+
+                {loadingEvents && (
+                  <div className="mt-2 hidden h-2 w-12 animate-pulse rounded-full bg-gray-200 sm:block" />
+                )}
+              </div>
+            </button>
+          );
+        })}
+      </motion.div>
 
       <div className="border-t border-gray-100 bg-gray-50/60 px-5 py-5 sm:px-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -782,7 +792,7 @@ export default function CalendarCard() {
                   type="button"
                   onClick={closeEventForm}
                   disabled={savingEvent}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-gray-400 transition hover:text-gray-950"
+                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-gray-400 transition hover:text-gray-950"
                   aria-label="Close event form"
                 >
                   ×
@@ -1051,7 +1061,7 @@ export default function CalendarCard() {
                       }
                       disabled={eventPending}
                       aria-label={`Delete "${calendarEvent.title}"`}
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-gray-300 transition hover:bg-red-50 hover:text-red-500 disabled:cursor-wait"
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-gray-300 transition hover:bg-red-50 hover:text-red-500 disabled:cursor-wait"
                     >
                       {eventPending ? (
                         <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />

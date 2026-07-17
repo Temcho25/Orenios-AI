@@ -383,12 +383,12 @@ export default function GoalsCard() {
                         {goal.status}
                       </span>
 
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-2">
                         <button
                           type="button"
                           onClick={() => startEditing(goal)}
                           disabled={goalPending}
-                          className="flex h-9 w-9 items-center justify-center rounded-xl text-gray-400 transition hover:bg-violet-50 hover:text-violet-600 disabled:cursor-wait disabled:opacity-50"
+                          className="flex h-11 w-11 items-center justify-center rounded-xl text-gray-400 transition hover:bg-violet-50 hover:text-violet-600 disabled:cursor-wait disabled:opacity-50"
                           aria-label={`Edit "${goal.title}"`}
                         >
                           <svg
@@ -412,7 +412,7 @@ export default function GoalsCard() {
                           type="button"
                           onClick={() => deleteGoal(goal)}
                           disabled={goalPending}
-                          className="flex h-9 w-9 items-center justify-center rounded-xl text-gray-300 transition hover:bg-red-50 hover:text-red-500 disabled:cursor-wait"
+                          className="flex h-11 w-11 items-center justify-center rounded-xl text-gray-300 transition hover:bg-red-50 hover:text-red-500 disabled:cursor-wait"
                           aria-label={`Delete "${goal.title}"`}
                         >
                           {goalPending ? (

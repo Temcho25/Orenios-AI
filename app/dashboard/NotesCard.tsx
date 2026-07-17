@@ -464,7 +464,7 @@ export default function NotesCard() {
                   onClick={resetEditor}
                   disabled={savingNote}
                   aria-label="Close note editor"
-                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-xl text-gray-400 shadow-sm transition hover:text-gray-950 disabled:cursor-not-allowed"
+                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-xl text-gray-400 shadow-sm transition hover:text-gray-950 disabled:cursor-not-allowed"
                 >
                   ×
                 </button>
@@ -634,13 +634,13 @@ export default function NotesCard() {
                         </svg>
                       </div>
 
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-2">
                         <button
                           type="button"
                           onClick={() => openEditEditor(note)}
                           disabled={notePending}
                           aria-label={`Edit "${note.title}"`}
-                          className="flex h-9 w-9 items-center justify-center rounded-xl text-gray-300 opacity-100 transition hover:bg-violet-50 hover:text-violet-600 disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
+                          className="flex h-11 w-11 items-center justify-center rounded-xl text-gray-300 opacity-100 transition hover:bg-violet-50 hover:text-violet-600 disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
                         >
                           <svg
                             width="16"
@@ -664,7 +664,7 @@ export default function NotesCard() {
                           onClick={() => deleteNote(note)}
                           disabled={notePending}
                           aria-label={`Delete "${note.title}"`}
-                          className="flex h-9 w-9 items-center justify-center rounded-xl text-gray-300 opacity-100 transition hover:bg-red-50 hover:text-red-500 disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
+                          className="flex h-11 w-11 items-center justify-center rounded-xl text-gray-300 opacity-100 transition hover:bg-red-50 hover:text-red-500 disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
                         >
                           {notePending ? (
                             <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />

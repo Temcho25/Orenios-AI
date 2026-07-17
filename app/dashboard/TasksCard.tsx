@@ -556,27 +556,31 @@ export default function TasksCard() {
                           ? `Mark "${task.title}" as incomplete`
                           : `Mark "${task.title}" as complete`
                       }
-                      className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border transition disabled:cursor-wait ${
-                        task.completed
-                          ? "border-emerald-500 bg-emerald-500 text-white"
-                          : "border-gray-300 bg-white text-transparent hover:border-violet-400"
-                      }`}
+                      className="group/check -m-2.5 flex shrink-0 items-center justify-center p-2.5 disabled:cursor-wait"
                     >
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        aria-hidden="true"
+                      <span
+                        className={`flex h-6 w-6 items-center justify-center rounded-lg border transition ${
+                          task.completed
+                            ? "border-emerald-500 bg-emerald-500 text-white"
+                            : "border-gray-300 bg-white text-transparent group-hover/check:border-violet-400"
+                        }`}
                       >
-                        <path
-                          d="m5 12 4 4L19 6"
-                          stroke="currentColor"
-                          strokeWidth="2.2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="m5 12 4 4L19 6"
+                            stroke="currentColor"
+                            strokeWidth="2.2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
                     </button>
 
                     <div className="min-w-0 flex-1">
@@ -620,7 +624,7 @@ export default function TasksCard() {
                       onClick={() => deleteTask(task)}
                       disabled={taskPending}
                       aria-label={`Delete "${task.title}"`}
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-gray-300 opacity-100 transition hover:bg-red-50 hover:text-red-500 disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-gray-300 opacity-100 transition hover:bg-red-50 hover:text-red-500 disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
                     >
                       {taskPending ? (
                         <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />

@@ -272,7 +272,7 @@ export default function FocusCard() {
           <button
             type="button"
             onClick={() => setEditing(true)}
-            className="rounded-full bg-violet-50 px-3 py-1.5 text-xs font-semibold text-violet-600 transition hover:bg-violet-100"
+            className="flex min-h-[44px] items-center rounded-full bg-violet-50 px-4 text-xs font-semibold text-violet-600 transition hover:bg-violet-100"
           >
             Edit
           </button>
@@ -388,7 +388,7 @@ export default function FocusCard() {
                 whileTap={saving ? undefined : { scale: 0.985 }}
                 type="submit"
                 disabled={saving || deleting || !title.trim()}
-                className="flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-gray-950 px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(15,23,42,0.16)] transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-2xl bg-gray-950 px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(15,23,42,0.16)] transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:flex-1"
               >
                 {saving ? (
                   <>
@@ -408,7 +408,7 @@ export default function FocusCard() {
                   type="button"
                   onClick={cancelEditing}
                   disabled={saving || deleting}
-                  className="h-12 rounded-2xl border border-gray-200 bg-white px-5 text-sm font-semibold text-gray-600 transition hover:border-gray-300 hover:text-gray-950 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex h-12 w-full shrink-0 items-center justify-center rounded-2xl border border-gray-200 bg-white px-5 text-sm font-semibold text-gray-600 transition hover:border-gray-300 hover:text-gray-950 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                 >
                   Cancel
                 </button>
@@ -474,7 +474,7 @@ export default function FocusCard() {
                 type="button"
                 onClick={handleDelete}
                 disabled={deleting}
-                className="text-xs font-semibold text-gray-400 transition hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex min-h-[44px] items-center text-xs font-semibold text-gray-400 transition hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {deleting ? "Removing..." : "Remove"}
               </button>

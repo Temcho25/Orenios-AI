@@ -326,39 +326,75 @@ if (!navigationRestored) {
         </motion.aside>
 
         <section className="min-w-0 flex-1 lg:pl-[278px]">
-          <header className="sticky top-0 z-30 border-b border-gray-200/70 bg-[#f5f6fa]/85 px-4 py-4 backdrop-blur-2xl sm:px-6 lg:px-8">
-            <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-4">
-              <div className="flex min-w-0 items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => setMobileMenuOpen(true)}
-                  aria-label="Open navigation"
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 shadow-sm transition hover:bg-gray-50 lg:hidden"
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    aria-hidden="true"
+          <header className="sticky top-0 z-30 border-b border-gray-200/70 bg-[#f5f6fa]/85 px-4 py-3 backdrop-blur-2xl sm:px-6 sm:py-4 lg:px-8">
+            <div className="mx-auto max-w-[1500px]">
+              {/* Mobile: icon row on top, title on its own full-width row below —
+                  a dedicated stacked layout instead of squeezing everything into
+                  one row, which was truncating the title behind the icon
+                  buttons. */}
+              <div className="flex flex-col gap-3 sm:hidden">
+                <div className="flex items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setMobileMenuOpen(true)}
+                    aria-label="Open navigation"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 shadow-sm transition hover:bg-gray-50"
                   >
-                    <path
-                      d="M4 7h16M4 12h16M4 17h16"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M4 7h16M4 12h16M4 17h16"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </button>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      aria-label="Notifications"
+                      className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-600 shadow-sm transition hover:border-gray-300 hover:text-gray-950"
+                    >
+                      <svg
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7ZM10 20h4"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white shadow-sm">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-blue-500 text-xs font-bold text-white">
+                        {firstName.charAt(0).toUpperCase()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
                 <div className="min-w-0">
-                  <p className="truncate text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">
                     {activeItem === "Overview"
                       ? "Personal workspace"
                       : activeItem}
                   </p>
 
-                  <h1 className="truncate text-xl font-semibold tracking-[-0.025em] text-gray-950 sm:text-2xl">
+                  <h1 className="text-xl font-semibold tracking-[-0.025em] text-gray-950">
                     {activeItem === "Overview"
                       ? `Good to see you, ${firstName}.`
                       : getSectionTitle(activeItem)}
@@ -366,42 +402,83 @@ if (!navigationRestored) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  aria-label="Notifications"
-                  className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-600 shadow-sm transition hover:border-gray-300 hover:text-gray-950"
-                >
-                  <svg
-                    width="19"
-                    height="19"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    aria-hidden="true"
+              {/* Tablet/desktop: original single-row layout, unchanged. */}
+              <div className="hidden items-center justify-between gap-4 sm:flex">
+                <div className="flex min-w-0 items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setMobileMenuOpen(true)}
+                    aria-label="Open navigation"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 shadow-sm transition hover:bg-gray-50 lg:hidden"
                   >
-                    <path
-                      d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7ZM10 20h4"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M4 7h16M4 12h16M4 17h16"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </button>
 
-                <div className="flex h-11 items-center gap-3 rounded-2xl border border-gray-200 bg-white px-2 pr-3 shadow-sm">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-blue-500 text-xs font-bold text-white">
-                    {firstName.charAt(0).toUpperCase()}
+                  <div className="min-w-0">
+                    <p className="truncate text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">
+                      {activeItem === "Overview"
+                        ? "Personal workspace"
+                        : activeItem}
+                    </p>
+
+                    <h1 className="truncate text-2xl font-semibold tracking-[-0.025em] text-gray-950">
+                      {activeItem === "Overview"
+                        ? `Good to see you, ${firstName}.`
+                        : getSectionTitle(activeItem)}
+                    </h1>
                   </div>
+                </div>
 
-                  <div className="hidden sm:block">
-                    <p className="max-w-[150px] truncate text-sm font-semibold text-gray-900">
-                      {firstName}
-                    </p>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    aria-label="Notifications"
+                    className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-600 shadow-sm transition hover:border-gray-300 hover:text-gray-950"
+                  >
+                    <svg
+                      width="19"
+                      height="19"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7ZM10 20h4"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
 
-                    <p className="max-w-[150px] truncate text-xs text-gray-400">
-                      Personal account
-                    </p>
+                  <div className="flex h-11 items-center gap-3 rounded-2xl border border-gray-200 bg-white px-2 pr-3 shadow-sm">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-blue-500 text-xs font-bold text-white">
+                      {firstName.charAt(0).toUpperCase()}
+                    </div>
+
+                    <div>
+                      <p className="max-w-[150px] truncate text-sm font-semibold text-gray-900">
+                        {firstName}
+                      </p>
+
+                      <p className="max-w-[150px] truncate text-xs text-gray-400">
+                        Personal account
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -807,7 +884,7 @@ function OverviewContent({
         <button
           type="button"
           onClick={() => onNavigate("Goals")}
-          className="shrink-0 rounded-2xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-gray-300 hover:text-gray-950"
+          className="flex min-h-[44px] shrink-0 items-center rounded-2xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-gray-300 hover:text-gray-950"
         >
           Open Goals
         </button>
