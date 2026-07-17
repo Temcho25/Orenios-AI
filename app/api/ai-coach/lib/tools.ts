@@ -260,4 +260,57 @@ export const aiCoachTools: OpenAI.Responses.Tool[] = [
       additionalProperties: false,
     },
   },
+
+  {
+    type: "function",
+    name: "create_event",
+    description:
+      "Create a new calendar event in the authenticated user's Orenios calendar. Use when the newest user message clearly asks to schedule, book, add to the calendar, or put a specific-time or specific-date happening (meeting, call, appointment, reminder, note on a date) on the calendar, as opposed to an open-ended to-do.",
+    strict: true,
+    parameters: {
+      type: "object",
+      properties: {
+        title: {
+          type: "string",
+          description:
+            "A concise event title without phrases such as add event or schedule. When the user only asks for a generic reminder or note on a date without describing what it is, use a short generic title such as Reminder or Note instead of asking what to call it.",
+        },
+        description: {
+          type: ["string", "null"],
+          description:
+            "A short optional description. Use null when the user did not provide one.",
+        },
+        event_date: {
+          type: "string",
+          description:
+            "The event date in YYYY-MM-DD format. Always resolve relative dates (today, tomorrow, a weekday name, next week, in N days/weeks/months) yourself using current_date. Never leave this to the user to clarify when a relative date was given.",
+        },
+        start_time: {
+          type: ["string", "null"],
+          description:
+            "Start time in 24-hour HH:MM format. Use null when no specific time was requested.",
+        },
+        end_time: {
+          type: ["string", "null"],
+          description:
+            "End time in 24-hour HH:MM format. Use null when no end time or duration was requested. Requires start_time to also be set.",
+        },
+        category: {
+          type: "string",
+          enum: ["Personal", "Work", "Health", "Fitness", "Other"],
+          description:
+            "Best-fit category for the event. Use Other when it does not clearly fit another category.",
+        },
+      },
+      required: [
+        "title",
+        "description",
+        "event_date",
+        "start_time",
+        "end_time",
+        "category",
+      ],
+      additionalProperties: false,
+    },
+  },
 ];

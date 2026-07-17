@@ -75,3 +75,30 @@ export type GoalRecord = {
   deadline: string | null;
   created_at: string;
 };
+
+export type EventCategory =
+  | "Personal"
+  | "Work"
+  | "Health"
+  | "Fitness"
+  | "Other";
+
+export type CreateEventArguments = {
+  title: string;
+  description: string | null;
+  event_date: string;
+  start_time: string | null;
+  end_time: string | null;
+  category: EventCategory;
+};
+
+export type EventRecord = {
+  id: string;
+  title: string;
+  description: string | null;
+  event_date: string;
+  start_time: string | null;
+  end_time: string | null;
+  category: EventCategory;
+  created_at: string;
+};

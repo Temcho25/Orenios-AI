@@ -7,6 +7,7 @@ import { aiCoachTools } from "./lib/tools";
 import { buildAICoachPrompt } from "./lib/prompt";
 import { executeTaskAction } from "./lib/task-actions";
 import { executeGoalAction } from "./lib/goal-actions";
+import { executeEventAction } from "./lib/event-actions";
 import {
   getCrossTypeAmbiguityReply,
   resolveReferencedAction,
@@ -20,6 +21,7 @@ import type {
   StoredAIMessage,
   TaskRecord,
   GoalRecord,
+  EventRecord,
 } from "./lib/types";
 
 const taskSelect =
@@ -229,6 +231,9 @@ export async function POST(request: Request) {
     const goals =
       (goalsResult.data ?? []) as GoalRecord[];
 
+    const events =
+      (calendarResult.data ?? []) as EventRecord[];
+
     const firstName =
       profileResult.data?.first_name?.trim() ||
       user.user_metadata?.full_name
@@ -263,8 +268,7 @@ export async function POST(request: Request) {
       todays_focus: focusResult.data ?? null,
       tasks,
       goals,
-      upcoming_calendar_events:
-        calendarResult.data ?? [],
+      upcoming_calendar_events: events,
       recent_notes: notesForAI,
     };
 
@@ -355,6 +359,19 @@ export async function POST(request: Request) {
           if (goalResult.handled) {
             reply = goalResult.reply;
             action = goalResult.action;
+          } else {
+            const eventResult = await executeEventAction({
+              functionName: referencedAction.functionName,
+              rawArguments: referencedAction.rawArguments,
+              supabase,
+              userId: user.id,
+              events,
+            });
+
+            if (eventResult.handled) {
+              reply = eventResult.reply;
+              action = eventResult.action;
+            }
           }
         }
       }
