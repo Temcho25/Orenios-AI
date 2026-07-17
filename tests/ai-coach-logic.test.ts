@@ -12,6 +12,7 @@ import { executeEventAction } from "../app/api/ai-coach/lib/event-actions";
 import { executeFocusAction } from "../app/api/ai-coach/lib/focus-actions";
 import { runActionSafely } from "../app/api/ai-coach/lib/safe-execute";
 import { sanitizeParsedPlanItems } from "../app/api/ai-coach/lib/voice-plan/parse-response";
+import { buildLinkedContextNote } from "../app/api/ai-coach/lib/voice-plan/linking";
 import {
   detectConflicts,
   doTimeRangesOverlap,
@@ -20,6 +21,8 @@ import type { ParsedPlanItem } from "../app/api/ai-coach/lib/voice-plan/types";
 import type {
   DailyFocusRecord,
   EventRecord,
+  GoalRecord,
+  TaskRecord,
 } from "../app/api/ai-coach/lib/types";
 import {
   getGoalStatusForProgress,
@@ -733,5 +736,53 @@ describe("doTimeRangesOverlap", () => {
     expect(doTimeRangesOverlap("09:00", "17:00", "12:00", "13:00")).toBe(
       true
     );
+  });
+});
+
+describe("buildLinkedContextNote", () => {
+  const task: TaskRecord = {
+    id: "task-1",
+    title: "Landing page",
+    completed: false,
+    priority: "medium",
+    due_date: null,
+    created_at: "2026-07-01T00:00:00.000Z",
+  };
+
+  const goal: GoalRecord = {
+    id: "goal-1",
+    title: "Launch Orenios",
+    description: null,
+    progress: 20,
+    status: "In Progress",
+    deadline: null,
+    created_at: "2026-07-01T00:00:00.000Z",
+  };
+
+  it("returns null when no task or goal matches", () => {
+    expect(buildLinkedContextNote("Gym", [task], [goal])).toBeNull();
+  });
+
+  it("links to a matching task only", () => {
+    expect(
+      buildLinkedContextNote("Work on landing page", [task], [])
+    ).toBe("Related to task: Landing page");
+  });
+
+  it("links to a matching goal only", () => {
+    expect(buildLinkedContextNote("Launch Orenios", [], [goal])).toBe(
+      "Related to goal: Launch Orenios"
+    );
+  });
+
+  it("joins both a task and a goal match into one note", () => {
+    const multiMatchTask: TaskRecord = {
+      ...task,
+      title: "Launch Orenios",
+    };
+
+    expect(
+      buildLinkedContextNote("Launch Orenios", [multiMatchTask], [goal])
+    ).toBe("Related to task: Launch Orenios · Related to goal: Launch Orenios");
   });
 });

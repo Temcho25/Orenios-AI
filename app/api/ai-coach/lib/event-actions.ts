@@ -48,7 +48,7 @@ function formatEventTime(time: string | null) {
   }).format(new Date(Date.UTC(2000, 0, 1, Number(hours), Number(minutes))));
 }
 
-function formatCreatedEventReply(event: EventRecord) {
+export function formatCreatedEventReply(event: EventRecord) {
   const timeText = event.start_time
     ? event.end_time
       ? ` from ${formatEventTime(event.start_time)} to ${formatEventTime(event.end_time)}`
@@ -56,6 +56,47 @@ function formatCreatedEventReply(event: EventRecord) {
     : "";
 
   return `✅ Event created: "${event.title}" on ${event.event_date}${timeText}. Category: ${event.category}.`;
+}
+
+// Shared by the create_event action below and by the voice-plan
+// confirm endpoint, so there is exactly one place that knows how to
+// insert a calendar_events row rather than two copies drifting apart.
+export async function insertEventRow(
+  supabase: SupabaseClient,
+  userId: string,
+  fields: {
+    title: string;
+    description: string | null;
+    event_date: string;
+    start_time: string | null;
+    end_time: string | null;
+    category: EventCategory;
+  }
+): Promise<EventRecord> {
+  const { data, error } = await supabase
+    .from("calendar_events")
+    .insert({
+      user_id: userId,
+      title: fields.title,
+      description: fields.description,
+      event_date: fields.event_date,
+      start_time: fields.start_time,
+      end_time: fields.end_time,
+      category: fields.category,
+      updated_at: new Date().toISOString(),
+    })
+    .select(eventSelect)
+    .single();
+
+  if (error || !data) {
+    console.error("Could not insert calendar event row:", error);
+
+    throw new Error(
+      "Orenios understood the request but could not create the calendar event."
+    );
+  }
+
+  return data as EventRecord;
 }
 
 export async function executeEventAction({
@@ -83,32 +124,14 @@ export async function executeEventAction({
       };
     }
 
-    const { data: createdEvent, error: createEventError } =
-      await supabase
-        .from("calendar_events")
-        .insert({
-          user_id: userId,
-          title: eventArguments.title,
-          description: eventArguments.description,
-          event_date: eventArguments.event_date,
-          start_time: eventArguments.start_time,
-          end_time: eventArguments.end_time,
-          category: eventArguments.category,
-          updated_at: new Date().toISOString(),
-        })
-        .select(eventSelect)
-        .single();
-
-    if (createEventError || !createdEvent) {
-      console.error(
-        "Could not create AI calendar event:",
-        createEventError
-      );
-
-      throw new Error(
-        "Orenios understood the request but could not create the calendar event."
-      );
-    }
+    const createdEvent = await insertEventRow(supabase, userId, {
+      title: eventArguments.title,
+      description: eventArguments.description,
+      event_date: eventArguments.event_date,
+      start_time: eventArguments.start_time,
+      end_time: eventArguments.end_time,
+      category: eventArguments.category,
+    });
 
     return {
       handled: true,

@@ -34,11 +34,23 @@ export type PlanItemWithConflicts = ParsedPlanItem & {
   conflicts: PlanItemConflict[];
 };
 
+// A minimal, read-only snapshot of the user's existing events on the
+// dates involved — sent alongside the parsed items so the preview UI
+// can recompute conflicts locally as the user edits a row, without a
+// round trip to the server on every keystroke.
+export type ExistingEventSnapshot = {
+  title: string;
+  event_date: string;
+  start_time: string | null;
+  end_time: string | null;
+};
+
 export type VoicePlanResponse =
   | {
       status: "ok";
       transcript: string;
       items: PlanItemWithConflicts[];
+      existingEvents: ExistingEventSnapshot[];
     }
   | {
       status: "empty_transcript";
@@ -47,6 +59,23 @@ export type VoicePlanResponse =
   | {
       status: "no_items_found";
       transcript: string;
+    }
+  | {
+      status: "error";
+      error: string;
+    };
+
+export type ConfirmedItemResult = {
+  title: string;
+  type: PlanItemType;
+  status: "created" | "skipped_duplicate";
+};
+
+export type VoicePlanConfirmResponse =
+  | {
+      status: "ok";
+      created: ConfirmedItemResult[];
+      skippedCount: number;
     }
   | {
       status: "error";

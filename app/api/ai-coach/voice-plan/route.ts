@@ -198,6 +198,7 @@ export async function POST(request: Request) {
       status: "ok",
       transcript,
       items: itemsWithConflicts,
+      existingEvents: existingEventsData ?? [],
     });
   } catch (error) {
     console.error("Voice plan route error:", error);

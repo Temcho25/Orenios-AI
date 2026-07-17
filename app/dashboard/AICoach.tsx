@@ -10,6 +10,12 @@ import {
   useState,
 } from "react";
 import { createClient } from "../lib/supabase";
+import VoicePlanPreview from "./VoicePlanPreview";
+import { MAX_RECORDING_SECONDS } from "../api/ai-coach/lib/voice-plan/constants";
+import type {
+  ExistingEventSnapshot,
+  PlanItemWithConflicts,
+} from "../api/ai-coach/lib/voice-plan/types";
 
 type ChatMessage = {
   id: string;
@@ -121,6 +127,20 @@ export default function AICoach() {
     useState(false);
 
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [voiceRecordingState, setVoiceRecordingState] = useState<
+    "idle" | "recording" | "processing"
+  >("idle");
+  const [voicePlanError, setVoicePlanError] = useState("");
+  const [voiceSuccessMessage, setVoiceSuccessMessage] = useState("");
+  const [voicePlanData, setVoicePlanData] = useState<{
+    transcript: string;
+    items: PlanItemWithConflicts[];
+    existingEvents: ExistingEventSnapshot[];
+  } | null>(null);
+
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordingTimeoutRef = useRef<number | null>(null);
 
   const conversationContainerRef =
     useRef<HTMLDivElement | null>(null);
@@ -361,6 +381,168 @@ export default function AICoach() {
     } finally {
       setClearingConversation(false);
     }
+  }
+
+  function getSupportedAudioMimeType() {
+    if (typeof MediaRecorder === "undefined") {
+      return null;
+    }
+
+    const candidates = [
+      "audio/webm;codecs=opus",
+      "audio/webm",
+      "audio/mp4",
+      "audio/aac",
+    ];
+
+    for (const candidate of candidates) {
+      if (MediaRecorder.isTypeSupported(candidate)) {
+        return candidate;
+      }
+    }
+
+    return null;
+  }
+
+  async function startVoiceRecording() {
+    if (voiceRecordingState !== "idle" || voicePlanData) {
+      return;
+    }
+
+    setVoicePlanError("");
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+
+      const mimeType = getSupportedAudioMimeType();
+
+      const recorder = new MediaRecorder(
+        stream,
+        mimeType ? { mimeType } : undefined
+      );
+
+      const chunks: BlobPart[] = [];
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunks.push(event.data);
+        }
+      };
+
+      recorder.onstop = () => {
+        stream.getTracks().forEach((track) => track.stop());
+
+        const blob = new Blob(chunks, {
+          type: mimeType || "audio/webm",
+        });
+
+        void processVoiceRecording(blob);
+      };
+
+      mediaRecorderRef.current = recorder;
+      recorder.start();
+      setVoiceRecordingState("recording");
+
+      recordingTimeoutRef.current = window.setTimeout(() => {
+        stopVoiceRecording();
+      }, MAX_RECORDING_SECONDS * 1000);
+    } catch {
+      setVoicePlanError(
+        "Microphone access was denied or unavailable. You can type your plan instead."
+      );
+    }
+  }
+
+  function stopVoiceRecording() {
+    if (recordingTimeoutRef.current) {
+      window.clearTimeout(recordingTimeoutRef.current);
+      recordingTimeoutRef.current = null;
+    }
+
+    mediaRecorderRef.current?.stop();
+    mediaRecorderRef.current = null;
+  }
+
+  async function processVoiceRecording(blob: Blob) {
+    setVoiceRecordingState("processing");
+
+    try {
+      const formData = new FormData();
+      formData.append("audio", blob, "voice-plan.webm");
+      formData.append("timeZone", getBrowserTimeZone());
+
+      const response = await fetch("/api/ai-coach/voice-plan", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = (await response.json()) as {
+        status?: string;
+        transcript?: string;
+        items?: PlanItemWithConflicts[];
+        existingEvents?: ExistingEventSnapshot[];
+        error?: string;
+      };
+
+      if (!response.ok || data.status === "error") {
+        throw new Error(
+          data.error || "Orenios could not process your recording."
+        );
+      }
+
+      if (data.status === "empty_transcript") {
+        setVoicePlanError(
+          "I couldn't hear anything clear in that recording — try again somewhere quieter, or type your plan instead."
+        );
+        return;
+      }
+
+      if (data.status === "no_items_found") {
+        setVoicePlanError(
+          `I heard "${data.transcript}" but didn't catch any specific plans in it — try again, or add things manually.`
+        );
+        return;
+      }
+
+      setVoicePlanData({
+        transcript: data.transcript ?? "",
+        items: data.items ?? [],
+        existingEvents: data.existingEvents ?? [],
+      });
+    } catch (error) {
+      setVoicePlanError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while processing your recording."
+      );
+    } finally {
+      setVoiceRecordingState("idle");
+    }
+  }
+
+  function handleVoicePlanConfirmed(summary: {
+    createdCount: number;
+    skippedCount: number;
+  }) {
+    setVoicePlanData(null);
+
+    const itemWord = summary.createdCount === 1 ? "item" : "items";
+    const skippedText =
+      summary.skippedCount > 0
+        ? ` (${summary.skippedCount} skipped as duplicates)`
+        : "";
+
+    setVoiceSuccessMessage(
+      `✅ Added ${summary.createdCount} ${itemWord} to your workspace${skippedText}.`
+    );
+
+    window.setTimeout(() => setVoiceSuccessMessage(""), 4000);
+  }
+
+  function handleVoicePlanCancel() {
+    setVoicePlanData(null);
   }
 
   return (
@@ -670,84 +852,186 @@ export default function AICoach() {
           </motion.div>
         )}
 
-        <form
-          onSubmit={handleSubmit}
-          className="mt-4 rounded-3xl border border-muted-border bg-muted p-3 backdrop-blur-[12px]"
-        >
-          <textarea
-            value={message}
-            onChange={(event) =>
-              setMessage(
-                event.target.value.slice(0, 1000)
-              )
-            }
-            onKeyDown={handleKeyDown}
-            placeholder="Ask Orenios to organize your day..."
-            rows={3}
-            disabled={
-              loading ||
-              loadingHistory ||
-              clearingConversation
-            }
-            className="w-full resize-none bg-transparent px-3 py-2 text-sm leading-6 text-foreground outline-none placeholder:text-foreground/30 disabled:cursor-not-allowed disabled:opacity-60"
+        {voicePlanError && (
+          <motion.div
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            role="alert"
+            className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-5 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300"
+          >
+            {voicePlanError}
+          </motion.div>
+        )}
+
+        {voiceSuccessMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            role="status"
+            className="mt-4 rounded-2xl border border-accent-mint/30 bg-accent-mint/10 px-4 py-3 text-sm leading-5 text-emerald-700 dark:text-accent-mint"
+          >
+            {voiceSuccessMessage}
+          </motion.div>
+        )}
+
+        {voicePlanData ? (
+          <VoicePlanPreview
+            transcript={voicePlanData.transcript}
+            initialItems={voicePlanData.items}
+            existingEvents={voicePlanData.existingEvents}
+            onConfirmed={handleVoicePlanConfirmed}
+            onCancel={handleVoicePlanCancel}
           />
-
-          <div className="mt-2 flex flex-col gap-3 border-t border-card-border px-2 pt-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
-              <p
-                className={`text-xs ${
-                  remainingCharacters < 100
-                    ? "text-orange-400"
-                    : "text-foreground/30"
-                }`}
-              >
-                {remainingCharacters} characters left
-              </p>
-
-              <p className="hidden text-xs text-foreground/20 sm:block">
-                Enter to send · Shift + Enter for a new
-                line
-              </p>
-            </div>
-
-            <motion.button
-              whileHover={
-                loading ||
-                loadingHistory ||
-                clearingConversation
-                  ? undefined
-                  : { scale: 1.015 }
+        ) : (
+          <form
+            onSubmit={handleSubmit}
+            className="mt-4 rounded-3xl border border-muted-border bg-muted p-3 backdrop-blur-[12px]"
+          >
+            <textarea
+              value={message}
+              onChange={(event) =>
+                setMessage(
+                  event.target.value.slice(0, 1000)
+                )
               }
-              whileTap={
-                loading ||
-                loadingHistory ||
-                clearingConversation
-                  ? undefined
-                  : { scale: 0.985 }
-              }
-              type="submit"
+              onKeyDown={handleKeyDown}
+              placeholder="Ask Orenios to organize your day..."
+              rows={3}
               disabled={
                 loading ||
                 loadingHistory ||
                 clearingConversation ||
-                !message.trim()
+                voiceRecordingState !== "idle"
               }
-              className="cta-gradient flex h-11 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(124,111,240,0.3)] transition disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {loading ? (
-                <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  Thinking...
-                </>
-              ) : (
-                <>
-                  Ask Orenios
-                  <span aria-hidden="true">→</span>
-                </>
-              )}
-            </motion.button>
-          </div>
-        </form>
+              className="w-full resize-none bg-transparent px-3 py-2 text-sm leading-6 text-foreground outline-none placeholder:text-foreground/30 disabled:cursor-not-allowed disabled:opacity-60"
+            />
+
+            <div className="mt-2 flex flex-col gap-3 border-t border-card-border px-2 pt-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
+                <p
+                  className={`text-xs ${
+                    remainingCharacters < 100
+                      ? "text-orange-400"
+                      : "text-foreground/30"
+                  }`}
+                >
+                  {voiceRecordingState === "recording"
+                    ? "Recording... tap the mic to stop"
+                    : voiceRecordingState === "processing"
+                      ? "Understanding your day..."
+                      : `${remainingCharacters} characters left`}
+                </p>
+
+                <p className="hidden text-xs text-foreground/20 sm:block">
+                  Enter to send · Shift + Enter for a new
+                  line
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    voiceRecordingState === "recording"
+                      ? stopVoiceRecording()
+                      : void startVoiceRecording()
+                  }
+                  disabled={
+                    voiceRecordingState === "processing" ||
+                    loading ||
+                    loadingHistory ||
+                    clearingConversation
+                  }
+                  aria-label={
+                    voiceRecordingState === "recording"
+                      ? "Stop recording"
+                      : "Record your day"
+                  }
+                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                    voiceRecordingState === "recording"
+                      ? "animate-pulse border-red-400 bg-red-500/15 text-red-500"
+                      : "border-muted-border bg-card text-foreground/60 hover:border-accent-violet/30 hover:text-accent-violet"
+                  }`}
+                >
+                  {voiceRecordingState === "processing" ? (
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  ) : voiceRecordingState === "recording" ? (
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <rect x="6" y="6" width="12" height="12" rx="2" />
+                    </svg>
+                  ) : (
+                    <svg
+                      width="17"
+                      height="17"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <rect
+                        x="9"
+                        y="3"
+                        width="6"
+                        height="11"
+                        rx="3"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                      />
+                      <path
+                        d="M5 11a7 7 0 0 0 14 0M12 18v3"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  )}
+                </button>
+
+                <motion.button
+                  whileHover={
+                    loading ||
+                    loadingHistory ||
+                    clearingConversation
+                      ? undefined
+                      : { scale: 1.015 }
+                  }
+                  whileTap={
+                    loading ||
+                    loadingHistory ||
+                    clearingConversation
+                      ? undefined
+                      : { scale: 0.985 }
+                  }
+                  type="submit"
+                  disabled={
+                    loading ||
+                    loadingHistory ||
+                    clearingConversation ||
+                    !message.trim()
+                  }
+                  className="cta-gradient flex h-11 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(124,111,240,0.3)] transition disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {loading ? (
+                    <>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      Thinking...
+                    </>
+                  ) : (
+                    <>
+                      Ask Orenios
+                      <span aria-hidden="true">→</span>
+                    </>
+                  )}
+                </motion.button>
+              </div>
+            </div>
+          </form>
+        )}
 
         <p className="mt-3 text-center text-[11px] leading-5 text-foreground/30">
           Orenios may make mistakes. Review important

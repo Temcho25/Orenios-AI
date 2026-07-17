@@ -41,6 +41,41 @@ type TaskActionResult = {
 const taskSelect =
   "id, title, completed, priority, due_date, created_at";
 
+// Shared by the create_task action below and by the voice-plan confirm
+// endpoint, so there is exactly one place that knows how to insert a
+// task row rather than two copies drifting apart.
+export async function insertTaskRow(
+  supabase: SupabaseClient,
+  userId: string,
+  fields: {
+    title: string;
+    priority: TaskPriority;
+    due_date: string | null;
+  }
+): Promise<TaskRecord> {
+  const { data, error } = await supabase
+    .from("tasks")
+    .insert({
+      user_id: userId,
+      title: fields.title,
+      completed: false,
+      priority: fields.priority,
+      due_date: fields.due_date,
+    })
+    .select(taskSelect)
+    .single();
+
+  if (error || !data) {
+    console.error("Could not insert task row:", error);
+
+    throw new Error(
+      "Orenios understood the request but could not create the task."
+    );
+  }
+
+  return data as TaskRecord;
+}
+
 export async function executeTaskAction({
   functionName,
   rawArguments,
@@ -67,31 +102,11 @@ export async function executeTaskAction({
       };
     }
 
-    const {
-      data: createdTask,
-      error: createTaskError,
-    } = await supabase
-      .from("tasks")
-      .insert({
-        user_id: userId,
-        title: taskArguments.title,
-        completed: false,
-        priority: taskArguments.priority,
-        due_date: taskArguments.due_date,
-      })
-      .select(taskSelect)
-      .single();
-
-    if (createTaskError || !createdTask) {
-      console.error(
-        "Could not create AI task:",
-        createTaskError
-      );
-
-      throw new Error(
-        "Orenios understood the request but could not create the task."
-      );
-    }
+    const createdTask = await insertTaskRow(supabase, userId, {
+      title: taskArguments.title,
+      priority: taskArguments.priority,
+      due_date: taskArguments.due_date,
+    });
 
     return {
       handled: true,
