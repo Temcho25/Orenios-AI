@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "../lib/supabase-server";
-import DashboardShell from "./DashboardShell";
+import OnboardingFlow from "./OnboardingFlow";
 
-export default async function DashboardPage() {
+export default async function OnboardingPage() {
   const supabase = await createClient();
 
   const {
@@ -15,12 +15,12 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("first_name, last_name, onboarding_completed")
+    .select("first_name, onboarding_completed")
     .eq("id", user.id)
     .maybeSingle();
 
-  if (profile && profile.onboarding_completed === false) {
-    redirect("/onboarding");
+  if (profile?.onboarding_completed) {
+    redirect("/dashboard");
   }
 
   const metadataFullName =
@@ -28,20 +28,15 @@ export default async function DashboardPage() {
       ? user.user_metadata.full_name.trim()
       : "";
 
-  const metadataFirstName =
-    metadataFullName.split(" ")[0] || "there";
+  const metadataFirstName = metadataFullName.split(" ")[0] || "there";
 
   const firstName =
-    profile?.first_name?.trim() ||
-    metadataFirstName ||
-    "there";
-
-  const email = user.email || "";
+    profile?.first_name?.trim() || metadataFirstName || "there";
 
   return (
-    <DashboardShell
+    <OnboardingFlow
+      userId={user.id}
       firstName={firstName}
-      email={email}
     />
   );
 }
