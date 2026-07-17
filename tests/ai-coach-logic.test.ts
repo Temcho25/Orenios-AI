@@ -11,6 +11,7 @@ import { executeTaskAction } from "../app/api/ai-coach/lib/task-actions";
 import { executeEventAction } from "../app/api/ai-coach/lib/event-actions";
 import { executeFocusAction } from "../app/api/ai-coach/lib/focus-actions";
 import { runActionSafely } from "../app/api/ai-coach/lib/safe-execute";
+import { sanitizeParsedPlanItems } from "../app/api/ai-coach/lib/voice-plan/parse-response";
 import type {
   DailyFocusRecord,
   EventRecord,
@@ -398,5 +399,145 @@ describe("AI Coach daily focus progress handling", () => {
     expect(result.handled).toBe(true);
     expect(result.reply).toMatch(/set/);
     expect(getCapturedUpsert()?.progress).toBe(0);
+  });
+});
+
+describe("Voice plan item sanitization", () => {
+  it("keeps a well-formed event as-is", () => {
+    const { items, droppedCount } = sanitizeParsedPlanItems([
+      {
+        type: "event",
+        title: "Team call",
+        date: "2026-07-20",
+        start_time: "10:00",
+        end_time: "10:30",
+        time_is_approximate: false,
+        category: "Work",
+        priority: "medium",
+      },
+    ]);
+
+    expect(droppedCount).toBe(0);
+    expect(items).toEqual([
+      {
+        type: "event",
+        title: "Team call",
+        date: "2026-07-20",
+        start_time: "10:00",
+        end_time: "10:30",
+        time_is_approximate: false,
+        category: "Work",
+        priority: "medium",
+      },
+    ]);
+  });
+
+  it("keeps a well-formed task and forces its time fields to null", () => {
+    const { items } = sanitizeParsedPlanItems([
+      {
+        type: "task",
+        title: "Buy groceries",
+        date: "2026-07-20",
+        start_time: "09:00", // model should never send this for a task, but verify it's stripped anyway
+        end_time: "09:30",
+        time_is_approximate: false,
+        category: "Other",
+        priority: "low",
+      },
+    ]);
+
+    expect(items).toEqual([
+      {
+        type: "task",
+        title: "Buy groceries",
+        date: "2026-07-20",
+        start_time: null,
+        end_time: null,
+        time_is_approximate: false,
+        category: "Other",
+        priority: "low",
+      },
+    ]);
+  });
+
+  it("downgrades an event with no resolvable start time to a task instead of dropping it", () => {
+    const { items, droppedCount } = sanitizeParsedPlanItems([
+      {
+        type: "event",
+        title: "Mystery block",
+        date: "2026-07-20",
+        start_time: null,
+        end_time: null,
+        time_is_approximate: false,
+        category: "Work",
+        priority: "medium",
+      },
+    ]);
+
+    expect(droppedCount).toBe(0);
+    expect(items).toHaveLength(1);
+    expect(items[0].type).toBe("task");
+    expect(items[0].title).toBe("Mystery block");
+  });
+
+  it("drops end_time when it isn't actually after start_time", () => {
+    const { items } = sanitizeParsedPlanItems([
+      {
+        type: "event",
+        title: "Backwards event",
+        date: "2026-07-20",
+        start_time: "15:00",
+        end_time: "14:00",
+        time_is_approximate: false,
+        category: "Work",
+        priority: "medium",
+      },
+    ]);
+
+    expect(items[0].start_time).toBe("15:00");
+    expect(items[0].end_time).toBeNull();
+  });
+
+  it("drops items with an invalid calendar date or missing title", () => {
+    const { items, droppedCount } = sanitizeParsedPlanItems([
+      {
+        type: "task",
+        title: "Impossible date",
+        date: "2026-02-31",
+        start_time: null,
+        end_time: null,
+        time_is_approximate: false,
+        category: "Other",
+        priority: "medium",
+      },
+      {
+        type: "task",
+        title: "",
+        date: "2026-07-20",
+        start_time: null,
+        end_time: null,
+        time_is_approximate: false,
+        category: "Other",
+        priority: "medium",
+      },
+    ]);
+
+    expect(items).toHaveLength(0);
+    expect(droppedCount).toBe(2);
+  });
+
+  it("returns an empty result for non-array input instead of throwing", () => {
+    expect(sanitizeParsedPlanItems(null)).toEqual({
+      items: [],
+      droppedCount: 0,
+    });
+    expect(sanitizeParsedPlanItems(undefined)).toEqual({
+      items: [],
+      droppedCount: 0,
+    });
+    expect(sanitizeParsedPlanItems("not an array")).toEqual({
+      items: [],
+      droppedCount: 0,
+    });
   });
 });
