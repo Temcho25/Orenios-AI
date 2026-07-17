@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, MotionConfig } from "framer-motion";
 import { useEffect, useState } from "react";import LogoutButton from "./LogoutButton";
 import AnimatedLogo from "../components/v2/AnimatedLogo";
 import ThemeToggle from "./ThemeToggle";
@@ -283,6 +283,7 @@ if (!navigationRestored) {
   }
 
   return (
+    <MotionConfig reducedMotion="user">
     <main className="min-h-screen bg-background text-foreground">
       <div className="flex min-h-screen">
         <aside className="fixed inset-y-0 left-0 z-40 hidden w-[278px] border-r border-card-border bg-background/80 px-5 py-6 backdrop-blur-2xl lg:flex lg:flex-col">
@@ -516,6 +517,7 @@ if (!navigationRestored) {
         </section>
       </div>
     </main>
+    </MotionConfig>
   );
 }
 
