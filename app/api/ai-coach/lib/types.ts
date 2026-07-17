@@ -102,3 +102,45 @@ export type EventRecord = {
   category: EventCategory;
   created_at: string;
 };
+
+export type DeleteEventArguments = {
+  title: string;
+  event_date: string | null;
+};
+
+export type UpdateEventArguments = {
+  title: string;
+  event_date: string | null;
+  new_title: string | null;
+  new_event_date: string | null;
+  start_time: string | null;
+  end_time: string | null;
+  remove_end_time: boolean;
+  category: EventCategory | null;
+};
+
+export type CreateNoteArguments = {
+  title: string;
+  content: string | null;
+};
+
+export type NoteRecord = {
+  id: string;
+  title: string;
+  content: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type SetDailyFocusArguments = {
+  title: string;
+  description: string | null;
+};
+
+export type DailyFocusRecord = {
+  id: string;
+  title: string;
+  description: string | null;
+  progress: number;
+  focus_date: string;
+};

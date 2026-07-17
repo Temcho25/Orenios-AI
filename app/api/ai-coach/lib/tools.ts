@@ -313,4 +313,144 @@ export const aiCoachTools: OpenAI.Responses.Tool[] = [
       additionalProperties: false,
     },
   },
+
+  {
+    type: "function",
+    name: "delete_event",
+    description:
+      "Permanently delete one existing calendar event. Use only when the newest user message clearly asks to delete, remove or cancel a calendar event.",
+    strict: true,
+    parameters: {
+      type: "object",
+      properties: {
+        title: {
+          type: "string",
+          description:
+            "The title or identifying phrase of the existing event the user wants to delete.",
+        },
+        event_date: {
+          type: ["string", "null"],
+          description:
+            "The event's YYYY-MM-DD date, only if the user mentioned it to identify which event they mean. Use null otherwise.",
+        },
+      },
+      required: ["title", "event_date"],
+      additionalProperties: false,
+    },
+  },
+
+  {
+    type: "function",
+    name: "update_event",
+    description:
+      "Update one existing calendar event. Use when the newest user message asks to reschedule, move, rename, retime or change the category of an existing event.",
+    strict: true,
+    parameters: {
+      type: "object",
+      properties: {
+        title: {
+          type: "string",
+          description:
+            "The current title or identifying phrase of the existing event.",
+        },
+        event_date: {
+          type: ["string", "null"],
+          description:
+            "The event's current YYYY-MM-DD date, only if needed to identify which event among same-titled ones. Use null otherwise.",
+        },
+        new_title: {
+          type: ["string", "null"],
+          description:
+            "The new event title. Use null when the title should not change.",
+        },
+        new_event_date: {
+          type: ["string", "null"],
+          description:
+            "The new YYYY-MM-DD date if the event is being moved to a different day. Resolve relative dates using current_date. Use null when the date should not change.",
+        },
+        start_time: {
+          type: ["string", "null"],
+          description:
+            "The new start time in 24-hour HH:MM format. Use null when the start time should not change.",
+        },
+        end_time: {
+          type: ["string", "null"],
+          description:
+            "The new end time in 24-hour HH:MM format. Use null when the end time should not change.",
+        },
+        remove_end_time: {
+          type: "boolean",
+          description:
+            "Use true only when the user explicitly asks to remove the event's end time.",
+        },
+        category: {
+          type: ["string", "null"],
+          enum: ["Personal", "Work", "Health", "Fitness", "Other", null],
+          description:
+            "The new category. Use null when the category should not change.",
+        },
+      },
+      required: [
+        "title",
+        "event_date",
+        "new_title",
+        "new_event_date",
+        "start_time",
+        "end_time",
+        "remove_end_time",
+        "category",
+      ],
+      additionalProperties: false,
+    },
+  },
+
+  {
+    type: "function",
+    name: "create_note",
+    description:
+      "Create a new free-form note in the authenticated user's Orenios notes. Use only when the newest user message clearly asks to write down, save or make a note of something, with no date or time attached — see the disambiguation guide above.",
+    strict: true,
+    parameters: {
+      type: "object",
+      properties: {
+        title: {
+          type: "string",
+          description:
+            "A concise note title without phrases such as add note or make a note.",
+        },
+        content: {
+          type: ["string", "null"],
+          description:
+            "The body of the note. Use null when the user gave only a title-like phrase and nothing more to write down.",
+        },
+      },
+      required: ["title", "content"],
+      additionalProperties: false,
+    },
+  },
+
+  {
+    type: "function",
+    name: "set_daily_focus",
+    description:
+      "Set or replace today's single main objective in the authenticated user's Orenios daily focus. Use only when the newest user message clearly names today's top priority — see the disambiguation guide above.",
+    strict: true,
+    parameters: {
+      type: "object",
+      properties: {
+        title: {
+          type: "string",
+          description:
+            "A concise statement of today's main objective.",
+        },
+        description: {
+          type: ["string", "null"],
+          description:
+            "A short optional note on why it matters. Use null when the user did not provide one.",
+        },
+      },
+      required: ["title", "description"],
+      additionalProperties: false,
+    },
+  },
 ];

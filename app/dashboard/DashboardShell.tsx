@@ -897,35 +897,12 @@ function OverviewContent({
         <ProductivityScore />
       </motion.section>
 
-      <motion.div variants={overviewItem}>
-        <TasksCard />
-      </motion.div>
-
       <motion.div
         variants={overviewItem}
-        className="flex items-center justify-between gap-4 pt-2"
+        className="grid items-start gap-6 xl:grid-cols-2"
       >
-        <div>
-          <p className="text-lg font-semibold tracking-[-0.025em] text-foreground">
-            Your goals
-          </p>
-
-          <p className="mt-1 text-sm text-foreground/40">
-            Keep long-term progress connected to today.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => onNavigate("Goals")}
-          className="flex min-h-[44px] shrink-0 items-center rounded-2xl border border-muted-border bg-muted px-4 text-sm font-semibold text-foreground/70 backdrop-blur-md transition hover:border-border-strong hover:text-foreground"
-        >
-          Open Goals
-        </button>
-      </motion.div>
-
-      <motion.div variants={overviewItem}>
-        <GoalsCard />
+        <TasksSummaryCard onNavigate={onNavigate} />
+        <GoalsSummaryCard onNavigate={onNavigate} />
       </motion.div>
 
       <motion.div variants={overviewItem} className="grid gap-6 sm:grid-cols-2">
@@ -1267,6 +1244,273 @@ function AIActionsCard() {
         Tasks created, goals updated, deadlines moved — every real
         change Orenios made for you, not just messages sent.
       </p>
+    </div>
+  );
+}
+
+type SummaryTask = {
+  id: string;
+  title: string;
+  completed: boolean;
+  priority: "low" | "medium" | "high";
+  due_date: string | null;
+};
+
+function getSummaryPriorityClasses(priority: SummaryTask["priority"]) {
+  switch (priority) {
+    case "high":
+      return "border-red-200 bg-red-50 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300";
+    case "low":
+      return "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300";
+    default:
+      return "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-300";
+  }
+}
+
+function TasksSummaryCard({
+  onNavigate,
+}: {
+  onNavigate: (item: string) => void;
+}) {
+  const [tasks, setTasks] = useState<SummaryTask[] | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadTasks() {
+      try {
+        const supabase = createClient();
+
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          return;
+        }
+
+        const { data } = await supabase
+          .from("tasks")
+          .select("id, title, completed, priority, due_date")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+
+        if (!cancelled) {
+          setTasks((data ?? []) as SummaryTask[]);
+        }
+      } catch {
+        if (!cancelled) {
+          setTasks([]);
+        }
+      }
+    }
+
+    loadTasks();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const loading = tasks === null;
+  const openTasks = (tasks ?? []).filter((task) => !task.completed);
+
+  const priorityRank: Record<SummaryTask["priority"], number> = {
+    high: 0,
+    medium: 1,
+    low: 2,
+  };
+
+  const topTasks = [...openTasks]
+    .sort((a, b) => {
+      if (a.due_date && !b.due_date) return -1;
+      if (!a.due_date && b.due_date) return 1;
+
+      if (a.due_date && b.due_date && a.due_date !== b.due_date) {
+        return a.due_date < b.due_date ? -1 : 1;
+      }
+
+      return priorityRank[a.priority] - priorityRank[b.priority];
+    })
+    .slice(0, 3);
+
+  return (
+    <div className="rounded-3xl border border-card-border bg-card p-6 backdrop-blur-[12px]">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold text-foreground">Tasks</p>
+
+          <p className="mt-1 text-xs text-foreground/40">
+            {loading ? "Loading..." : `${openTasks.length} open`}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onNavigate("Tasks")}
+          className="flex min-h-[44px] shrink-0 items-center rounded-2xl border border-muted-border bg-muted px-4 text-sm font-semibold text-foreground/70 backdrop-blur-md transition hover:border-border-strong hover:text-foreground"
+        >
+          View all
+        </button>
+      </div>
+
+      <div className="mt-5 space-y-2">
+        {loading ? (
+          <div className="space-y-2">
+            {[1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="h-14 animate-pulse rounded-2xl bg-muted"
+              />
+            ))}
+          </div>
+        ) : topTasks.length > 0 ? (
+          topTasks.map((task) => (
+            <div
+              key={task.id}
+              className="flex items-center justify-between gap-3 rounded-2xl border border-card-border bg-muted px-4 py-3"
+            >
+              <p className="truncate text-sm font-medium text-foreground">
+                {task.title}
+              </p>
+
+              <span
+                className={`shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] ${getSummaryPriorityClasses(
+                  task.priority
+                )}`}
+              >
+                {task.priority}
+              </span>
+            </div>
+          ))
+        ) : (
+          <p className="rounded-2xl border border-dashed border-muted-border bg-muted px-4 py-6 text-center text-sm text-foreground/40">
+            No open tasks — nice work.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+type SummaryGoal = {
+  id: string;
+  title: string;
+  progress: number;
+  status: "Not Started" | "In Progress" | "Completed";
+};
+
+function GoalsSummaryCard({
+  onNavigate,
+}: {
+  onNavigate: (item: string) => void;
+}) {
+  const [goals, setGoals] = useState<SummaryGoal[] | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadGoals() {
+      try {
+        const supabase = createClient();
+
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          return;
+        }
+
+        const { data } = await supabase
+          .from("goals")
+          .select("id, title, progress, status")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+
+        if (!cancelled) {
+          setGoals((data ?? []) as SummaryGoal[]);
+        }
+      } catch {
+        if (!cancelled) {
+          setGoals([]);
+        }
+      }
+    }
+
+    loadGoals();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const loading = goals === null;
+  const activeGoals = (goals ?? []).filter(
+    (goal) => goal.status !== "Completed"
+  );
+  const topGoals = activeGoals.slice(0, 3);
+
+  return (
+    <div className="rounded-3xl border border-card-border bg-card p-6 backdrop-blur-[12px]">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold text-foreground">Goals</p>
+
+          <p className="mt-1 text-xs text-foreground/40">
+            {loading ? "Loading..." : `${activeGoals.length} in progress`}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onNavigate("Goals")}
+          className="flex min-h-[44px] shrink-0 items-center rounded-2xl border border-muted-border bg-muted px-4 text-sm font-semibold text-foreground/70 backdrop-blur-md transition hover:border-border-strong hover:text-foreground"
+        >
+          View all
+        </button>
+      </div>
+
+      <div className="mt-5 space-y-3">
+        {loading ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="h-14 animate-pulse rounded-2xl bg-muted"
+              />
+            ))}
+          </div>
+        ) : topGoals.length > 0 ? (
+          topGoals.map((goal) => (
+            <div
+              key={goal.id}
+              className="rounded-2xl border border-card-border bg-muted px-4 py-3"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <p className="truncate text-sm font-medium text-foreground">
+                  {goal.title}
+                </p>
+
+                <span className="shrink-0 text-xs font-semibold text-foreground/50">
+                  {goal.progress}%
+                </span>
+              </div>
+
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-strong">
+                <div
+                  className="h-full rounded-full bg-accent-mint"
+                  style={{ width: `${goal.progress}%` }}
+                />
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="rounded-2xl border border-dashed border-muted-border bg-muted px-4 py-6 text-center text-sm text-foreground/40">
+            No active goals yet.
+          </p>
+        )}
+      </div>
     </div>
   );
 }

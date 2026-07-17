@@ -7,6 +7,8 @@ import {
   parseUpdateGoalArguments,
 } from "../app/api/ai-coach/lib/goal-parsers";
 import { normalizeTitle } from "../app/api/ai-coach/lib/task-matcher";
+import { executeTaskAction } from "../app/api/ai-coach/lib/task-actions";
+import { runActionSafely } from "../app/api/ai-coach/lib/safe-execute";
 import {
   getGoalStatusForProgress,
   normalizeGoalState,
@@ -111,5 +113,53 @@ describe("goal status and progress invariants", () => {
         })
       )
     ).toThrow("100 percent progress");
+  });
+});
+
+describe("AI Coach action error handling", () => {
+  it("turns a no-op task update into a conversational reply instead of throwing", async () => {
+    // Repro: "move the dentist appointment to 6pm instead" — the model
+    // has no update_event tool, so it calls update_task on an item that
+    // isn't a task, with no field it can actually change. This used to
+    // throw all the way out to route.ts's outer catch and surface as an
+    // HTTP 500 "Something went wrong" instead of a normal chat reply.
+    const result = await runActionSafely("task", () =>
+      executeTaskAction({
+        functionName: "update_task",
+        rawArguments: JSON.stringify({
+          title: "dentist appointment",
+          new_title: null,
+          priority: null,
+          due_date: null,
+          remove_due_date: false,
+        }),
+        supabase: {} as never,
+        userId: "test-user",
+        tasks: [
+          {
+            id: "1",
+            title: "dentist appointment",
+            completed: false,
+            priority: "medium",
+            due_date: null,
+            created_at: new Date().toISOString(),
+          },
+        ],
+      })
+    );
+
+    expect(result.handled).toBe(true);
+    expect(result.action).toBeNull();
+    expect(result.reply.length).toBeGreaterThan(0);
+    expect(result.reply).not.toMatch(/^Error/);
+  });
+
+  it("does not swallow unrelated errors as blank replies", async () => {
+    const result = await runActionSafely("task", () => {
+      throw new Error("");
+    });
+
+    expect(result.handled).toBe(true);
+    expect(result.reply.length).toBeGreaterThan(0);
   });
 });

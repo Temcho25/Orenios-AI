@@ -2,7 +2,9 @@ import { isValidDateKey } from "./dates";
 
 import type {
   CreateEventArguments,
+  DeleteEventArguments,
   EventCategory,
+  UpdateEventArguments,
 } from "./types";
 
 const validCategories: EventCategory[] = [
@@ -47,6 +49,22 @@ function parseOptionalDescription(value: unknown) {
   }
 
   return description;
+}
+
+function parseOptionalEventDate(value: unknown, label: string) {
+  if (typeof value !== "string" || !value.trim()) {
+    return null;
+  }
+
+  const date = value.trim();
+
+  if (!isValidDateKey(date)) {
+    throw new Error(
+      `The event ${label} must use a valid YYYY-MM-DD date.`
+    );
+  }
+
+  return date;
 }
 
 function parseEventTime(value: unknown, label: string) {
@@ -124,6 +142,94 @@ export function parseCreateEventArguments(
     event_date: eventDate,
     start_time: startTime,
     end_time: endTime,
+    category,
+  };
+}
+
+export function parseDeleteEventArguments(
+  rawArguments: string
+): DeleteEventArguments {
+  const parsed = JSON.parse(
+    rawArguments
+  ) as Partial<DeleteEventArguments>;
+
+  return {
+    title: validateEventTitle(parsed.title),
+    event_date: parseOptionalEventDate(
+      parsed.event_date,
+      "date"
+    ),
+  };
+}
+
+export function parseUpdateEventArguments(
+  rawArguments: string
+): UpdateEventArguments {
+  const parsed = JSON.parse(
+    rawArguments
+  ) as Partial<UpdateEventArguments>;
+
+  const title = validateEventTitle(parsed.title);
+
+  const eventDate = parseOptionalEventDate(
+    parsed.event_date,
+    "date"
+  );
+
+  const newTitle =
+    typeof parsed.new_title === "string" &&
+    parsed.new_title.trim()
+      ? validateEventTitle(parsed.new_title)
+      : null;
+
+  const newEventDate = parseOptionalEventDate(
+    parsed.new_event_date,
+    "new date"
+  );
+
+  const startTime = parseEventTime(
+    parsed.start_time,
+    "start time"
+  );
+
+  const endTime = parseEventTime(
+    parsed.end_time,
+    "end time"
+  );
+
+  const removeEndTime = parsed.remove_end_time === true;
+
+  if (endTime && removeEndTime) {
+    throw new Error(
+      "The event end time cannot be changed and removed at the same time."
+    );
+  }
+
+  const category = validCategories.includes(
+    parsed.category as EventCategory
+  )
+    ? (parsed.category as EventCategory)
+    : null;
+
+  if (
+    !newTitle &&
+    !newEventDate &&
+    !startTime &&
+    !endTime &&
+    !removeEndTime &&
+    !category
+  ) {
+    throw new Error("No event changes were requested.");
+  }
+
+  return {
+    title,
+    event_date: eventDate,
+    new_title: newTitle,
+    new_event_date: newEventDate,
+    start_time: startTime,
+    end_time: endTime,
+    remove_end_time: removeEndTime,
     category,
   };
 }

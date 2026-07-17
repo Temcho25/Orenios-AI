@@ -8,6 +8,9 @@ import { buildAICoachPrompt } from "./lib/prompt";
 import { executeTaskAction } from "./lib/task-actions";
 import { executeGoalAction } from "./lib/goal-actions";
 import { executeEventAction } from "./lib/event-actions";
+import { executeNoteAction } from "./lib/note-actions";
+import { executeFocusAction } from "./lib/focus-actions";
+import { runActionSafely } from "./lib/safe-execute";
 import {
   getCrossTypeAmbiguityReply,
   resolveReferencedAction,
@@ -22,6 +25,8 @@ import type {
   TaskRecord,
   GoalRecord,
   EventRecord,
+  NoteRecord,
+  DailyFocusRecord,
 } from "./lib/types";
 
 const taskSelect =
@@ -189,7 +194,7 @@ export async function POST(request: Request) {
 
       supabase
         .from("profiles")
-        .select("first_name, last_name")
+        .select("first_name, last_name, onboarding_focus")
         .eq("id", user.id)
         .maybeSingle(),
 
@@ -234,6 +239,12 @@ export async function POST(request: Request) {
     const events =
       (calendarResult.data ?? []) as EventRecord[];
 
+    const notes =
+      (notesResult.data ?? []) as NoteRecord[];
+
+    const existingFocus =
+      (focusResult.data ?? null) as DailyFocusRecord | null;
+
     const firstName =
       profileResult.data?.first_name?.trim() ||
       user.user_metadata?.full_name
@@ -241,7 +252,10 @@ export async function POST(request: Request) {
         ?.split(" ")[0] ||
       "there";
 
-    const notesForAI = (notesResult.data ?? []).map(
+    const primaryFocusArea =
+      profileResult.data?.onboarding_focus?.trim() || null;
+
+    const notesForAI = notes.map(
       (note) => ({
         title: note.title,
         content:
@@ -262,10 +276,11 @@ export async function POST(request: Request) {
     const workspaceContext = {
       user: {
         first_name: firstName,
+        primary_focus_area: primaryFocusArea,
       },
       current_date: today,
       time_zone: timeZone,
-      todays_focus: focusResult.data ?? null,
+      todays_focus: existingFocus,
       tasks,
       goals,
       upcoming_calendar_events: events,
@@ -336,41 +351,80 @@ export async function POST(request: Request) {
       if (crossTypeAmbiguityReply) {
         reply = crossTypeAmbiguityReply;
       } else {
-        const taskResult = await executeTaskAction({
-          functionName: referencedAction.functionName,
-          rawArguments: referencedAction.rawArguments,
-          supabase,
-          userId: user.id,
-          tasks,
-        });
+        const taskResult = await runActionSafely("task", () =>
+          executeTaskAction({
+            functionName: referencedAction.functionName,
+            rawArguments: referencedAction.rawArguments,
+            supabase,
+            userId: user.id,
+            tasks,
+          })
+        );
 
         if (taskResult.handled) {
           reply = taskResult.reply;
           action = taskResult.action;
         } else {
-          const goalResult = await executeGoalAction({
-            functionName: referencedAction.functionName,
-            rawArguments: referencedAction.rawArguments,
-            supabase,
-            userId: user.id,
-            goals,
-          });
+          const goalResult = await runActionSafely("goal", () =>
+            executeGoalAction({
+              functionName: referencedAction.functionName,
+              rawArguments: referencedAction.rawArguments,
+              supabase,
+              userId: user.id,
+              goals,
+            })
+          );
 
           if (goalResult.handled) {
             reply = goalResult.reply;
             action = goalResult.action;
           } else {
-            const eventResult = await executeEventAction({
-              functionName: referencedAction.functionName,
-              rawArguments: referencedAction.rawArguments,
-              supabase,
-              userId: user.id,
-              events,
-            });
+            const eventResult = await runActionSafely("event", () =>
+              executeEventAction({
+                functionName: referencedAction.functionName,
+                rawArguments: referencedAction.rawArguments,
+                supabase,
+                userId: user.id,
+                events,
+              })
+            );
 
             if (eventResult.handled) {
               reply = eventResult.reply;
               action = eventResult.action;
+            } else {
+              const noteResult = await runActionSafely("note", () =>
+                executeNoteAction({
+                  functionName: referencedAction.functionName,
+                  rawArguments: referencedAction.rawArguments,
+                  supabase,
+                  userId: user.id,
+                  notes,
+                })
+              );
+
+              if (noteResult.handled) {
+                reply = noteResult.reply;
+                action = noteResult.action;
+              } else {
+                const focusResultFromAction = await runActionSafely(
+                  "focus",
+                  () =>
+                    executeFocusAction({
+                      functionName: referencedAction.functionName,
+                      rawArguments: referencedAction.rawArguments,
+                      supabase,
+                      userId: user.id,
+                      today,
+                      existingFocus,
+                    })
+                );
+
+                if (focusResultFromAction.handled) {
+                  reply = focusResultFromAction.reply;
+                  action = focusResultFromAction.action;
+                }
+              }
             }
           }
         }

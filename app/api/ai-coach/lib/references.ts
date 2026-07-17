@@ -8,7 +8,7 @@ import type {
 } from "./types";
 
 type WorkspaceReference = {
-  kind: "task" | "goal";
+  kind: "task" | "goal" | "event";
   title: string;
 };
 
@@ -47,6 +47,16 @@ function extractReference(
       kind: "goal",
       pattern:
         /Goal updated:.*renamed to "([^"]+)"/i,
+    },
+    {
+      kind: "event",
+      pattern:
+        /Event (?:created|deleted): "([^"]+)"/i,
+    },
+    {
+      kind: "event",
+      pattern:
+        /Event updated:.*renamed to "([^"]+)"/i,
     },
   ];
 
@@ -103,7 +113,7 @@ export function resolveReferencedAction({
   }
 
   const actionMatch = functionName.match(
-    /^(complete|delete|update)_(task|goal)$/
+    /^(complete|delete|update)_(task|goal|event)$/
   );
 
   if (!actionMatch) {
@@ -118,6 +128,18 @@ export function resolveReferencedAction({
   );
 
   if (!reference) {
+    return {
+      functionName,
+      rawArguments,
+    };
+  }
+
+  // There is no complete_event action — events don't have a completed
+  // state the way tasks and goals do. If the most recently discussed
+  // item was an event but the model guessed a "complete" verb, leave
+  // the original call alone rather than rewriting it to a tool that
+  // doesn't exist.
+  if (actionMatch[1] === "complete" && reference.kind === "event") {
     return {
       functionName,
       rawArguments,
