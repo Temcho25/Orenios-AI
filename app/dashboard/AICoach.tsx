@@ -11,6 +11,8 @@ import {
 } from "react";
 import { createClient } from "../lib/supabase";
 import VoicePlanPreview from "./VoicePlanPreview";
+import VoiceOrb, { type VoiceUIState } from "../components/voice/VoiceOrb";
+import VoiceInterface from "../components/voice/VoiceInterface";
 import { MAX_RECORDING_SECONDS } from "../api/ai-coach/lib/voice-plan/constants";
 import type {
   ExistingEventSnapshot,
@@ -138,6 +140,17 @@ export default function AICoach() {
     items: PlanItemWithConflicts[];
     existingEvents: ExistingEventSnapshot[];
   } | null>(null);
+
+  // Maps the existing recording state machine onto the voice UI's
+  // vocabulary. "speaking" has nothing to drive it yet (Orenios has no
+  // text-to-speech output) — the orb component supports it for when
+  // that exists, it's just never reached from here today.
+  const voiceUIState: VoiceUIState =
+    voiceRecordingState === "recording"
+      ? "listening"
+      : voiceRecordingState === "processing"
+        ? "thinking"
+        : "idle";
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordingTimeoutRef = useRef<number | null>(null);
@@ -874,6 +887,13 @@ export default function AICoach() {
           </motion.div>
         )}
 
+        {voiceRecordingState !== "idle" && !voicePlanData && (
+          <VoiceInterface
+            state={voiceUIState}
+            className="mt-4"
+          />
+        )}
+
         {voicePlanData ? (
           <VoicePlanPreview
             transcript={voicePlanData.transcript}
@@ -945,51 +965,19 @@ export default function AICoach() {
                   aria-label={
                     voiceRecordingState === "recording"
                       ? "Stop recording"
-                      : "Record your day"
+                      : voiceRecordingState === "processing"
+                        ? "Processing your recording"
+                        : "Record your day"
                   }
                   className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border transition disabled:cursor-not-allowed disabled:opacity-50 ${
                     voiceRecordingState === "recording"
-                      ? "animate-pulse border-red-400 bg-red-500/15 text-red-500"
-                      : "border-muted-border bg-card text-foreground/60 hover:border-accent-violet/30 hover:text-accent-violet"
+                      ? "border-red-400 bg-red-500/10"
+                      : voiceRecordingState === "processing"
+                        ? "border-accent-violet/40 bg-accent-violet/10"
+                        : "border-muted-border bg-card hover:border-accent-violet/30"
                   }`}
                 >
-                  {voiceRecordingState === "processing" ? (
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  ) : voiceRecordingState === "recording" ? (
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <rect x="6" y="6" width="12" height="12" rx="2" />
-                    </svg>
-                  ) : (
-                    <svg
-                      width="17"
-                      height="17"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <rect
-                        x="9"
-                        y="3"
-                        width="6"
-                        height="11"
-                        rx="3"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                      />
-                      <path
-                        d="M5 11a7 7 0 0 0 14 0M12 18v3"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  )}
+                  <VoiceOrb state={voiceUIState} size={22} />
                 </button>
 
                 <motion.button
