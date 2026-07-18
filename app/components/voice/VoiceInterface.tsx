@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import VoiceOrb, { type VoiceUIState } from "./VoiceOrb";
+import OreniosLogoOrb from "./OreniosLogoOrb";
 
 export type { VoiceUIState } from "./VoiceOrb";
 
@@ -39,12 +40,19 @@ export default function VoiceInterface({
     <div
       className={`flex flex-col items-center rounded-3xl border border-accent-violet/20 bg-accent-violet/[0.04] px-6 py-8 text-center ${className}`}
     >
-      <VoiceOrb
-        state={state}
-        audioLevel={audioLevel}
-        darkMode={darkMode}
-        size={132}
-      />
+      {state === "listening" ? (
+        // The real Orenios mark, recreated to match public/logo2.PNG
+        // exactly, per request: only the visual shown while recording
+        // is active changes. Every other state keeps the existing orb.
+        <OreniosLogoOrb active size={132} />
+      ) : (
+        <VoiceOrb
+          state={state}
+          audioLevel={audioLevel}
+          darkMode={darkMode}
+          size={132}
+        />
+      )}
 
       <AnimatePresence mode="wait">
         <motion.p
