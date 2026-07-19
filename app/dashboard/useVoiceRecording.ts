@@ -284,8 +284,6 @@ export function useVoiceRecording() {
   function handleVoicePlanConfirmed(summary: {
     createdCount: number;
     skippedCount: number;
-    failedCount: number;
-    failedTitles: string[];
   }) {
     setVoicePlanData(null);
 
@@ -300,12 +298,6 @@ export function useVoiceRecording() {
     );
 
     window.setTimeout(() => setVoiceSuccessMessage(""), 4000);
-
-    if (summary.failedCount > 0) {
-      setVoicePlanError(
-        `Couldn't save ${summary.failedCount === 1 ? "one item" : `${summary.failedCount} items`} from this plan: ${summary.failedTitles.join(", ")}. The rest were added — try adding the failed ${summary.failedCount === 1 ? "one" : "ones"} again.`
-      );
-    }
   }
 
   function handleVoicePlanCancel() {

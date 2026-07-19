@@ -47,8 +47,6 @@ type VoicePlanPreviewProps = {
   onConfirmed: (summary: {
     createdCount: number;
     skippedCount: number;
-    failedCount: number;
-    failedTitles: string[];
   }) => void;
   onCancel: () => void;
 };
@@ -65,6 +63,7 @@ export default function VoicePlanPreview({
   );
   const [confirming, setConfirming] = useState(false);
   const [confirmError, setConfirmError] = useState("");
+  const [partialProgressNotice, setPartialProgressNotice] = useState("");
 
   // Recomputed on every render from current (possibly edited) items —
   // pure, synchronous, client-side interval math, no server round trip
@@ -123,6 +122,7 @@ export default function VoicePlanPreview({
 
     setConfirming(true);
     setConfirmError("");
+    setPartialProgressNotice("");
 
     try {
       const response = await fetch("/api/ai-coach/voice-plan/confirm", {
@@ -148,12 +148,35 @@ export default function VoicePlanPreview({
         );
       }
 
-      onConfirmed({
-        createdCount: data.created?.length ?? 0,
-        skippedCount: data.skippedCount ?? 0,
-        failedCount: data.failedCount ?? 0,
-        failedTitles: data.failedTitles ?? [],
-      });
+      const createdCount = data.created?.length ?? 0;
+      const skippedCount = data.skippedCount ?? 0;
+      const failedTitles = data.failedTitles ?? [];
+
+      if (failedTitles.length > 0) {
+        // Don't dismiss the preview and don't resend everything on the
+        // next attempt — keep only the items the server actually
+        // reported as failed, so retrying can't re-create the ones
+        // that already saved.
+        const failedTitleSet = new Set(
+          failedTitles.map((title) => title.trim())
+        );
+
+        setItems((currentItems) =>
+          currentItems.filter((item) =>
+            failedTitleSet.has(item.title.trim())
+          )
+        );
+
+        setPartialProgressNotice(
+          `${createdCount + skippedCount} of ${
+            createdCount + skippedCount + failedTitles.length
+          } saved. ${failedTitles.length} couldn't be saved — review below and confirm again.`
+        );
+
+        return;
+      }
+
+      onConfirmed({ createdCount, skippedCount });
     } catch (error) {
       setConfirmError(
         error instanceof Error
@@ -384,6 +407,12 @@ export default function VoicePlanPreview({
       {confirmError && (
         <p className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300">
           {confirmError}
+        </p>
+      )}
+
+      {partialProgressNotice && (
+        <p className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300">
+          {partialProgressNotice}
         </p>
       )}
 

@@ -10,9 +10,11 @@ import { normalizeTitle } from "../app/api/ai-coach/lib/task-matcher";
 import { executeTaskAction } from "../app/api/ai-coach/lib/task-actions";
 import { executeEventAction } from "../app/api/ai-coach/lib/event-actions";
 import { executeFocusAction } from "../app/api/ai-coach/lib/focus-actions";
+import { executeGoalAction } from "../app/api/ai-coach/lib/goal-actions";
 import { runActionSafely } from "../app/api/ai-coach/lib/safe-execute";
 import { sanitizeParsedPlanItems } from "../app/api/ai-coach/lib/voice-plan/parse-response";
 import { buildLinkedContextNote } from "../app/api/ai-coach/lib/voice-plan/linking";
+import { confirmPlanItems } from "../app/api/ai-coach/lib/voice-plan/confirm-items";
 import {
   detectConflicts,
   doTimeRangesOverlap,
@@ -410,6 +412,236 @@ describe("AI Coach daily focus progress handling", () => {
   });
 });
 
+describe("AI Coach goal action handling", () => {
+  const activeGoal: GoalRecord = {
+    id: "goal-1",
+    title: "Launch Orenios",
+    description: null,
+    progress: 20,
+    status: "In Progress",
+    deadline: null,
+    created_at: new Date().toISOString(),
+  };
+
+  function buildGoalSupabaseMock(returnedGoal: GoalRecord) {
+    let capturedPayload: Record<string, unknown> | null = null;
+
+    const chain = {
+      eq: () => chain,
+      neq: () => chain,
+      select: () => ({
+        single: async () => ({ data: returnedGoal, error: null }),
+      }),
+    };
+
+    const supabase = {
+      from: () => ({
+        insert: (payload: Record<string, unknown>) => {
+          capturedPayload = payload;
+          return chain;
+        },
+        update: (payload: Record<string, unknown>) => {
+          capturedPayload = payload;
+          return chain;
+        },
+        delete: () => chain,
+      }),
+    };
+
+    return {
+      supabase: supabase as never,
+      getCapturedPayload: () => capturedPayload,
+    };
+  }
+
+  it("creates a new goal and returns a confirmation reply", async () => {
+    const { supabase } = buildGoalSupabaseMock({
+      ...activeGoal,
+      id: "goal-2",
+      title: "Ship the MVP",
+      progress: 0,
+      status: "Not Started",
+    });
+
+    const result = await executeGoalAction({
+      functionName: "create_goal",
+      rawArguments: JSON.stringify({
+        title: "Ship the MVP",
+        description: null,
+        deadline: null,
+      }),
+      supabase,
+      userId: "test-user",
+      goals: [activeGoal],
+    });
+
+    expect(result.handled).toBe(true);
+    expect(result.action).toBe("create_goal");
+    expect(result.reply).toMatch(/Ship the MVP/);
+  });
+
+  it("refuses to create a duplicate of an existing active goal", async () => {
+    const { supabase } = buildGoalSupabaseMock(activeGoal);
+
+    const result = await executeGoalAction({
+      functionName: "create_goal",
+      rawArguments: JSON.stringify({
+        title: "launch orenios", // different case, same normalized title
+        description: null,
+        deadline: null,
+      }),
+      supabase,
+      userId: "test-user",
+      goals: [activeGoal],
+    });
+
+    expect(result.handled).toBe(true);
+    expect(result.reply).toMatch(/already exists/);
+  });
+
+  it("turns a no-op AI goal update into a conversational reply instead of throwing", async () => {
+    // Mirrors the equivalent task-action test: parseUpdateGoalArguments
+    // throws "No goal changes were requested." when every optional
+    // field is empty — runActionSafely must turn that into a normal
+    // chat reply, not an HTTP 500.
+    const result = await runActionSafely("goal", () =>
+      executeGoalAction({
+        functionName: "update_goal",
+        rawArguments: JSON.stringify({
+          title: "Launch Orenios",
+          new_title: null,
+          description: null,
+          remove_description: false,
+          progress: null,
+          status: null,
+          deadline: null,
+          remove_deadline: false,
+        }),
+        supabase: {} as never,
+        userId: "test-user",
+        goals: [activeGoal],
+      })
+    );
+
+    expect(result.handled).toBe(true);
+    expect(result.action).toBeNull();
+    expect(result.reply.length).toBeGreaterThan(0);
+    expect(result.reply).not.toMatch(/^Error/);
+  });
+
+  const twoSameTitledActiveGoals: GoalRecord[] = [
+    {
+      id: "goal-a",
+      title: "Read more books",
+      description: null,
+      progress: 10,
+      status: "In Progress",
+      deadline: null,
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: "goal-b",
+      title: "Read more books",
+      description: null,
+      progress: 40,
+      status: "In Progress",
+      deadline: null,
+      created_at: new Date().toISOString(),
+    },
+  ];
+
+  it("asks which goal to complete when multiple active goals share a title", async () => {
+    const result = await executeGoalAction({
+      functionName: "complete_goal",
+      rawArguments: JSON.stringify({ title: "Read more books" }),
+      supabase: {} as never,
+      userId: "test-user",
+      goals: twoSameTitledActiveGoals,
+    });
+
+    expect(result.handled).toBe(true);
+    expect(result.action).toBe("complete_goal");
+    expect(result.reply.toLowerCase()).toMatch(/which one/);
+  });
+
+  it("asks which goal to delete when multiple goals share a title", async () => {
+    const result = await executeGoalAction({
+      functionName: "delete_goal",
+      rawArguments: JSON.stringify({ title: "Read more books" }),
+      supabase: {} as never,
+      userId: "test-user",
+      goals: twoSameTitledActiveGoals,
+    });
+
+    expect(result.handled).toBe(true);
+    expect(result.action).toBe("delete_goal");
+    expect(result.reply.toLowerCase()).toMatch(/which one/);
+  });
+
+  it("reports when no active goal matches the requested title", async () => {
+    const result = await executeGoalAction({
+      functionName: "complete_goal",
+      rawArguments: JSON.stringify({ title: "Learn to sail" }),
+      supabase: {} as never,
+      userId: "test-user",
+      goals: [activeGoal],
+    });
+
+    expect(result.handled).toBe(true);
+    expect(result.reply).toMatch(/couldn.t find/i);
+  });
+
+  it("completes a goal that resolves unambiguously", async () => {
+    const { supabase } = buildGoalSupabaseMock({
+      ...activeGoal,
+      progress: 100,
+      status: "Completed",
+    });
+
+    const result = await executeGoalAction({
+      functionName: "complete_goal",
+      rawArguments: JSON.stringify({ title: "Launch Orenios" }),
+      supabase,
+      userId: "test-user",
+      goals: [activeGoal],
+    });
+
+    expect(result.handled).toBe(true);
+    expect(result.action).toBe("complete_goal");
+    expect(result.reply).toMatch(/Goal completed/);
+  });
+
+  it("updates a goal's progress and status together", async () => {
+    const { supabase, getCapturedPayload } = buildGoalSupabaseMock({
+      ...activeGoal,
+      progress: 75,
+      status: "In Progress",
+    });
+
+    const result = await executeGoalAction({
+      functionName: "update_goal",
+      rawArguments: JSON.stringify({
+        title: "Launch Orenios",
+        new_title: null,
+        description: null,
+        remove_description: false,
+        progress: 75,
+        status: null,
+        deadline: null,
+        remove_deadline: false,
+      }),
+      supabase,
+      userId: "test-user",
+      goals: [activeGoal],
+    });
+
+    expect(result.handled).toBe(true);
+    expect(result.action).toBe("update_goal");
+    expect(getCapturedPayload()?.progress).toBe(75);
+    expect(getCapturedPayload()?.status).toBe("In Progress");
+  });
+});
+
 describe("Voice plan item sanitization", () => {
   it("keeps a well-formed event as-is", () => {
     const { items, droppedCount } = sanitizeParsedPlanItems([
@@ -784,5 +1016,312 @@ describe("buildLinkedContextNote", () => {
     expect(
       buildLinkedContextNote("Launch Orenios", [multiMatchTask], [goal])
     ).toBe("Related to task: Launch Orenios · Related to goal: Launch Orenios");
+  });
+});
+
+describe("Voice plan confirm — partial failure and retry safety", () => {
+  // A minimal supabase mock covering exactly the calls confirmPlanItems
+  // makes: insert+select+single for "tasks"/"calendar_events", and a
+  // bare insert for "ai_messages". insertCalls records every row
+  // actually written, keyed by table, so tests can assert not just the
+  // returned counts but that no extra insert happened for items that
+  // should have been skipped as duplicates.
+  function buildConfirmSupabaseMock(options: {
+    failTaskTitles?: string[];
+    failEventTitles?: string[];
+  } = {}) {
+    const insertCalls: { table: string; title?: string }[] = [];
+    const failTaskTitles = new Set(options.failTaskTitles ?? []);
+    const failEventTitles = new Set(options.failEventTitles ?? []);
+
+    const supabase = {
+      from: (table: string) => {
+        if (table === "tasks") {
+          return {
+            insert: (payload: { title: string; priority: string; due_date: string | null }) => {
+              insertCalls.push({ table, title: payload.title });
+
+              return {
+                select: () => ({
+                  single: async () => {
+                    if (failTaskTitles.has(payload.title)) {
+                      return { data: null, error: new Error("simulated task insert failure") };
+                    }
+
+                    return {
+                      data: {
+                        id: `task-${payload.title}`,
+                        title: payload.title,
+                        completed: false,
+                        priority: payload.priority,
+                        due_date: payload.due_date,
+                        created_at: new Date().toISOString(),
+                      },
+                      error: null,
+                    };
+                  },
+                }),
+              };
+            },
+          };
+        }
+
+        if (table === "calendar_events") {
+          return {
+            insert: (payload: {
+              title: string;
+              description: string | null;
+              event_date: string;
+              start_time: string | null;
+              end_time: string | null;
+              category: string;
+            }) => {
+              insertCalls.push({ table, title: payload.title });
+
+              return {
+                select: () => ({
+                  single: async () => {
+                    if (failEventTitles.has(payload.title)) {
+                      return { data: null, error: new Error("simulated event insert failure") };
+                    }
+
+                    return {
+                      data: {
+                        id: `event-${payload.title}`,
+                        title: payload.title,
+                        description: payload.description,
+                        event_date: payload.event_date,
+                        start_time: payload.start_time,
+                        end_time: payload.end_time,
+                        category: payload.category,
+                        created_at: new Date().toISOString(),
+                      },
+                      error: null,
+                    };
+                  },
+                }),
+              };
+            },
+          };
+        }
+
+        if (table === "ai_messages") {
+          return {
+            insert: async () => ({ data: null, error: null }),
+          };
+        }
+
+        throw new Error(`Unexpected table in confirm mock: ${table}`);
+      },
+    };
+
+    return {
+      supabase: supabase as never,
+      getInsertCallsForTable: (table: string) =>
+        insertCalls.filter((call) => call.table === table),
+    };
+  }
+
+  function buildPlanTask(title: string): ParsedPlanItem {
+    return {
+      type: "task",
+      title,
+      date: "2026-07-20",
+      start_time: null,
+      end_time: null,
+      time_is_approximate: false,
+      category: "Other",
+      priority: "medium",
+    };
+  }
+
+  it("saves every item when all inserts succeed", async () => {
+    const { supabase, getInsertCallsForTable } = buildConfirmSupabaseMock();
+
+    const items = [
+      buildPlanTask("Buy groceries"),
+      buildPlanTask("Book dentist"),
+      buildPlanTask("Call the bank"),
+    ];
+
+    const result = await confirmPlanItems({
+      items,
+      supabase,
+      userId: "test-user",
+      existingTasks: [],
+      existingGoals: [],
+      existingEvents: [],
+    });
+
+    expect(result.created).toHaveLength(3);
+    expect(result.created.map((item) => item.title)).toEqual([
+      "Buy groceries",
+      "Book dentist",
+      "Call the bank",
+    ]);
+    expect(result.skippedCount).toBe(0);
+    expect(result.failedCount).toBe(0);
+    expect(result.failedTitles).toEqual([]);
+    expect(getInsertCallsForTable("tasks")).toHaveLength(3);
+  });
+
+  it("keeps earlier successes and continues past a failure in the middle of the batch", async () => {
+    const { supabase, getInsertCallsForTable } = buildConfirmSupabaseMock({
+      failTaskTitles: ["Book dentist"],
+    });
+
+    const items = [
+      buildPlanTask("Buy groceries"),
+      buildPlanTask("Book dentist"),
+      buildPlanTask("Call the bank"),
+    ];
+
+    const result = await confirmPlanItems({
+      items,
+      supabase,
+      userId: "test-user",
+      existingTasks: [],
+      existingGoals: [],
+      existingEvents: [],
+    });
+
+    // The two good items on either side of the failing one must both
+    // be reported as created — a mid-batch failure must not abort the
+    // items that come after it, and must not roll back the ones that
+    // already succeeded before it.
+    expect(result.created.map((item) => item.title)).toEqual([
+      "Buy groceries",
+      "Call the bank",
+    ]);
+    expect(result.failedCount).toBe(1);
+    expect(result.failedTitles).toEqual(["Book dentist"]);
+    expect(result.skippedCount).toBe(0);
+
+    // All three were genuinely attempted (the failure is a DB error,
+    // not a skip), so the mock should show three real insert calls.
+    expect(getInsertCallsForTable("tasks")).toHaveLength(3);
+  });
+
+  it("does not duplicate already-saved items when the full original batch is retried", async () => {
+    // First pass: middle item fails, the other two succeed.
+    const firstPass = buildConfirmSupabaseMock({
+      failTaskTitles: ["Book dentist"],
+    });
+
+    const items = [
+      buildPlanTask("Buy groceries"),
+      buildPlanTask("Book dentist"),
+      buildPlanTask("Call the bank"),
+    ];
+
+    const firstResult = await confirmPlanItems({
+      items,
+      supabase: firstPass.supabase,
+      userId: "test-user",
+      existingTasks: [],
+      existingGoals: [],
+      existingEvents: [],
+    });
+
+    expect(firstResult.created.map((item) => item.title)).toEqual([
+      "Buy groceries",
+      "Call the bank",
+    ]);
+    expect(firstResult.failedTitles).toEqual(["Book dentist"]);
+
+    // Second pass simulates a retry that resends the WHOLE original
+    // batch (not just the failed item) — this is the exact scenario
+    // that would duplicate rows if duplicate detection didn't run
+    // against a fresh read of the caller's tables. "Book dentist" now
+    // succeeds; the other two are already in existingTasks, standing
+    // in for what a real fresh Supabase read would return after the
+    // first pass's successful inserts.
+    const secondPass = buildConfirmSupabaseMock();
+
+    const existingTasksAfterFirstPass: TaskRecord[] = [
+      {
+        id: "task-1",
+        title: "Buy groceries",
+        completed: false,
+        priority: "medium",
+        due_date: "2026-07-20",
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: "task-2",
+        title: "Call the bank",
+        completed: false,
+        priority: "medium",
+        due_date: "2026-07-20",
+        created_at: new Date().toISOString(),
+      },
+    ];
+
+    const secondResult = await confirmPlanItems({
+      items, // the full original 3-item batch, resent as-is
+      supabase: secondPass.supabase,
+      userId: "test-user",
+      existingTasks: existingTasksAfterFirstPass,
+      existingGoals: [],
+      existingEvents: [],
+    });
+
+    // Only the previously-failed item should actually be created.
+    expect(secondResult.created.map((item) => item.title)).toEqual([
+      "Book dentist",
+    ]);
+    expect(secondResult.skippedCount).toBe(2);
+    expect(secondResult.failedCount).toBe(0);
+
+    // The decisive check: the mock must show exactly ONE real insert
+    // call on the retry — "Buy groceries" and "Call the bank" must
+    // never reach the database a second time.
+    const secondPassInserts = secondPass.getInsertCallsForTable("tasks");
+    expect(secondPassInserts).toHaveLength(1);
+    expect(secondPassInserts[0].title).toBe("Book dentist");
+  });
+
+  it("only re-attempts the failed items when the client sends the reduced retry list", async () => {
+    // Matches the actual client behavior after the VoicePlanPreview fix:
+    // on partial failure, the client filters its local item list down
+    // to just the failed titles before the user can retry, so a real
+    // retry request only ever contains "Book dentist".
+    const { supabase, getInsertCallsForTable } = buildConfirmSupabaseMock();
+
+    const retryItems = [buildPlanTask("Book dentist")];
+
+    const existingTasksAfterFirstPass: TaskRecord[] = [
+      {
+        id: "task-1",
+        title: "Buy groceries",
+        completed: false,
+        priority: "medium",
+        due_date: "2026-07-20",
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: "task-2",
+        title: "Call the bank",
+        completed: false,
+        priority: "medium",
+        due_date: "2026-07-20",
+        created_at: new Date().toISOString(),
+      },
+    ];
+
+    const result = await confirmPlanItems({
+      items: retryItems,
+      supabase,
+      userId: "test-user",
+      existingTasks: existingTasksAfterFirstPass,
+      existingGoals: [],
+      existingEvents: [],
+    });
+
+    expect(result.created.map((item) => item.title)).toEqual([
+      "Book dentist",
+    ]);
+    expect(result.skippedCount).toBe(0);
+    expect(getInsertCallsForTable("tasks")).toHaveLength(1);
   });
 });
