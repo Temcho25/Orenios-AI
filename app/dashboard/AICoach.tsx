@@ -1,28 +1,13 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import {
-  FormEvent,
-  KeyboardEvent,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { motion } from "framer-motion";
+import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "../lib/supabase";
 import VoicePlanPreview from "./VoicePlanPreview";
-import AnimatedLogo from "../components/v2/AnimatedLogo";
-import VoiceAura from "../components/voice/VoiceAura";
-import VoiceInterface, {
-  type VoiceUIState,
-  VOICE_AURA_STATE,
-  VOICE_LOGO_SPEED,
-} from "../components/voice/VoiceInterface";
-import { MAX_RECORDING_SECONDS } from "../api/ai-coach/lib/voice-plan/constants";
-import type {
-  ExistingEventSnapshot,
-  PlanItemWithConflicts,
-} from "../api/ai-coach/lib/voice-plan/types";
+import VoiceInterface from "../components/voice/VoiceInterface";
+import ChatMessageList from "./ChatMessageList";
+import ChatInputForm from "./ChatInputForm";
+import { useVoiceRecording } from "./useVoiceRecording";
 
 type ChatMessage = {
   id: string;
@@ -37,13 +22,6 @@ type StoredChatMessage = {
   content: string;
   created_at: string;
 };
-
-const quickPrompts = [
-  "Create a goal for this week",
-  "Add a task for tomorrow",
-  "Move a task to next week",
-  "Mark today's top task as done",
-];
 
 function createMessageId() {
   if (
@@ -69,61 +47,6 @@ function getBrowserTimeZone() {
   }
 }
 
-function formatAssistantResponse(content: string) {
-  const lines = content.split("\n");
-
-  return lines.map((line, index) => {
-    const trimmedLine = line.trim();
-
-    if (!trimmedLine) {
-      return <div key={`space-${index}`} className="h-3" />;
-    }
-
-    const isHeading =
-      trimmedLine.startsWith("🧠") ||
-      trimmedLine.startsWith("🎯") ||
-      trimmedLine.startsWith("📋") ||
-      trimmedLine.startsWith("⚠️") ||
-      trimmedLine.startsWith("💡");
-
-    const isListItem =
-      trimmedLine.startsWith("-") ||
-      trimmedLine.startsWith("•") ||
-      /^\d+\./.test(trimmedLine);
-
-    if (isHeading) {
-      return (
-        <h3
-          key={`${trimmedLine}-${index}`}
-          className="mt-5 text-sm font-semibold text-foreground/90 first:mt-0"
-        >
-          {trimmedLine}
-        </h3>
-      );
-    }
-
-    if (isListItem) {
-      return (
-        <p
-          key={`${trimmedLine}-${index}`}
-          className="ml-2 mt-2 text-sm leading-6 text-foreground/60"
-        >
-          {trimmedLine}
-        </p>
-      );
-    }
-
-    return (
-      <p
-        key={`${trimmedLine}-${index}`}
-        className="mt-2 text-sm leading-6 text-foreground/60"
-      >
-        {trimmedLine}
-      </p>
-    );
-  });
-}
-
 export default function AICoach() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [message, setMessage] = useState("");
@@ -135,41 +58,19 @@ export default function AICoach() {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [voiceRecordingState, setVoiceRecordingState] = useState<
-    "idle" | "recording" | "processing"
-  >("idle");
-  const [voicePlanError, setVoicePlanError] = useState("");
-  const [voiceSuccessMessage, setVoiceSuccessMessage] = useState("");
-  const [voicePlanData, setVoicePlanData] = useState<{
-    transcript: string;
-    items: PlanItemWithConflicts[];
-    existingEvents: ExistingEventSnapshot[];
-  } | null>(null);
-
-  // Maps the existing recording state machine onto the voice UI's
-  // vocabulary. "speaking" has nothing to drive it yet (Orenios has no
-  // text-to-speech output) — the orb component supports it for when
-  // that exists, it's just never reached from here today.
-  const voiceUIState: VoiceUIState =
-    voiceRecordingState === "recording"
-      ? "listening"
-      : voiceRecordingState === "processing"
-        ? "thinking"
-        : "idle";
-
-  // The current recording's MediaStream, reused (never re-requested) by
-  // VoiceAura for its AnalyserNode. Populated the moment getUserMedia
-  // resolves, cleared once the recorder actually stops.
-  const [voiceStream, setVoiceStream] = useState<MediaStream | null>(null);
-
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const recordingTimeoutRef = useRef<number | null>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  // Set right before the MAX_RECORDING_SECONDS safety-net timeout calls
-  // stopVoiceRecording, so recorder.onstop can tell that apart from the
-  // user tapping the mic to stop and show a friendly note instead of
-  // silently behaving as if nothing unusual happened.
-  const autoStoppedRef = useRef(false);
+  const {
+    voiceRecordingState,
+    voiceUIState,
+    voiceStream,
+    audioContext,
+    voicePlanError,
+    voiceSuccessMessage,
+    voicePlanData,
+    startVoiceRecording,
+    stopVoiceRecording,
+    handleVoicePlanConfirmed,
+    handleVoicePlanCancel,
+  } = useVoiceRecording();
 
   const conversationContainerRef =
     useRef<HTMLDivElement | null>(null);
@@ -412,250 +313,6 @@ export default function AICoach() {
     }
   }
 
-  // Creates (or resumes) the AudioContext used by VoiceAura. Must be
-  // called synchronously from inside the actual button-tap handler:
-  // iOS Safari only unlocks an AudioContext when resume() runs inside a
-  // user-gesture call stack — doing this later, e.g. in a useEffect
-  // after state settles, can leave it permanently suspended on iOS.
-  function ensureVoiceAudioContext(): AudioContext | null {
-    if (typeof window === "undefined") {
-      return null;
-    }
-
-    try {
-      const AudioContextCtor =
-        window.AudioContext ||
-        (window as Window & { webkitAudioContext?: typeof AudioContext })
-          .webkitAudioContext;
-
-      if (!AudioContextCtor) {
-        return null;
-      }
-
-      if (
-        !audioContextRef.current ||
-        audioContextRef.current.state === "closed"
-      ) {
-        audioContextRef.current = new AudioContextCtor();
-      }
-
-      const audioContext = audioContextRef.current;
-
-      if (audioContext.state === "suspended") {
-        void audioContext.resume();
-      }
-
-      return audioContext;
-    } catch (error) {
-      console.error("Voice aura: could not create AudioContext", error);
-      return null;
-    }
-  }
-
-  function closeVoiceAudioContext() {
-    const audioContext = audioContextRef.current;
-    audioContextRef.current = null;
-
-    if (audioContext && audioContext.state !== "closed") {
-      void audioContext.close().catch(() => {});
-    }
-  }
-
-  useEffect(() => {
-    return () => {
-      closeVoiceAudioContext();
-    };
-  }, []);
-
-  function getSupportedAudioMimeType() {
-    if (typeof MediaRecorder === "undefined") {
-      return null;
-    }
-
-    const candidates = [
-      "audio/webm;codecs=opus",
-      "audio/webm",
-      "audio/mp4",
-      "audio/aac",
-    ];
-
-    for (const candidate of candidates) {
-      if (MediaRecorder.isTypeSupported(candidate)) {
-        return candidate;
-      }
-    }
-
-    return null;
-  }
-
-  async function startVoiceRecording() {
-    if (voiceRecordingState !== "idle" || voicePlanData) {
-      return;
-    }
-
-    setVoicePlanError("");
-    setVoiceSuccessMessage("");
-    autoStoppedRef.current = false;
-
-    // Synchronous, still inside this tap's gesture — see
-    // ensureVoiceAudioContext's comment for why this can't move later.
-    ensureVoiceAudioContext();
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-      });
-
-      const mimeType = getSupportedAudioMimeType();
-
-      const recorder = new MediaRecorder(
-        stream,
-        mimeType ? { mimeType } : undefined
-      );
-
-      const chunks: BlobPart[] = [];
-
-      recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunks.push(event.data);
-        }
-      };
-
-      recorder.onstop = () => {
-        stream.getTracks().forEach((track) => track.stop());
-        setVoiceStream(null);
-        closeVoiceAudioContext();
-
-        if (autoStoppedRef.current) {
-          autoStoppedRef.current = false;
-          setVoiceSuccessMessage(
-            "That recording ran long, so I stopped it automatically — let's see what you've got."
-          );
-          window.setTimeout(() => setVoiceSuccessMessage(""), 6000);
-        }
-
-        const blob = new Blob(chunks, {
-          type: mimeType || "audio/webm",
-        });
-
-        void processVoiceRecording(blob);
-      };
-
-      mediaRecorderRef.current = recorder;
-      recorder.start();
-      setVoiceStream(stream);
-      setVoiceRecordingState("recording");
-
-      recordingTimeoutRef.current = window.setTimeout(() => {
-        autoStoppedRef.current = true;
-        stopVoiceRecording();
-      }, MAX_RECORDING_SECONDS * 1000);
-    } catch {
-      closeVoiceAudioContext();
-      setVoicePlanError(
-        "Microphone access was denied or unavailable. You can type your plan instead."
-      );
-    }
-  }
-
-  function stopVoiceRecording() {
-    if (recordingTimeoutRef.current) {
-      window.clearTimeout(recordingTimeoutRef.current);
-      recordingTimeoutRef.current = null;
-    }
-
-    mediaRecorderRef.current?.stop();
-    mediaRecorderRef.current = null;
-  }
-
-  async function processVoiceRecording(blob: Blob) {
-    setVoiceRecordingState("processing");
-
-    try {
-      const formData = new FormData();
-      formData.append("audio", blob, "voice-plan.webm");
-      formData.append("timeZone", getBrowserTimeZone());
-
-      const response = await fetch("/api/ai-coach/voice-plan", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = (await response.json()) as {
-        status?: string;
-        transcript?: string;
-        items?: PlanItemWithConflicts[];
-        existingEvents?: ExistingEventSnapshot[];
-        error?: string;
-      };
-
-      if (!response.ok || data.status === "error") {
-        throw new Error(
-          data.error || "Orenios could not process your recording."
-        );
-      }
-
-      if (data.status === "empty_transcript") {
-        setVoicePlanError(
-          "I couldn't hear anything clear in that recording — try again somewhere quieter, or type your plan instead."
-        );
-        return;
-      }
-
-      if (data.status === "no_items_found") {
-        setVoicePlanError(
-          `I heard "${data.transcript}" but didn't catch any specific plans in it — try again, or add things manually.`
-        );
-        return;
-      }
-
-      setVoicePlanData({
-        transcript: data.transcript ?? "",
-        items: data.items ?? [],
-        existingEvents: data.existingEvents ?? [],
-      });
-    } catch (error) {
-      setVoicePlanError(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong while processing your recording."
-      );
-    } finally {
-      setVoiceRecordingState("idle");
-    }
-  }
-
-  function handleVoicePlanConfirmed(summary: {
-    createdCount: number;
-    skippedCount: number;
-    failedCount: number;
-    failedTitles: string[];
-  }) {
-    setVoicePlanData(null);
-
-    const itemWord = summary.createdCount === 1 ? "item" : "items";
-    const skippedText =
-      summary.skippedCount > 0
-        ? ` (${summary.skippedCount} skipped as duplicates)`
-        : "";
-
-    setVoiceSuccessMessage(
-      `✅ Added ${summary.createdCount} ${itemWord} to your workspace${skippedText}.`
-    );
-
-    window.setTimeout(() => setVoiceSuccessMessage(""), 4000);
-
-    if (summary.failedCount > 0) {
-      setVoicePlanError(
-        `Couldn't save ${summary.failedCount === 1 ? "one item" : `${summary.failedCount} items`} from this plan: ${summary.failedTitles.join(", ")}. The rest were added — try adding the failed ${summary.failedCount === 1 ? "one" : "ones"} again.`
-      );
-    }
-  }
-
-  function handleVoicePlanCancel() {
-    setVoicePlanData(null);
-  }
-
   return (
     <section className="overflow-hidden rounded-3xl border border-card-border bg-card backdrop-blur-[12px]">
       {/* Always dark, regardless of the workspace theme toggle — same fixed
@@ -745,187 +402,14 @@ export default function AICoach() {
       </div>
 
       <div className="bg-card p-4 sm:p-6">
-        {loadingHistory ? (
-          <div className="rounded-3xl border border-card-border bg-card px-5 py-14 text-center backdrop-blur-[12px]">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-violet/15 text-accent-violet">
-              <span className="h-5 w-5 animate-spin rounded-full border-2 border-accent-violet/25 border-t-accent-violet" />
-            </div>
-
-            <p className="mt-5 text-sm font-semibold text-foreground/80">
-              Loading your conversation
-            </p>
-
-            <p className="mt-2 text-sm text-foreground/40">
-              Orenios is restoring your recent messages.
-            </p>
-          </div>
-        ) : !hasConversation ? (
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 10,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            className="rounded-3xl border border-card-border bg-card px-5 py-4 text-center backdrop-blur-[12px] sm:px-6"
-          >
-            <h3 className="text-lg font-semibold tracking-[-0.03em] text-foreground">
-              How can I help you today?
-            </h3>
-
-            <p className="mx-auto mt-1.5 hidden max-w-xl text-sm leading-6 text-foreground/50 sm:block">
-              Ask Orenios to organize your priorities, build a plan or clarify a decision.
-            </p>
-
-            <div className="mx-auto mt-3 grid max-w-2xl grid-cols-2 gap-1.5 sm:mt-4 sm:gap-2">
-              {quickPrompts.map((quickPrompt) => (
-                <button
-                  key={quickPrompt}
-                  type="button"
-                  onClick={() =>
-                    void sendMessage(quickPrompt)
-                  }
-                  disabled={loading}
-                  className="rounded-2xl border border-muted-border bg-muted px-3 py-2 text-left text-xs font-medium leading-5 text-foreground/70 transition hover:border-accent-violet/25 hover:bg-accent-violet/10 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-3 sm:text-sm"
-                >
-                  {quickPrompt}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        ) : (
-          <div
-            ref={conversationContainerRef}
-            className="max-h-[620px] space-y-5 overflow-y-auto rounded-3xl border border-card-border bg-card p-4 backdrop-blur-[12px] sm:p-6"
-          >
-            <AnimatePresence initial={false}>
-              {messages.map((chatMessage) => {
-                const isUser =
-                  chatMessage.role === "user";
-
-                return (
-                  <motion.div
-                    key={chatMessage.id}
-                    layout
-                    initial={{
-                      opacity: 0,
-                      y: 10,
-                      scale: 0.99,
-                    }}
-                    animate={{
-                      opacity: 1,
-                      y: 0,
-                      scale: 1,
-                    }}
-                    exit={{
-                      opacity: 0,
-                      y: -8,
-                    }}
-                    transition={{
-                      duration: 0.25,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className={`flex ${
-                      isUser
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                  >
-                    <div
-                      className={`max-w-[92%] rounded-3xl px-5 py-4 sm:max-w-[78%] ${
-                        isUser
-                          ? "rounded-br-md bg-accent-violet/20 text-foreground"
-                          : "rounded-bl-md border border-card-border bg-muted text-foreground/70"
-                      }`}
-                    >
-                      <div className="mb-3 flex items-center gap-2">
-                        <div
-                          className={`flex h-7 w-7 items-center justify-center rounded-lg text-[10px] font-bold ${
-                            isUser
-                              ? "bg-surface-strong text-foreground"
-                              : "bg-accent-violet/15 text-accent-violet"
-                          }`}
-                        >
-                          {isUser ? "YOU" : "AI"}
-                        </div>
-
-                        <p
-                          className={`text-xs font-semibold ${
-                            isUser
-                              ? "text-foreground/60"
-                              : "text-foreground/40"
-                          }`}
-                        >
-                          {isUser
-                            ? "You"
-                            : "Orenios AI"}
-                        </p>
-                      </div>
-
-                      {isUser ? (
-                        <p className="whitespace-pre-wrap text-sm leading-6 text-foreground">
-                          {chatMessage.content}
-                        </p>
-                      ) : (
-                        <div>
-                          {formatAssistantResponse(
-                            chatMessage.content
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
-
-            {loading && (
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  y: 8,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                className="flex justify-start"
-              >
-                <div className="rounded-3xl rounded-bl-md border border-card-border bg-muted px-5 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent-violet/15 text-accent-violet">
-                      <span className="text-sm">✦</span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5">
-                      {[0, 1, 2].map((dot) => (
-                        <motion.span
-                          key={dot}
-                          animate={{
-                            opacity: [0.3, 1, 0.3],
-                            y: [0, -3, 0],
-                          }}
-                          transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            delay: dot * 0.15,
-                          }}
-                          className="h-2 w-2 rounded-full bg-accent-violet"
-                        />
-                      ))}
-                    </div>
-
-                    <p className="text-xs font-medium text-foreground/40">
-                      Orenios is thinking...
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </div>
-        )}
+        <ChatMessageList
+          loadingHistory={loadingHistory}
+          hasConversation={hasConversation}
+          messages={messages}
+          loading={loading}
+          onQuickPrompt={(prompt) => void sendMessage(prompt)}
+          conversationContainerRef={conversationContainerRef}
+        />
 
         {errorMessage && (
           <motion.div
@@ -970,7 +454,7 @@ export default function AICoach() {
           <VoiceInterface
             state={voiceUIState}
             mediaStream={voiceStream}
-            audioContext={audioContextRef.current}
+            audioContext={audioContext}
             className="mt-4"
           />
         )}
@@ -984,132 +468,22 @@ export default function AICoach() {
             onCancel={handleVoicePlanCancel}
           />
         ) : (
-          <form
+          <ChatInputForm
+            message={message}
+            onMessageChange={setMessage}
             onSubmit={handleSubmit}
-            className="mt-3 rounded-3xl border border-muted-border bg-muted p-3 backdrop-blur-[12px]"
-          >
-            <textarea
-              value={message}
-              onChange={(event) =>
-                setMessage(
-                  event.target.value.slice(0, 1000)
-                )
-              }
-              onKeyDown={handleKeyDown}
-              placeholder="Ask Orenios to organize your day..."
-              rows={3}
-              disabled={
-                loading ||
-                loadingHistory ||
-                clearingConversation ||
-                voiceRecordingState !== "idle"
-              }
-              className="w-full resize-none bg-transparent px-3 py-2 text-sm leading-6 text-foreground outline-none placeholder:text-foreground/30 disabled:cursor-not-allowed disabled:opacity-60"
-            />
-
-            <div className="mt-2 flex flex-col gap-3 border-t border-card-border px-2 pt-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-3">
-                <p
-                  className={`text-xs ${
-                    remainingCharacters < 100
-                      ? "text-orange-400"
-                      : "text-foreground/30"
-                  }`}
-                >
-                  {voiceRecordingState === "recording"
-                    ? "Recording... tap the mic to stop"
-                    : voiceRecordingState === "processing"
-                      ? "Understanding your day..."
-                      : `${remainingCharacters} characters left`}
-                </p>
-
-                <p className="hidden text-xs text-foreground/20 sm:block">
-                  Enter to send · Shift + Enter for a new
-                  line
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() =>
-                    voiceRecordingState === "recording"
-                      ? stopVoiceRecording()
-                      : void startVoiceRecording()
-                  }
-                  disabled={
-                    voiceRecordingState === "processing" ||
-                    loading ||
-                    loadingHistory ||
-                    clearingConversation
-                  }
-                  aria-label={
-                    voiceRecordingState === "recording"
-                      ? "Stop recording"
-                      : voiceRecordingState === "processing"
-                        ? "Processing your recording"
-                        : "Record your day"
-                  }
-                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border transition disabled:cursor-not-allowed disabled:opacity-50 ${
-                    voiceRecordingState === "recording"
-                      ? "border-red-400 bg-red-500/10"
-                      : voiceRecordingState === "processing"
-                        ? "border-accent-violet/40 bg-accent-violet/10"
-                        : "border-muted-border bg-card hover:border-accent-violet/30"
-                  }`}
-                >
-                  <VoiceAura
-                    state={VOICE_AURA_STATE[voiceUIState]}
-                    mediaStream={voiceStream}
-                    audioContext={audioContextRef.current}
-                    size={22}
-                  >
-                    <AnimatedLogo
-                      speed={VOICE_LOGO_SPEED[voiceUIState]}
-                      className="h-[22px] w-[22px]"
-                    />
-                  </VoiceAura>
-                </button>
-
-                <motion.button
-                  whileHover={
-                    loading ||
-                    loadingHistory ||
-                    clearingConversation
-                      ? undefined
-                      : { scale: 1.015 }
-                  }
-                  whileTap={
-                    loading ||
-                    loadingHistory ||
-                    clearingConversation
-                      ? undefined
-                      : { scale: 0.985 }
-                  }
-                  type="submit"
-                  disabled={
-                    loading ||
-                    loadingHistory ||
-                    clearingConversation ||
-                    !message.trim()
-                  }
-                  className="cta-gradient flex h-11 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(124,111,240,0.3)] transition disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {loading ? (
-                    <>
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Thinking...
-                    </>
-                  ) : (
-                    <>
-                      Ask Orenios
-                      <span aria-hidden="true">→</span>
-                    </>
-                  )}
-                </motion.button>
-              </div>
-            </div>
-          </form>
+            onKeyDown={handleKeyDown}
+            remainingCharacters={remainingCharacters}
+            loading={loading}
+            loadingHistory={loadingHistory}
+            clearingConversation={clearingConversation}
+            voiceRecordingState={voiceRecordingState}
+            voiceUIState={voiceUIState}
+            voiceStream={voiceStream}
+            audioContext={audioContext}
+            onStartRecording={() => void startVoiceRecording()}
+            onStopRecording={stopVoiceRecording}
+          />
         )}
 
         <p className="mt-3 text-center text-[11px] leading-5 text-foreground/30">
