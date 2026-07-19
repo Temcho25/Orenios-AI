@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import VoiceOrb, { type VoiceUIState } from "./VoiceOrb";
 import AnimatedLogo from "../v2/AnimatedLogo";
+import VoiceAura from "./VoiceAura";
 
 // Roughly 1.5-2x the landing page's default spin — fast enough to read
 // as "listening", without losing the calm, premium feel of the mark.
@@ -19,6 +20,11 @@ export type VoiceInterfaceProps = {
   transcript?: string;
   responseText?: string;
   audioLevel?: number;
+  // The recorder's own MediaStream/AudioContext, reused by VoiceAura
+  // for its AnalyserNode. Only meaningful while state === "listening";
+  // harmless to leave undefined for every other state.
+  mediaStream?: MediaStream | null;
+  audioContext?: AudioContext | null;
   darkMode?: boolean;
   className?: string;
 };
@@ -35,6 +41,8 @@ export default function VoiceInterface({
   transcript,
   responseText,
   audioLevel,
+  mediaStream = null,
+  audioContext = null,
   darkMode,
   className = "",
 }: VoiceInterfaceProps) {
@@ -49,10 +57,17 @@ export default function VoiceInterface({
         // corner, just spun faster — same geometry, same rings, same
         // satellites baked into the rotating artwork, so they can never
         // drift off their orbit. Every other state keeps the existing orb.
-        <AnimatedLogo
-          speed={LISTENING_LOGO_SPEED}
-          className="h-[132px] w-[132px]"
-        />
+        // VoiceAura layers a voice-reactive glow behind it.
+        <VoiceAura
+          active={state === "listening"}
+          mediaStream={mediaStream}
+          audioContext={audioContext}
+        >
+          <AnimatedLogo
+            speed={LISTENING_LOGO_SPEED}
+            className="h-[132px] w-[132px]"
+          />
+        </VoiceAura>
       ) : (
         <VoiceOrb
           state={state}

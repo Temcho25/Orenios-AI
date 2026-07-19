@@ -152,8 +152,14 @@ export default function AICoach() {
         ? "thinking"
         : "idle";
 
+  // The current recording's MediaStream, reused (never re-requested) by
+  // VoiceAura for its AnalyserNode. Populated the moment getUserMedia
+  // resolves, cleared once the recorder actually stops.
+  const [voiceStream, setVoiceStream] = useState<MediaStream | null>(null);
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordingTimeoutRef = useRef<number | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
 
   const conversationContainerRef =
     useRef<HTMLDivElement | null>(null);
@@ -396,6 +402,61 @@ export default function AICoach() {
     }
   }
 
+  // Creates (or resumes) the AudioContext used by VoiceAura. Must be
+  // called synchronously from inside the actual button-tap handler:
+  // iOS Safari only unlocks an AudioContext when resume() runs inside a
+  // user-gesture call stack — doing this later, e.g. in a useEffect
+  // after state settles, can leave it permanently suspended on iOS.
+  function ensureVoiceAudioContext(): AudioContext | null {
+    if (typeof window === "undefined") {
+      return null;
+    }
+
+    try {
+      const AudioContextCtor =
+        window.AudioContext ||
+        (window as Window & { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext;
+
+      if (!AudioContextCtor) {
+        return null;
+      }
+
+      if (
+        !audioContextRef.current ||
+        audioContextRef.current.state === "closed"
+      ) {
+        audioContextRef.current = new AudioContextCtor();
+      }
+
+      const audioContext = audioContextRef.current;
+
+      if (audioContext.state === "suspended") {
+        void audioContext.resume();
+      }
+
+      return audioContext;
+    } catch (error) {
+      console.error("Voice aura: could not create AudioContext", error);
+      return null;
+    }
+  }
+
+  function closeVoiceAudioContext() {
+    const audioContext = audioContextRef.current;
+    audioContextRef.current = null;
+
+    if (audioContext && audioContext.state !== "closed") {
+      void audioContext.close().catch(() => {});
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      closeVoiceAudioContext();
+    };
+  }, []);
+
   function getSupportedAudioMimeType() {
     if (typeof MediaRecorder === "undefined") {
       return null;
@@ -424,6 +485,10 @@ export default function AICoach() {
 
     setVoicePlanError("");
 
+    // Synchronous, still inside this tap's gesture — see
+    // ensureVoiceAudioContext's comment for why this can't move later.
+    ensureVoiceAudioContext();
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
@@ -446,6 +511,8 @@ export default function AICoach() {
 
       recorder.onstop = () => {
         stream.getTracks().forEach((track) => track.stop());
+        setVoiceStream(null);
+        closeVoiceAudioContext();
 
         const blob = new Blob(chunks, {
           type: mimeType || "audio/webm",
@@ -456,12 +523,14 @@ export default function AICoach() {
 
       mediaRecorderRef.current = recorder;
       recorder.start();
+      setVoiceStream(stream);
       setVoiceRecordingState("recording");
 
       recordingTimeoutRef.current = window.setTimeout(() => {
         stopVoiceRecording();
       }, MAX_RECORDING_SECONDS * 1000);
     } catch {
+      closeVoiceAudioContext();
       setVoicePlanError(
         "Microphone access was denied or unavailable. You can type your plan instead."
       );
@@ -871,6 +940,8 @@ export default function AICoach() {
         {voiceRecordingState !== "idle" && !voicePlanData && (
           <VoiceInterface
             state={voiceUIState}
+            mediaStream={voiceStream}
+            audioContext={audioContextRef.current}
             className="mt-4"
           />
         )}
