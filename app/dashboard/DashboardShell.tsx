@@ -607,15 +607,11 @@ function DashboardContent({
   }
 
   if (activeItem === "AI Coach") {
-    return (
-      <SectionPage
-        eyebrow="Intelligent guidance"
-        title="AI Coach"
-        description="Get personalized guidance, clear priorities and practical action plans from your Orenios life assistant."
-      >
-        <AICoach />
-      </SectionPage>
-    );
+    // No SectionPage hero here on purpose: AICoach already renders its
+    // own compact "Orenios AI Coach" header, and the chat itself should
+    // be the first thing visible on load, not pushed below a second,
+    // taller intro block.
+    return <AICoach />;
   }
 
   return <ComingSoonContent title={activeItem} />;

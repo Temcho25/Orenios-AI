@@ -1,6 +1,15 @@
 type AnimatedLogoProps = {
   className?: string;
+  // Multiplies the default rotation speed (1 = identical to every other
+  // caller: 30s outer / 18s inner, set in globals.css). Only overrides
+  // animation-duration via inline style, so direction/easing/iteration
+  // and the prefers-reduced-motion gating (still driven by the
+  // .orbit-ring-* classes/CSS) are untouched.
+  speed?: number;
 };
+
+const DEFAULT_OUTER_SECONDS = 30;
+const DEFAULT_INNER_SECONDS = 18;
 
 /**
  * Renders the original /logo2.PNG artwork unmodified, three times, each
@@ -9,7 +18,15 @@ type AnimatedLogoProps = {
  * each clipped band independently spins the real artwork — nothing here
  * is redrawn.
  */
-export default function AnimatedLogo({ className = "" }: AnimatedLogoProps) {
+export default function AnimatedLogo({
+  className = "",
+  speed = 1,
+}: AnimatedLogoProps) {
+  const outerDuration =
+    speed === 1 ? undefined : `${(DEFAULT_OUTER_SECONDS / speed).toFixed(2)}s`;
+  const innerDuration =
+    speed === 1 ? undefined : `${(DEFAULT_INNER_SECONDS / speed).toFixed(2)}s`;
+
   return (
     <svg
       viewBox="0 0 1024 1024"
@@ -54,7 +71,10 @@ export default function AnimatedLogo({ className = "" }: AnimatedLogoProps) {
 
       <g
         className="orbit-ring-inner"
-        style={{ transformOrigin: "525px 465px" }}
+        style={{
+          transformOrigin: "525px 465px",
+          animationDuration: innerDuration,
+        }}
       >
         <image
           href="/logo2.PNG"
@@ -68,7 +88,10 @@ export default function AnimatedLogo({ className = "" }: AnimatedLogoProps) {
 
       <g
         className="orbit-ring-outer"
-        style={{ transformOrigin: "525px 465px" }}
+        style={{
+          transformOrigin: "525px 465px",
+          animationDuration: outerDuration,
+        }}
       >
         <image
           href="/logo2.PNG"

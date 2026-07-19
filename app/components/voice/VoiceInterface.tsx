@@ -2,7 +2,11 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import VoiceOrb, { type VoiceUIState } from "./VoiceOrb";
-import OreniosLogoOrb from "./OreniosLogoOrb";
+import AnimatedLogo from "../v2/AnimatedLogo";
+
+// Roughly 1.5-2x the landing page's default spin — fast enough to read
+// as "listening", without losing the calm, premium feel of the mark.
+const LISTENING_LOGO_SPEED = 1.75;
 
 export type { VoiceUIState } from "./VoiceOrb";
 
@@ -41,10 +45,14 @@ export default function VoiceInterface({
       className={`flex flex-col items-center rounded-3xl border border-accent-violet/20 bg-accent-violet/[0.04] px-6 py-8 text-center ${className}`}
     >
       {state === "listening" ? (
-        // The real Orenios mark, recreated to match public/logo2.PNG
-        // exactly, per request: only the visual shown while recording
-        // is active changes. Every other state keeps the existing orb.
-        <OreniosLogoOrb active size={132} />
+        // The same orbit logo used on the landing page / dashboard
+        // corner, just spun faster — same geometry, same rings, same
+        // satellites baked into the rotating artwork, so they can never
+        // drift off their orbit. Every other state keeps the existing orb.
+        <AnimatedLogo
+          speed={LISTENING_LOGO_SPEED}
+          className="h-[132px] w-[132px]"
+        />
       ) : (
         <VoiceOrb
           state={state}

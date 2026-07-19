@@ -562,14 +562,14 @@ export default function AICoach() {
     <section className="overflow-hidden rounded-3xl border border-card-border bg-card backdrop-blur-[12px]">
       {/* Always dark, regardless of the workspace theme toggle — same fixed
           brand-accent band as SectionPage/OverviewContent's hero. */}
-      <div className="relative overflow-hidden border-b border-white/10 bg-surface-dark-card px-5 py-6 text-white sm:px-7 sm:py-7">
+      <div className="relative overflow-hidden border-b border-white/10 bg-surface-dark-card px-5 py-3 text-white sm:px-7 sm:py-5">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-20 -top-24 h-64 w-64 rounded-full bg-violet-600/35 blur-[90px]" />
           <div className="absolute -bottom-28 right-0 h-72 w-72 rounded-full bg-cyan-500/25 blur-[100px]" />
         </div>
 
-        <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
+        <div className="relative z-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
             <motion.div
               animate={{
                 scale: [1, 1.05, 1],
@@ -580,11 +580,11 @@ export default function AICoach() {
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-violet-300 ring-1 ring-white/10 backdrop-blur-xl"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-violet-300 ring-1 ring-white/10 backdrop-blur-xl"
             >
               <svg
-                width="25"
-                height="25"
+                width="19"
+                height="19"
                 viewBox="0 0 24 24"
                 fill="none"
                 aria-hidden="true"
@@ -671,36 +671,17 @@ export default function AICoach() {
               opacity: 1,
               y: 0,
             }}
-            className="rounded-3xl border border-card-border bg-card px-5 py-10 text-center backdrop-blur-[12px] sm:px-8"
+            className="rounded-3xl border border-card-border bg-card px-5 py-4 text-center backdrop-blur-[12px] sm:px-6"
           >
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-violet/15 text-accent-violet">
-              <svg
-                width="28"
-                height="28"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M12 3 13.6 8.4 19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6L12 3Z"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-
-            <h3 className="mt-6 text-2xl font-semibold tracking-[-0.04em] text-foreground">
+            <h3 className="text-lg font-semibold tracking-[-0.03em] text-foreground">
               How can I help you today?
             </h3>
 
-            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-foreground/50">
-              Ask Orenios to organize your priorities,
-              build an action plan, improve your focus or
-              help you make a clearer decision.
+            <p className="mx-auto mt-1.5 hidden max-w-xl text-sm leading-6 text-foreground/50 sm:block">
+              Ask Orenios to organize your priorities, build a plan or clarify a decision.
             </p>
 
-            <div className="mx-auto mt-7 grid max-w-2xl gap-3 sm:grid-cols-2">
+            <div className="mx-auto mt-3 grid max-w-2xl grid-cols-2 gap-1.5 sm:mt-4 sm:gap-2">
               {quickPrompts.map((quickPrompt) => (
                 <button
                   key={quickPrompt}
@@ -709,7 +690,7 @@ export default function AICoach() {
                     void sendMessage(quickPrompt)
                   }
                   disabled={loading}
-                  className="rounded-2xl border border-muted-border bg-muted px-4 py-3 text-left text-sm font-medium text-foreground/70 transition hover:border-accent-violet/25 hover:bg-accent-violet/10 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-2xl border border-muted-border bg-muted px-3 py-2 text-left text-xs font-medium leading-5 text-foreground/70 transition hover:border-accent-violet/25 hover:bg-accent-violet/10 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-3 sm:text-sm"
                 >
                   {quickPrompt}
                 </button>
@@ -905,7 +886,7 @@ export default function AICoach() {
         ) : (
           <form
             onSubmit={handleSubmit}
-            className="mt-4 rounded-3xl border border-muted-border bg-muted p-3 backdrop-blur-[12px]"
+            className="mt-3 rounded-3xl border border-muted-border bg-muted p-3 backdrop-blur-[12px]"
           >
             <textarea
               value={message}
