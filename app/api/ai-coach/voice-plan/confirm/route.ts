@@ -116,6 +116,7 @@ export async function POST(request: Request) {
 
     const created: ConfirmedItemResult[] = [];
     let skippedCount = 0;
+    const failedTitles: string[] = [];
 
     // Tracks titles inserted earlier in THIS same confirm pass, so two
     // identical rows left in one voice plan (e.g. the user didn't
@@ -123,89 +124,108 @@ export async function POST(request: Request) {
     const insertedTaskTitles = new Set<string>();
     const insertedEventKeys = new Set<string>();
 
+    // Each item is inserted independently: if one item's DB write fails
+    // partway through the batch, the rest of the plan should still go
+    // through rather than the whole confirm aborting and leaving the
+    // user unsure which of their events/tasks actually got saved.
     for (const item of items) {
-      const normalizedTitle = normalizeTitle(item.title);
+      try {
+        const normalizedTitle = normalizeTitle(item.title);
 
-      if (item.type === "task") {
+        if (item.type === "task") {
+          const isDuplicate =
+            existingTasks.some(
+              (task) =>
+                !task.completed &&
+                normalizeTitle(task.title) === normalizedTitle
+            ) || insertedTaskTitles.has(normalizedTitle);
+
+          if (isDuplicate) {
+            skippedCount += 1;
+            continue;
+          }
+
+          const createdTask = await insertTaskRow(supabase, user.id, {
+            title: item.title,
+            priority: item.priority,
+            due_date: item.date,
+          });
+
+          insertedTaskTitles.add(normalizedTitle);
+          created.push({
+            title: item.title,
+            type: "task",
+            status: "created",
+          });
+
+          await supabase.from("ai_messages").insert({
+            user_id: user.id,
+            role: "assistant",
+            content: formatCreatedTaskReply({
+              title: createdTask.title,
+              priority: createdTask.priority,
+              due_date: createdTask.due_date,
+            }),
+            action: "create_task",
+          });
+
+          continue;
+        }
+
+        const eventKey = `${item.date}::${normalizedTitle}`;
+
         const isDuplicate =
-          existingTasks.some(
-            (task) =>
-              !task.completed &&
-              normalizeTitle(task.title) === normalizedTitle
-          ) || insertedTaskTitles.has(normalizedTitle);
+          existingEvents.some(
+            (event) =>
+              event.event_date === item.date &&
+              normalizeTitle(event.title) === normalizedTitle
+          ) || insertedEventKeys.has(eventKey);
 
         if (isDuplicate) {
           skippedCount += 1;
           continue;
         }
 
-        const createdTask = await insertTaskRow(supabase, user.id, {
+        const linkedNote = buildLinkedContextNote(
+          item.title,
+          existingTasks,
+          existingGoals
+        );
+
+        const createdEvent = await insertEventRow(supabase, user.id, {
           title: item.title,
-          priority: item.priority,
-          due_date: item.date,
+          description: linkedNote,
+          event_date: item.date,
+          start_time: item.start_time,
+          end_time: item.end_time,
+          category: item.category,
         });
 
-        insertedTaskTitles.add(normalizedTitle);
-        created.push({ title: item.title, type: "task", status: "created" });
+        insertedEventKeys.add(eventKey);
+        created.push({ title: item.title, type: "event", status: "created" });
 
         await supabase.from("ai_messages").insert({
           user_id: user.id,
           role: "assistant",
-          content: formatCreatedTaskReply({
-            title: createdTask.title,
-            priority: createdTask.priority,
-            due_date: createdTask.due_date,
-          }),
-          action: "create_task",
+          content: formatCreatedEventReply(createdEvent),
+          action: "create_event",
         });
+      } catch (itemError) {
+        console.error(
+          `Voice plan confirm: failed to save item "${item.title}":`,
+          itemError
+        );
 
-        continue;
+        failedTitles.push(item.title);
       }
-
-      const eventKey = `${item.date}::${normalizedTitle}`;
-
-      const isDuplicate =
-        existingEvents.some(
-          (event) =>
-            event.event_date === item.date &&
-            normalizeTitle(event.title) === normalizedTitle
-        ) || insertedEventKeys.has(eventKey);
-
-      if (isDuplicate) {
-        skippedCount += 1;
-        continue;
-      }
-
-      const linkedNote = buildLinkedContextNote(
-        item.title,
-        existingTasks,
-        existingGoals
-      );
-
-      const createdEvent = await insertEventRow(supabase, user.id, {
-        title: item.title,
-        description: linkedNote,
-        event_date: item.date,
-        start_time: item.start_time,
-        end_time: item.end_time,
-        category: item.category,
-      });
-
-      insertedEventKeys.add(eventKey);
-      created.push({ title: item.title, type: "event", status: "created" });
-
-      await supabase.from("ai_messages").insert({
-        user_id: user.id,
-        role: "assistant",
-        content: formatCreatedEventReply(createdEvent),
-        action: "create_event",
-      });
     }
 
     return NextResponse.json<VoicePlanConfirmResponse>({
       status: "ok",
       created,
       skippedCount,
+      failedCount: failedTitles.length,
+      failedTitles,
     });
   } catch (error) {
     console.error("Voice plan confirm route error:", error);

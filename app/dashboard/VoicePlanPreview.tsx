@@ -47,6 +47,8 @@ type VoicePlanPreviewProps = {
   onConfirmed: (summary: {
     createdCount: number;
     skippedCount: number;
+    failedCount: number;
+    failedTitles: string[];
   }) => void;
   onCancel: () => void;
 };
@@ -135,6 +137,8 @@ export default function VoicePlanPreview({
         status?: string;
         created?: unknown[];
         skippedCount?: number;
+        failedCount?: number;
+        failedTitles?: string[];
         error?: string;
       };
 
@@ -147,6 +151,8 @@ export default function VoicePlanPreview({
       onConfirmed({
         createdCount: data.created?.length ?? 0,
         skippedCount: data.skippedCount ?? 0,
+        failedCount: data.failedCount ?? 0,
+        failedTitles: data.failedTitles ?? [],
       });
     } catch (error) {
       setConfirmError(

@@ -76,6 +76,8 @@ export type VoicePlanConfirmResponse =
       status: "ok";
       created: ConfirmedItemResult[];
       skippedCount: number;
+      failedCount: number;
+      failedTitles: string[];
     }
   | {
       status: "error";
