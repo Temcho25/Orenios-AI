@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { FormEvent, useEffect, useState } from "react";
 import { createClient } from "../lib/supabase";
+import { getLocalDateKey } from "../lib/date-utils";
 
 type DailyFocus = {
   id: string;
@@ -11,15 +12,6 @@ type DailyFocus = {
   progress: number;
   focus_date: string;
 };
-
-function getLocalDate() {
-  const now = new Date();
-  const timezoneOffset = now.getTimezoneOffset() * 60_000;
-
-  return new Date(now.getTime() - timezoneOffset)
-    .toISOString()
-    .split("T")[0];
-}
 
 export default function FocusCard() {
   const [focus, setFocus] = useState<DailyFocus | null>(null);
@@ -54,7 +46,7 @@ export default function FocusCard() {
           throw new Error("Your session has expired. Please sign in again.");
         }
 
-        const today = getLocalDate();
+        const today = getLocalDateKey();
 
         const { data, error } = await supabase
           .from("daily_focus")
@@ -127,7 +119,7 @@ export default function FocusCard() {
         throw new Error("Your session has expired. Please sign in again.");
       }
 
-      const today = getLocalDate();
+      const today = getLocalDateKey();
 
       const { data, error } = await supabase
         .from("daily_focus")

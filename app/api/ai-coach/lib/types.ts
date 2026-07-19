@@ -1,4 +1,6 @@
 import type { GoalStatus as SharedGoalStatus } from "../../../lib/goal-state";
+import type { TaskPriority as SharedTaskPriority } from "../../../lib/task-priority";
+import type { EventCategory as SharedEventCategory } from "../../../lib/event-category";
 
 export type StoredAIMessage = {
   role: "user" | "assistant";
@@ -6,7 +8,7 @@ export type StoredAIMessage = {
   created_at: string;
 };
 
-export type TaskPriority = "low" | "medium" | "high";
+export type TaskPriority = SharedTaskPriority;
 
 export type CreateTaskArguments = {
   title: string;
@@ -76,12 +78,7 @@ export type GoalRecord = {
   created_at: string;
 };
 
-export type EventCategory =
-  | "Personal"
-  | "Work"
-  | "Health"
-  | "Fitness"
-  | "Other";
+export type EventCategory = SharedEventCategory;
 
 export type CreateEventArguments = {
   title: string;

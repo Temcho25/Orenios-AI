@@ -8,18 +8,12 @@ import {
   useState,
 } from "react";
 import { createClient } from "../lib/supabase";
+import { getLocalDateKey } from "../lib/date-utils";
+import { EVENT_CATEGORIES, type EventCategory } from "../lib/event-category";
 
 const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-const categories = [
-  "Personal",
-  "Work",
-  "Health",
-  "Fitness",
-  "Other",
-] as const;
-
-type EventCategory = (typeof categories)[number];
+const categories = EVENT_CATEGORIES;
 
 type CalendarEvent = {
   id: string;
@@ -36,14 +30,6 @@ type CalendarDay = {
   date: Date;
   isCurrentMonth: boolean;
 };
-
-function getLocalDateKey(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
 
 function isSameDay(firstDate: Date, secondDate: Date) {
   return (

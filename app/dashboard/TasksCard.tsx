@@ -9,8 +9,11 @@ import {
   useState,
 } from "react";
 import { createClient } from "../lib/supabase";
-
-type TaskPriority = "low" | "medium" | "high";
+import { getLocalDateKey } from "../lib/date-utils";
+import {
+  getTaskPriorityClasses,
+  type TaskPriority,
+} from "../lib/task-priority";
 
 type Task = {
   id: string;
@@ -39,15 +42,6 @@ const priorityOptions: {
   },
 ];
 
-function getTodayDateKey() {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
-
 function formatDueDate(date: string | null) {
   if (!date) {
     return "No deadline";
@@ -58,17 +52,6 @@ function formatDueDate(date: string | null) {
     day: "numeric",
     year: "numeric",
   }).format(new Date(`${date}T00:00:00`));
-}
-
-function getPriorityClasses(priority: TaskPriority) {
-  switch (priority) {
-    case "high":
-      return "border-red-200 bg-red-50 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300";
-    case "low":
-      return "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300";
-    default:
-      return "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-300";
-  }
 }
 
 export default function TasksCard() {
@@ -162,7 +145,7 @@ export default function TasksCard() {
       ? 0
       : Math.round((completedCount / tasks.length) * 100);
 
-  const today = getTodayDateKey();
+  const today = getLocalDateKey();
 
   function setTaskPending(
     taskId: string,
@@ -597,7 +580,7 @@ export default function TasksCard() {
 
                       <div className="mt-2 flex flex-wrap items-center gap-2">
                         <span
-                          className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] ${getPriorityClasses(
+                          className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] ${getTaskPriorityClasses(
                             task.priority
                           )}`}
                         >

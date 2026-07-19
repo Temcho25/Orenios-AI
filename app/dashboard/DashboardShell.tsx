@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, MotionConfig } from "framer-motion";
-import { useEffect, useState } from "react";import LogoutButton from "./LogoutButton";
+import { useEffect, useState } from "react";
+import LogoutButton from "./LogoutButton";
 import AnimatedLogo from "../components/v2/AnimatedLogo";
 import ThemeToggle from "./ThemeToggle";
 import TasksCard from "./TasksCard";
@@ -11,22 +12,16 @@ import CalendarCard from "./CalendarCard";
 import NotesCard from "./NotesCard";
 import AICoach from "./AICoach";
 import { createClient } from "../lib/supabase";
+import { getLocalDateKey } from "../lib/date-utils";
+import {
+  getTaskPriorityClasses,
+  type TaskPriority,
+} from "../lib/task-priority";
 
 type DashboardShellProps = {
   firstName: string;
   email: string;
 };
-
-function getLocalDateString(daysOffset = 0) {
-  const now = new Date();
-  now.setDate(now.getDate() + daysOffset);
-
-  const timezoneOffset = now.getTimezoneOffset() * 60_000;
-
-  return new Date(now.getTime() - timezoneOffset)
-    .toISOString()
-    .split("T")[0];
-}
 
 const navigationItems = [
   {
@@ -211,7 +206,7 @@ useEffect(() => {
         .from("daily_focus")
         .select("progress")
         .eq("user_id", user.id)
-        .eq("focus_date", getLocalDateString())
+        .eq("focus_date", getLocalDateKey())
         .maybeSingle();
 
       if (!cancelled) {
@@ -952,8 +947,8 @@ function UpcomingEventsCard({
           .from("calendar_events")
           .select("event_date, start_time")
           .eq("user_id", user.id)
-          .gte("event_date", getLocalDateString())
-          .lte("event_date", getLocalDateString(1));
+          .gte("event_date", getLocalDateKey())
+          .lte("event_date", getLocalDateKey(new Date(), 1));
 
         if (!cancelled) {
           setEvents(data ?? []);
@@ -1018,7 +1013,7 @@ function ProductivityScore() {
           .from("tasks")
           .select("completed")
           .eq("user_id", user.id)
-          .eq("due_date", getLocalDateString());
+          .eq("due_date", getLocalDateKey());
 
         if (!cancelled) {
           setTasksToday(data ?? []);
@@ -1152,8 +1147,8 @@ function AIActionsCard() {
           return;
         }
 
-        const since7 = getLocalDateString(-7);
-        const since30 = getLocalDateString(-30);
+        const since7 = getLocalDateKey(new Date(), -7);
+        const since30 = getLocalDateKey(new Date(), -30);
 
         const { data } = await supabase
           .from("ai_messages")
@@ -1248,20 +1243,9 @@ type SummaryTask = {
   id: string;
   title: string;
   completed: boolean;
-  priority: "low" | "medium" | "high";
+  priority: TaskPriority;
   due_date: string | null;
 };
-
-function getSummaryPriorityClasses(priority: SummaryTask["priority"]) {
-  switch (priority) {
-    case "high":
-      return "border-red-200 bg-red-50 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300";
-    case "low":
-      return "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300";
-    default:
-      return "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-300";
-  }
-}
 
 function TasksSummaryCard({
   onNavigate,
@@ -1371,7 +1355,7 @@ function TasksSummaryCard({
               </p>
 
               <span
-                className={`shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] ${getSummaryPriorityClasses(
+                className={`shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] ${getTaskPriorityClasses(
                   task.priority
                 )}`}
               >
