@@ -12,13 +12,15 @@ export const VOICE_TRANSCRIPTION_MODEL = "gpt-4o-mini-transcribe";
 // they're independent choices.
 export const VOICE_PLAN_PARSING_MODEL = "gpt-4.1-mini";
 
-// Hard cap on recording length, enforced client-side (auto-stop) and
-// checked server-side against the uploaded file where practical. Not
-// an OpenAI API limit (that's 25MB, effectively no constraint for a
-// day-planning memo) — this is a product decision: a spoken plan for
-// "today" has no real reason to run longer than a few minutes, and
-// capping it bounds transcription+parsing cost/latency per request.
-export const MAX_RECORDING_SECONDS = 180;
+// Silent safety-net cap on recording length — not shown as a countdown
+// in the UI on purpose (a visible "10:00 max" reads as a hard product
+// constraint; this is purely a guard against a forgotten recording
+// running indefinitely). Enforced client-side via auto-stop. There is
+// no separate server-side duration check: the actual server-side
+// backstop is MAX_AUDIO_FILE_BYTES below, which is a generous enough
+// byte ceiling that it isn't reached by a compressed voice memo well
+// past this duration — no change needed there when this changes.
+export const MAX_RECORDING_SECONDS = 600;
 
 // Generous upper bound on the uploaded audio file size, independent of
 // the duration cap above — a safety net against a client sending an

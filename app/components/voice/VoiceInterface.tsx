@@ -1,15 +1,29 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import VoiceOrb, { type VoiceUIState } from "./VoiceOrb";
 import AnimatedLogo from "../v2/AnimatedLogo";
-import VoiceAura from "./VoiceAura";
+import VoiceAura, { type VoiceAuraState } from "./VoiceAura";
 
-// Roughly 1.5-2x the landing page's default spin — fast enough to read
-// as "listening", without losing the calm, premium feel of the mark.
-const LISTENING_LOGO_SPEED = 1.75;
+export type VoiceUIState = "idle" | "listening" | "thinking" | "speaking";
 
-export type { VoiceUIState } from "./VoiceOrb";
+// Logo spin speed per state, relative to the landing page's default
+// (1 = identical to every other AnimatedLogo caller). "speaking" isn't
+// reachable today (Orenios has no text-to-speech output yet) — it's
+// mapped the same as "thinking" so the component stays correct if
+// that ever changes, without needing a new preset.
+export const VOICE_LOGO_SPEED: Record<VoiceUIState, number> = {
+  idle: 1,
+  listening: 1.75,
+  thinking: 2.75,
+  speaking: 2.75,
+};
+
+export const VOICE_AURA_STATE: Record<VoiceUIState, VoiceAuraState> = {
+  idle: "idle",
+  listening: "listening",
+  thinking: "thinking",
+  speaking: "thinking",
+};
 
 export type VoiceInterfaceProps = {
   state: VoiceUIState;
@@ -19,13 +33,11 @@ export type VoiceInterfaceProps = {
   // this stays ready to receive both without any change here.
   transcript?: string;
   responseText?: string;
-  audioLevel?: number;
   // The recorder's own MediaStream/AudioContext, reused by VoiceAura
   // for its AnalyserNode. Only meaningful while state === "listening";
   // harmless to leave undefined for every other state.
   mediaStream?: MediaStream | null;
   audioContext?: AudioContext | null;
-  darkMode?: boolean;
   className?: string;
 };
 
@@ -40,10 +52,8 @@ export default function VoiceInterface({
   state,
   transcript,
   responseText,
-  audioLevel,
   mediaStream = null,
   audioContext = null,
-  darkMode,
   className = "",
 }: VoiceInterfaceProps) {
   const bodyText = state === "speaking" ? responseText : transcript;
@@ -52,30 +62,23 @@ export default function VoiceInterface({
     <div
       className={`flex flex-col items-center rounded-3xl border border-accent-violet/20 bg-accent-violet/[0.04] px-6 py-8 text-center ${className}`}
     >
-      {state === "listening" ? (
-        // The same orbit logo used on the landing page / dashboard
-        // corner, just spun faster — same geometry, same rings, same
-        // satellites baked into the rotating artwork, so they can never
-        // drift off their orbit. Every other state keeps the existing orb.
-        // VoiceAura layers a voice-reactive glow behind it.
-        <VoiceAura
-          active={state === "listening"}
-          mediaStream={mediaStream}
-          audioContext={audioContext}
-        >
-          <AnimatedLogo
-            speed={LISTENING_LOGO_SPEED}
-            className="h-[132px] w-[132px]"
-          />
-        </VoiceAura>
-      ) : (
-        <VoiceOrb
-          state={state}
-          audioLevel={audioLevel}
-          darkMode={darkMode}
-          size={132}
+      {/* The same orbit logo used on the landing page / dashboard
+          corner, at a state-appropriate spin speed — same geometry,
+          same rings, same satellites baked into the rotating artwork,
+          so they can never drift off their orbit. VoiceAura layers a
+          state-appropriate glow behind it (voice-reactive mist while
+          listening, a calmer pulse otherwise). */}
+      <VoiceAura
+        state={VOICE_AURA_STATE[state]}
+        mediaStream={mediaStream}
+        audioContext={audioContext}
+        size={132}
+      >
+        <AnimatedLogo
+          speed={VOICE_LOGO_SPEED[state]}
+          className="h-[132px] w-[132px]"
         />
-      )}
+      </VoiceAura>
 
       <AnimatePresence mode="wait">
         <motion.p

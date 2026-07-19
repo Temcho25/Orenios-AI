@@ -11,8 +11,13 @@ import {
 } from "react";
 import { createClient } from "../lib/supabase";
 import VoicePlanPreview from "./VoicePlanPreview";
-import VoiceOrb, { type VoiceUIState } from "../components/voice/VoiceOrb";
-import VoiceInterface from "../components/voice/VoiceInterface";
+import AnimatedLogo from "../components/v2/AnimatedLogo";
+import VoiceAura from "../components/voice/VoiceAura";
+import VoiceInterface, {
+  type VoiceUIState,
+  VOICE_AURA_STATE,
+  VOICE_LOGO_SPEED,
+} from "../components/voice/VoiceInterface";
 import { MAX_RECORDING_SECONDS } from "../api/ai-coach/lib/voice-plan/constants";
 import type {
   ExistingEventSnapshot,
@@ -160,6 +165,11 @@ export default function AICoach() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordingTimeoutRef = useRef<number | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  // Set right before the MAX_RECORDING_SECONDS safety-net timeout calls
+  // stopVoiceRecording, so recorder.onstop can tell that apart from the
+  // user tapping the mic to stop and show a friendly note instead of
+  // silently behaving as if nothing unusual happened.
+  const autoStoppedRef = useRef(false);
 
   const conversationContainerRef =
     useRef<HTMLDivElement | null>(null);
@@ -484,6 +494,8 @@ export default function AICoach() {
     }
 
     setVoicePlanError("");
+    setVoiceSuccessMessage("");
+    autoStoppedRef.current = false;
 
     // Synchronous, still inside this tap's gesture — see
     // ensureVoiceAudioContext's comment for why this can't move later.
@@ -514,6 +526,14 @@ export default function AICoach() {
         setVoiceStream(null);
         closeVoiceAudioContext();
 
+        if (autoStoppedRef.current) {
+          autoStoppedRef.current = false;
+          setVoiceSuccessMessage(
+            "That recording ran long, so I stopped it automatically — let's see what you've got."
+          );
+          window.setTimeout(() => setVoiceSuccessMessage(""), 6000);
+        }
+
         const blob = new Blob(chunks, {
           type: mimeType || "audio/webm",
         });
@@ -527,6 +547,7 @@ export default function AICoach() {
       setVoiceRecordingState("recording");
 
       recordingTimeoutRef.current = window.setTimeout(() => {
+        autoStoppedRef.current = true;
         stopVoiceRecording();
       }, MAX_RECORDING_SECONDS * 1000);
     } catch {
@@ -1029,7 +1050,17 @@ export default function AICoach() {
                         : "border-muted-border bg-card hover:border-accent-violet/30"
                   }`}
                 >
-                  <VoiceOrb state={voiceUIState} size={22} />
+                  <VoiceAura
+                    state={VOICE_AURA_STATE[voiceUIState]}
+                    mediaStream={voiceStream}
+                    audioContext={audioContextRef.current}
+                    size={22}
+                  >
+                    <AnimatedLogo
+                      speed={VOICE_LOGO_SPEED[voiceUIState]}
+                      className="h-[22px] w-[22px]"
+                    />
+                  </VoiceAura>
                 </button>
 
                 <motion.button
