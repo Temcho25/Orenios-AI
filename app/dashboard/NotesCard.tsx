@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   FormEvent,
   useEffect,
@@ -8,40 +8,16 @@ import {
   useState,
 } from "react";
 import { createClient } from "../lib/supabase";
+import NoteEditor from "./NoteEditor";
+import NoteList from "./NoteList";
 
-type Note = {
+export type Note = {
   id: string;
   title: string;
   content: string | null;
   created_at: string;
   updated_at: string;
 };
-
-function formatUpdatedDate(date: string) {
-  const value = new Date(date);
-
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(value);
-}
-
-function getPreview(content: string | null) {
-  const normalizedContent = content?.trim();
-
-  if (!normalizedContent) {
-    return "No additional content.";
-  }
-
-  if (normalizedContent.length <= 150) {
-    return normalizedContent;
-  }
-
-  return `${normalizedContent.slice(0, 150)}...`;
-}
 
 export default function NotesCard() {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -433,332 +409,28 @@ export default function NotesCard() {
         </motion.div>
       )}
 
-      <AnimatePresence>
-        {editorOpen && (
-          <motion.form
-            initial={{ opacity: 0, y: 10, height: 0 }}
-            animate={{ opacity: 1, y: 0, height: "auto" }}
-            exit={{ opacity: 0, y: -10, height: 0 }}
-            transition={{
-              duration: 0.3,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            onSubmit={handleSaveNote}
-            className="mt-6 overflow-hidden rounded-3xl border border-accent-violet/15 bg-accent-violet/[0.04]"
-          >
-            <div className="p-5 sm:p-6">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-300">
-                    {editingNoteId ? "Edit note" : "New note"}
-                  </p>
-
-                  <p className="mt-1 text-xs text-foreground/40">
-                    Write freely — everything is saved to your
-                    account
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={resetEditor}
-                  disabled={savingNote}
-                  aria-label="Close note editor"
-                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface-strong text-xl text-foreground/40 transition hover:text-foreground disabled:cursor-not-allowed"
-                >
-                  ×
-                </button>
-              </div>
-
-              <div className="mt-5">
-                <label
-                  htmlFor="note-title"
-                  className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
-                >
-                  Title
-                </label>
-
-                <input
-                  id="note-title"
-                  type="text"
-                  value={title}
-                  onChange={(event) =>
-                    setTitle(event.target.value)
-                  }
-                  placeholder="Note title"
-                  maxLength={140}
-                  disabled={savingNote}
-                  autoFocus
-                  className="h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm font-medium text-foreground outline-none transition placeholder:text-foreground/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
-                />
-              </div>
-
-              <div className="mt-4">
-                <div className="mb-2 flex items-center justify-between gap-4">
-                  <label
-                    htmlFor="note-content"
-                    className="text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
-                  >
-                    Content
-                  </label>
-
-                  <span className="text-xs text-foreground/30">
-                    {content.length} characters
-                  </span>
-                </div>
-
-                <textarea
-                  id="note-content"
-                  value={content}
-                  onChange={(event) =>
-                    setContent(event.target.value)
-                  }
-                  placeholder="Start writing your note..."
-                  rows={10}
-                  disabled={savingNote}
-                  className="w-full resize-y rounded-2xl border border-muted-border bg-muted px-4 py-4 text-sm leading-7 text-foreground outline-none transition placeholder:text-foreground/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10 disabled:cursor-not-allowed disabled:opacity-60"
-                />
-              </div>
-
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <motion.button
-                  whileHover={
-                    savingNote ? undefined : { scale: 1.01 }
-                  }
-                  whileTap={
-                    savingNote ? undefined : { scale: 0.99 }
-                  }
-                  type="submit"
-                  disabled={savingNote || !title.trim()}
-                  className="flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl border border-muted-border bg-surface-strong px-5 text-sm font-semibold text-foreground transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {savingNote ? (
-                    <>
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-border-strong border-t-foreground" />
-                      Saving note...
-                    </>
-                  ) : (
-                    <>
-                      {editingNoteId
-                        ? "Update note"
-                        : "Create note"}
-                      <span aria-hidden="true">→</span>
-                    </>
-                  )}
-                </motion.button>
-
-                <button
-                  type="button"
-                  onClick={resetEditor}
-                  disabled={savingNote}
-                  className="h-12 rounded-2xl border border-muted-border bg-muted px-5 text-sm font-semibold text-foreground/60 transition hover:border-border-strong hover:text-foreground disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </motion.form>
-        )}
-      </AnimatePresence>
+      <NoteEditor
+        editorOpen={editorOpen}
+        editingNoteId={editingNoteId}
+        title={title}
+        content={content}
+        savingNote={savingNote}
+        onTitleChange={setTitle}
+        onContentChange={setContent}
+        onSubmit={handleSaveNote}
+        onClose={resetEditor}
+      />
 
       <div className="mt-6">
-        {loadingNotes ? (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {[1, 2, 3].map((item) => (
-              <div
-                key={item}
-                className="animate-pulse rounded-3xl border border-card-border bg-card p-5"
-              >
-                <div className="h-4 w-2/3 rounded-full bg-surface-strong" />
-                <div className="mt-4 h-3 w-full rounded-full bg-surface-strong" />
-                <div className="mt-2 h-3 w-5/6 rounded-full bg-muted" />
-                <div className="mt-2 h-3 w-3/4 rounded-full bg-muted" />
-                <div className="mt-7 h-3 w-28 rounded-full bg-muted" />
-              </div>
-            ))}
-          </div>
-        ) : filteredNotes.length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <AnimatePresence initial={false}>
-              {filteredNotes.map((note) => {
-                const notePending = pendingNoteIds.includes(
-                  note.id
-                );
-
-                return (
-                  <motion.article
-                    key={note.id}
-                    layout
-                    initial={{
-                      opacity: 0,
-                      y: 10,
-                      scale: 0.99,
-                    }}
-                    animate={{
-                      opacity: notePending ? 0.6 : 1,
-                      y: 0,
-                      scale: 1,
-                    }}
-                    exit={{
-                      opacity: 0,
-                      y: -10,
-                      scale: 0.98,
-                    }}
-                    transition={{
-                      duration: 0.25,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className="group flex min-h-[240px] flex-col rounded-3xl border border-card-border bg-card p-5 backdrop-blur-[12px] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-violet/25 hover:bg-muted hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent-violet/15 text-accent-violet">
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          aria-hidden="true"
-                        >
-                          <path
-                            d="M6 3.5h9l3 3V20H6V3.5Z"
-                            stroke="currentColor"
-                            strokeWidth="1.8"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M14.5 3.5V7H18M9 11h6M9 15h6"
-                            stroke="currentColor"
-                            strokeWidth="1.8"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openEditEditor(note)}
-                          disabled={notePending}
-                          aria-label={`Edit "${note.title}"`}
-                          className="flex h-11 w-11 items-center justify-center rounded-xl text-foreground/25 opacity-100 transition hover:bg-accent-violet/15 hover:text-accent-violet disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
-                        >
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            aria-hidden="true"
-                          >
-                            <path
-                              d="m4 20 4.3-1 10.4-10.4a2.1 2.1 0 0 0-3-3L5.3 16 4 20Z"
-                              stroke="currentColor"
-                              strokeWidth="1.8"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => deleteNote(note)}
-                          disabled={notePending}
-                          aria-label={`Delete "${note.title}"`}
-                          className="flex h-11 w-11 items-center justify-center rounded-xl text-foreground/25 opacity-100 transition hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
-                        >
-                          {notePending ? (
-                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-border-strong border-t-foreground/60" />
-                          ) : (
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              aria-hidden="true"
-                            >
-                              <path
-                                d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"
-                                stroke="currentColor"
-                                strokeWidth="1.8"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          )}
-                        </button>
-                      </div>
-                    </div>
-
-                    <h3 className="mt-5 text-lg font-semibold tracking-[-0.025em] text-foreground">
-                      {note.title}
-                    </h3>
-
-                    <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-foreground/50">
-                      {getPreview(note.content)}
-                    </p>
-
-                    <div className="mt-auto border-t border-card-border pt-4">
-                      <p className="text-xs text-foreground/40">
-                        Updated {formatUpdatedDate(note.updated_at)}
-                      </p>
-                    </div>
-                  </motion.article>
-                );
-              })}
-            </AnimatePresence>
-          </div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="rounded-3xl border border-dashed border-muted-border bg-card px-6 py-12 text-center"
-          >
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-violet/15 text-accent-violet">
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M6 3.5h9l3 3V20H6V3.5Z"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M14.5 3.5V7H18M9 11h6M9 15h6"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
-
-            <p className="mt-5 text-sm font-semibold text-foreground/80">
-              {searchQuery
-                ? "No notes matched your search."
-                : "You don’t have any notes yet."}
-            </p>
-
-            <p className="mt-2 text-sm leading-6 text-foreground/40">
-              {searchQuery
-                ? "Try searching with a different word."
-                : "Create your first note and keep important thoughts inside Orenios."}
-            </p>
-
-            {!searchQuery && (
-              <button
-                type="button"
-                onClick={openCreateEditor}
-                className="mt-5 rounded-2xl border border-muted-border bg-muted px-5 py-3 text-sm font-semibold text-foreground transition hover:border-border-strong hover:bg-surface-strong"
-              >
-                Create first note
-              </button>
-            )}
-          </motion.div>
-        )}
+        <NoteList
+          notes={filteredNotes}
+          loadingNotes={loadingNotes}
+          pendingNoteIds={pendingNoteIds}
+          searchQuery={searchQuery}
+          onEdit={openEditEditor}
+          onDelete={deleteNote}
+          onCreateFirstNoteClick={openCreateEditor}
+        />
       </div>
     </section>
   );

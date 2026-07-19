@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   FormEvent,
   useEffect,
@@ -9,13 +9,13 @@ import {
 } from "react";
 import { createClient } from "../lib/supabase";
 import { getLocalDateKey } from "../lib/date-utils";
-import { EVENT_CATEGORIES, type EventCategory } from "../lib/event-category";
+import type { EventCategory } from "../lib/event-category";
+import { getCalendarDays } from "./lib/calendar-helpers";
+import CalendarGrid from "./CalendarGrid";
+import CalendarEventForm from "./CalendarEventForm";
+import CalendarDayEventList from "./CalendarDayEventList";
 
-const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-const categories = EVENT_CATEGORIES;
-
-type CalendarEvent = {
+export type CalendarEvent = {
   id: string;
   title: string;
   description: string | null;
@@ -25,106 +25,6 @@ type CalendarEvent = {
   category: EventCategory;
   created_at: string;
 };
-
-type CalendarDay = {
-  date: Date;
-  isCurrentMonth: boolean;
-};
-
-function isSameDay(firstDate: Date, secondDate: Date) {
-  return (
-    firstDate.getFullYear() === secondDate.getFullYear() &&
-    firstDate.getMonth() === secondDate.getMonth() &&
-    firstDate.getDate() === secondDate.getDate()
-  );
-}
-
-function getCalendarDays(currentMonth: Date): CalendarDay[] {
-  const year = currentMonth.getFullYear();
-  const month = currentMonth.getMonth();
-
-  const firstDayOfMonth = new Date(year, month, 1);
-  const lastDayOfMonth = new Date(year, month + 1, 0);
-
-  const mondayBasedStartDay = (firstDayOfMonth.getDay() + 6) % 7;
-  const daysInMonth = lastDayOfMonth.getDate();
-  const previousMonthLastDay = new Date(year, month, 0).getDate();
-
-  const calendarDays: CalendarDay[] = [];
-
-  for (
-    let index = mondayBasedStartDay - 1;
-    index >= 0;
-    index -= 1
-  ) {
-    calendarDays.push({
-      date: new Date(
-        year,
-        month - 1,
-        previousMonthLastDay - index
-      ),
-      isCurrentMonth: false,
-    });
-  }
-
-  for (let day = 1; day <= daysInMonth; day += 1) {
-    calendarDays.push({
-      date: new Date(year, month, day),
-      isCurrentMonth: true,
-    });
-  }
-
-  let nextMonthDay = 1;
-
-  while (calendarDays.length < 42) {
-    calendarDays.push({
-      date: new Date(year, month + 1, nextMonthDay),
-      isCurrentMonth: false,
-    });
-
-    nextMonthDay += 1;
-  }
-
-  return calendarDays;
-}
-
-function formatTime(time: string | null) {
-  if (!time) {
-    return "All day";
-  }
-
-  return time.slice(0, 5);
-}
-
-function getCategoryClasses(category: EventCategory) {
-  switch (category) {
-    case "Work":
-      return "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/20";
-    case "Health":
-      return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20";
-    case "Fitness":
-      return "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/10 dark:text-orange-300 dark:border-orange-500/20";
-    case "Other":
-      return "bg-surface-strong text-foreground/50 border-muted-border";
-    default:
-      return "bg-accent-violet/10 text-accent-violet border-accent-violet/20";
-  }
-}
-
-function getCategoryDot(category: EventCategory) {
-  switch (category) {
-    case "Work":
-      return "bg-blue-500";
-    case "Health":
-      return "bg-emerald-500";
-    case "Fitness":
-      return "bg-orange-500";
-    case "Other":
-      return "bg-gray-300";
-    default:
-      return "bg-violet-500";
-  }
-}
 
 export default function CalendarCard() {
   const today = useMemo(() => new Date(), []);
@@ -591,140 +491,15 @@ export default function CalendarCard() {
         </div>
       )}
 
-      {/* Mobile gets its own compact grid: day number + up to 3 category
-          dots, no per-event text preview, so all 7 columns fit the screen
-          width instead of forcing horizontal scroll on a 720px-wide desktop
-          grid. Tablet/desktop (sm+) keeps the original rich cell with
-          event text previews, unchanged. */}
-      <div className="grid grid-cols-7 border-b border-card-border bg-card">
-        {weekDays.map((day) => (
-          <div
-            key={day}
-            className="px-1 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-foreground/30 sm:px-3 sm:py-3 sm:text-[11px] sm:tracking-[0.14em]"
-          >
-            <span className="sm:hidden">{day.slice(0, 1)}</span>
-            <span className="hidden sm:inline">{day}</span>
-          </div>
-        ))}
-      </div>
-
-      <motion.div
-        key={`${currentMonth.getFullYear()}-${currentMonth.getMonth()}`}
-        initial={{ opacity: 0, x: 8 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{
-          duration: 0.28,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-        className="grid grid-cols-7"
-      >
-        {calendarDays.map(({ date, isCurrentMonth }) => {
-          const selected = isSameDay(date, selectedDate);
-          const isToday = isSameDay(date, today);
-          const dateKey = getLocalDateKey(date);
-
-          const allDayEvents = events.filter(
-            (calendarEvent) => calendarEvent.event_date === dateKey
-          );
-
-          const dayEvents = allDayEvents.slice(0, 2);
-          const hiddenEventsCount = allDayEvents.length - dayEvents.length;
-          const dotEvents = allDayEvents.slice(0, 3);
-
-          return (
-            <button
-              key={dateKey}
-              type="button"
-              onClick={() => selectDate(date)}
-              className={`group relative min-h-[64px] border-b border-r border-card-border p-1.5 text-left transition hover:bg-accent-violet/10 active:bg-accent-violet/15 sm:min-h-[128px] sm:p-3 ${
-                selected ? "bg-accent-violet/10" : ""
-              }`}
-            >
-              {selected && (
-                <motion.div
-                  layoutId="selected-calendar-day"
-                  className="absolute inset-1 rounded-2xl border border-accent-violet/25 bg-accent-violet/10"
-                  transition={{
-                    duration: 0.22,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                />
-              )}
-
-              <div className="relative z-10">
-                <div className="flex items-center justify-center sm:justify-between">
-                  <span
-                    className={`flex h-7 w-7 items-center justify-center rounded-lg text-xs font-semibold transition sm:h-8 sm:w-8 sm:rounded-xl sm:text-sm ${
-                      isToday
-                        ? "bg-accent-violet text-white"
-                        : selected
-                          ? "bg-accent-violet/70 text-white"
-                          : isCurrentMonth
-                            ? "text-foreground/70 group-hover:bg-surface-strong"
-                            : "text-foreground/20"
-                    }`}
-                  >
-                    {date.getDate()}
-                  </span>
-
-                  {isToday && (
-                    <span className="hidden text-[10px] font-semibold uppercase tracking-[0.12em] text-violet-300 sm:inline">
-                      Today
-                    </span>
-                  )}
-                </div>
-
-                {dotEvents.length > 0 && (
-                  <div className="mt-1.5 flex justify-center gap-1 sm:hidden">
-                    {dotEvents.map((calendarEvent) => (
-                      <span
-                        key={calendarEvent.id}
-                        className={`h-1.5 w-1.5 rounded-full ${getCategoryDot(
-                          calendarEvent.category
-                        )}`}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                <div className="mt-3 hidden space-y-1.5 sm:block">
-                  {dayEvents.map((calendarEvent) => (
-                    <div
-                      key={calendarEvent.id}
-                      className="flex min-w-0 items-center gap-2 rounded-lg bg-surface-strong px-2 py-1.5 text-[10px] font-medium text-foreground/60"
-                    >
-                      <span
-                        className={`h-2 w-2 shrink-0 rounded-full ${getCategoryDot(
-                          calendarEvent.category
-                        )}`}
-                      />
-
-                      <span className="truncate">
-                        {calendarEvent.start_time
-                          ? `${formatTime(
-                              calendarEvent.start_time
-                            )} `
-                          : ""}
-                        {calendarEvent.title}
-                      </span>
-                    </div>
-                  ))}
-
-                  {hiddenEventsCount > 0 && (
-                    <p className="px-2 text-[10px] font-semibold text-accent-violet">
-                      +{hiddenEventsCount} more
-                    </p>
-                  )}
-                </div>
-
-                {loadingEvents && (
-                  <div className="mt-2 hidden h-2 w-12 animate-pulse rounded-full bg-surface-strong sm:block" />
-                )}
-              </div>
-            </button>
-          );
-        })}
-      </motion.div>
+      <CalendarGrid
+        currentMonth={currentMonth}
+        calendarDays={calendarDays}
+        selectedDate={selectedDate}
+        today={today}
+        events={events}
+        loadingEvents={loadingEvents}
+        onSelectDate={selectDate}
+      />
 
       <div className="border-t border-card-border bg-card px-5 py-5 sm:px-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -754,342 +529,31 @@ export default function CalendarCard() {
           </button>
         </div>
 
-        <AnimatePresence>
-          {formOpen && (
-            <motion.form
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              onSubmit={handleCreateEvent}
-              className="mt-5 rounded-3xl border border-accent-violet/15 bg-accent-violet/[0.04] p-5"
-            >
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm font-semibold text-foreground">
-                    New event
-                  </p>
+        <CalendarEventForm
+          formOpen={formOpen}
+          title={title}
+          description={description}
+          eventDate={eventDate}
+          startTime={startTime}
+          endTime={endTime}
+          category={category}
+          savingEvent={savingEvent}
+          onTitleChange={setTitle}
+          onDescriptionChange={setDescription}
+          onEventDateChange={setEventDate}
+          onStartTimeChange={setStartTime}
+          onEndTimeChange={setEndTime}
+          onCategoryChange={setCategory}
+          onSubmit={handleCreateEvent}
+          onClose={closeEventForm}
+        />
 
-                  <p className="mt-1 text-xs text-foreground/40">
-                    Add something important to your schedule
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={closeEventForm}
-                  disabled={savingEvent}
-                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface-strong text-foreground/40 transition hover:text-foreground"
-                  aria-label="Close event form"
-                >
-                  ×
-                </button>
-              </div>
-
-              <div className="mt-5 grid gap-4 lg:grid-cols-2">
-                <div>
-                  <label
-                    htmlFor="event-title"
-                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
-                  >
-                    Event title
-                  </label>
-
-                  <input
-                    id="event-title"
-                    type="text"
-                    value={title}
-                    onChange={(event) =>
-                      setTitle(event.target.value)
-                    }
-                    placeholder="Boxing training"
-                    maxLength={140}
-                    disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm text-foreground outline-none transition placeholder:text-foreground/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="event-date"
-                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
-                  >
-                    Date
-                  </label>
-
-                  <input
-                    id="event-date"
-                    type="date"
-                    value={eventDate}
-                    onChange={(event) =>
-                      setEventDate(event.target.value)
-                    }
-                    disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm text-foreground outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <label
-                  htmlFor="event-description"
-                  className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
-                >
-                  Description
-                </label>
-
-                <textarea
-                  id="event-description"
-                  value={description}
-                  onChange={(event) =>
-                    setDescription(event.target.value)
-                  }
-                  placeholder="Add optional details..."
-                  maxLength={500}
-                  rows={3}
-                  disabled={savingEvent}
-                  className="w-full resize-none rounded-2xl border border-muted-border bg-muted px-4 py-3 text-sm leading-6 text-foreground outline-none transition placeholder:text-foreground/30 focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
-                />
-              </div>
-
-              <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                <div>
-                  <label
-                    htmlFor="event-start-time"
-                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
-                  >
-                    Start time
-                  </label>
-
-                  <input
-                    id="event-start-time"
-                    type="time"
-                    value={startTime}
-                    onChange={(event) =>
-                      setStartTime(event.target.value)
-                    }
-                    disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm text-foreground outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="event-end-time"
-                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
-                  >
-                    End time
-                  </label>
-
-                  <input
-                    id="event-end-time"
-                    type="time"
-                    value={endTime}
-                    onChange={(event) =>
-                      setEndTime(event.target.value)
-                    }
-                    disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm text-foreground outline-none transition [color-scheme:dark] focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="event-category"
-                    className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-violet-300"
-                  >
-                    Category
-                  </label>
-
-                  <select
-                    id="event-category"
-                    value={category}
-                    onChange={(event) =>
-                      setCategory(
-                        event.target.value as EventCategory
-                      )
-                    }
-                    disabled={savingEvent}
-                    className="h-12 w-full rounded-2xl border border-muted-border bg-muted px-4 text-sm text-foreground outline-none transition focus:border-accent-violet/40 focus:ring-4 focus:ring-accent-violet/10"
-                  >
-                    {categories.map((categoryOption) => (
-                      <option
-                        key={categoryOption}
-                        value={categoryOption}
-                        className="bg-background text-foreground"
-                      >
-                        {categoryOption}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <motion.button
-                  whileHover={
-                    savingEvent ? undefined : { scale: 1.01 }
-                  }
-                  whileTap={
-                    savingEvent ? undefined : { scale: 0.99 }
-                  }
-                  type="submit"
-                  disabled={savingEvent || !title.trim()}
-                  className="flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl border border-muted-border bg-surface-strong px-5 text-sm font-semibold text-foreground transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {savingEvent ? (
-                    <>
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-border-strong border-t-foreground" />
-                      Saving event...
-                    </>
-                  ) : (
-                    <>
-                      Save event
-                      <span aria-hidden="true">→</span>
-                    </>
-                  )}
-                </motion.button>
-
-                <button
-                  type="button"
-                  onClick={closeEventForm}
-                  disabled={savingEvent}
-                  className="h-12 rounded-2xl border border-muted-border bg-muted px-5 text-sm font-semibold text-foreground/60 transition hover:text-foreground"
-                >
-                  Cancel
-                </button>
-              </div>
-            </motion.form>
-          )}
-        </AnimatePresence>
-
-        <div className="mt-5 space-y-3">
-          {loadingEvents ? (
-            [1, 2].map((item) => (
-              <div
-                key={item}
-                className="flex animate-pulse items-center gap-4 rounded-2xl border border-card-border bg-card px-4 py-4"
-              >
-                <div className="h-10 w-10 rounded-xl bg-surface-strong" />
-                <div className="flex-1">
-                  <div className="h-4 w-40 rounded-full bg-surface-strong" />
-                  <div className="mt-2 h-3 w-24 rounded-full bg-muted" />
-                </div>
-              </div>
-            ))
-          ) : selectedDateEvents.length > 0 ? (
-            <AnimatePresence initial={false}>
-              {selectedDateEvents.map((calendarEvent) => {
-                const eventPending = pendingEventIds.includes(
-                  calendarEvent.id
-                );
-
-                return (
-                  <motion.article
-                    key={calendarEvent.id}
-                    layout
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{
-                      opacity: eventPending ? 0.6 : 1,
-                      y: 0,
-                    }}
-                    exit={{ opacity: 0, y: -8 }}
-                    className="flex items-start gap-4 rounded-2xl border border-card-border bg-card px-4 py-4 backdrop-blur-[12px] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-violet/25 hover:bg-muted hover:shadow-[0_20px_45px_-15px_rgba(124,111,240,0.35)]"
-                  >
-                    <div
-                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-xs font-bold ${getCategoryClasses(
-                        calendarEvent.category
-                      )}`}
-                    >
-                      {calendarEvent.start_time
-                        ? formatTime(calendarEvent.start_time)
-                        : "DAY"}
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="text-sm font-semibold text-foreground">
-                          {calendarEvent.title}
-                        </h3>
-
-                        <span
-                          className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${getCategoryClasses(
-                            calendarEvent.category
-                          )}`}
-                        >
-                          {calendarEvent.category}
-                        </span>
-                      </div>
-
-                      <p className="mt-1 text-xs text-foreground/40">
-                        {calendarEvent.start_time
-                          ? `${formatTime(
-                              calendarEvent.start_time
-                            )}${
-                              calendarEvent.end_time
-                                ? ` – ${formatTime(
-                                    calendarEvent.end_time
-                                  )}`
-                                : ""
-                            }`
-                          : "All-day event"}
-                      </p>
-
-                      {calendarEvent.description && (
-                        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-foreground/50">
-                          {calendarEvent.description}
-                        </p>
-                      )}
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        deleteEvent(calendarEvent)
-                      }
-                      disabled={eventPending}
-                      aria-label={`Delete "${calendarEvent.title}"`}
-                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-foreground/25 transition hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 disabled:cursor-wait"
-                    >
-                      {eventPending ? (
-                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-border-strong border-t-foreground/60" />
-                      ) : (
-                        <svg
-                          width="17"
-                          height="17"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          aria-hidden="true"
-                        >
-                          <path
-                            d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"
-                            stroke="currentColor"
-                            strokeWidth="1.8"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      )}
-                    </button>
-                  </motion.article>
-                );
-              })}
-            </AnimatePresence>
-          ) : (
-            <div className="rounded-3xl border border-dashed border-muted-border bg-card px-6 py-9 text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-violet/15 text-accent-violet">
-                <span className="text-xl">+</span>
-              </div>
-
-              <p className="mt-4 text-sm font-semibold text-foreground/80">
-                Your schedule is clear.
-              </p>
-
-              <p className="mt-2 text-sm text-foreground/40">
-                Add an event when something important comes up.
-              </p>
-            </div>
-          )}
-        </div>
+        <CalendarDayEventList
+          loadingEvents={loadingEvents}
+          selectedDateEvents={selectedDateEvents}
+          pendingEventIds={pendingEventIds}
+          onDelete={deleteEvent}
+        />
       </div>
     </section>
   );
