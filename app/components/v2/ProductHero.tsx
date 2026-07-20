@@ -186,14 +186,13 @@ export default function ProductHero() {
                 delay: 0.22,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="mt-3 text-[2.75rem] font-black leading-[1.02] tracking-[-0.03em] text-white sm:mt-4 sm:text-6xl sm:leading-[0.9] sm:tracking-[-0.055em] lg:text-[100px] xl:text-[116px]"
+              className="mt-3 text-[2.5rem] font-black leading-[1.05] tracking-[-0.03em] text-white sm:mt-4 sm:text-5xl sm:leading-[1.02] sm:tracking-[-0.04em] lg:text-6xl xl:text-[64px]"
             >
-              Your{" "}
+              Stop planning your day{" "}
               <span className="bg-gradient-to-r from-violet-400 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent">
-                AI
+                manually
               </span>
-              <br className="sm:hidden" />
-              {" "}Life Admin
+              .
             </motion.h1>
 
             <motion.p
@@ -206,8 +205,9 @@ export default function ProductHero() {
               }}
               className="mx-auto mt-6 max-w-xl text-lg leading-8 text-zinc-300 sm:text-xl sm:leading-9 lg:mx-0"
             >
-              AI does the work, not just the talking — it creates tasks,
-              tracks goals and plans your day automatically.
+              Tell Orenios about your day once. It automatically organizes
+              your schedule, tasks and priorities so you can focus on
+              living instead of planning.
             </motion.p>
 
             <motion.div
@@ -273,18 +273,13 @@ export default function ProductHero() {
                         type="submit"
                         className="inline-flex h-14 items-center justify-center rounded-full bg-gradient-to-r from-violet-500 to-cyan-400 px-8 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_16px_40px_rgba(124,58,237,0.35)] transition-colors duration-300 hover:from-violet-400 hover:to-cyan-300 focus:outline-none focus:ring-2 focus:ring-violet-300 disabled:cursor-not-allowed disabled:opacity-60 sm:h-16 sm:px-10 sm:text-base"
                       >
-                        {loading ? "Joining..." : "Get Early Access"}
+                        {loading ? "Joining..." : "Join Waitlist"}
                       </motion.button>
                     </form>
                   </div>
 
                   <p className="mt-3 text-sm text-zinc-400">
-                    Early members shape the product and get founder pricing at
-                    launch.
-                  </p>
-
-                  <p className="mt-1 text-xs text-zinc-500">
-                    No spam. One email when we launch.
+                    No spam. Early access only.
                   </p>
                 </>
               ) : (

@@ -57,14 +57,14 @@ export default function Footer() {
             </p>
 
             <h2 className="mt-5 text-4xl font-bold tracking-tight sm:text-6xl">
-              Organize your life.
+              Spend less time planning.
               <br />
-              One AI.
+              Spend more time living.
             </h2>
 
             <p className="mx-auto mt-6 max-w-2xl text-lg text-white/60">
-              Built for people who want one intelligent place for goals,
-              tasks, notes and daily planning.
+              Your AI shouldn&apos;t just answer questions. It should
+              organize your life.
             </p>
 
             <span className="relative mt-10 inline-block">

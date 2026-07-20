@@ -42,8 +42,8 @@ export default function Navbar() {
   const closeMenu = () => setIsMenuOpen(false);
 
   const mobileLinks = [
-    { href: "#features", label: "Features" },
-    { href: "#preview", label: "Preview" },
+    { href: "#demo", label: "See it work" },
+    { href: "#compare", label: "Why different" },
   ];
 
   return (
@@ -114,17 +114,17 @@ export default function Navbar() {
             </a>
 
             <a
-              href="#features"
+              href="#demo"
               className="transition hover:text-black"
             >
-              Features
+              See it work
             </a>
 
             <a
-              href="#preview"
+              href="#compare"
               className="transition hover:text-black"
             >
-              Preview
+              Why different
             </a>
           </nav>
 

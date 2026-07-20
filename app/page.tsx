@@ -1,7 +1,11 @@
 import Navbar from "./components/v2/Navbar";
 import ProductHero from "./components/v2/ProductHero";
-import Features from "./components/v2/Features";
-import ProductPreview from "./components/v2/ProductPreview";
+import ProductDemo from "./components/v2/ProductDemo";
+import Comparison from "./components/v2/Comparison";
+import MemorySection from "./components/v2/MemorySection";
+import DailyCheckIn from "./components/v2/DailyCheckIn";
+import WeeklyReview from "./components/v2/WeeklyReview";
+import WhyItMatters from "./components/v2/WhyItMatters";
 import FounderNote from "./components/v2/FounderNote";
 import Footer from "./components/v2/Footer";
 import ScrollToTop from "./components/v2/ScrollToTop";
@@ -57,8 +61,12 @@ export default function HomePage() {
       <div className="relative z-10">
         <Navbar />
         <ProductHero />
-        <Features />
-        <ProductPreview />
+        <ProductDemo />
+        <Comparison />
+        <MemorySection />
+        <DailyCheckIn />
+        <WeeklyReview />
+        <WhyItMatters />
         <FounderNote />
         <Footer />
       </div>
