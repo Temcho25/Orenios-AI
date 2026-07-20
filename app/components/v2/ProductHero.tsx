@@ -279,7 +279,8 @@ export default function ProductHero() {
                   </div>
 
                   <p className="mt-3 text-sm text-zinc-400">
-                    No spam. Early access only.
+                    Currently in development. Join for early access — no
+                    spam.
                   </p>
                 </>
               ) : (

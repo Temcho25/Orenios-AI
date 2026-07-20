@@ -39,8 +39,8 @@ export default function DailyCheckIn() {
           </h2>
 
           <p className="mx-auto mt-5 max-w-md text-base leading-7 text-zinc-400 sm:text-lg sm:leading-8 lg:mx-0">
-            Orenios asks three quick questions, then rebuilds tomorrow
-            around the answers — automatically, before you wake up.
+            Orenios asks three quick questions, then updates tomorrow&apos;s
+            plan around your answers.
           </p>
         </motion.div>
 

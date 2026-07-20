@@ -22,8 +22,9 @@ const outcomes = [
     icon: Timer,
   },
   {
-    title: "Less forgotten tasks",
-    description: "Nothing slips through because Orenios never forgets.",
+    title: "Fewer forgotten tasks",
+    description:
+      "Important tasks stay visible, so fewer things slip through the cracks.",
     icon: ListX,
   },
   {
