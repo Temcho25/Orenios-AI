@@ -1,24 +1,22 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { Check, X } from "lucide-react";
+import { Check } from "lucide-react";
 
-const chatGptPoints = [
-  "Gives advice",
-  "Forgets everything next chat",
-  "No calendar",
-  "No follow-up",
-  "No long-term memory",
+const generalAiPoints = [
+  "Responds when you ask",
+  "Helps across many topics",
+  "You organize the final plan",
+  "Context varies by conversation",
 ];
 
 const oreniosPoints = [
   "Organizes your day",
-  "Remembers your life",
-  "Plans ahead automatically",
-  "Manages your calendar",
+  "Connects goals, tasks and calendar",
+  "Updates plans as life changes",
   "Daily evening check-ins",
   "Weekly AI reviews",
-  "Gets smarter every week",
+  "Learns how you work over time",
 ];
 
 export default function Comparison() {
@@ -47,8 +45,9 @@ export default function Comparison() {
         </h2>
 
         <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-zinc-400 sm:text-lg sm:leading-8">
-          ChatGPT gives you advice and moves on. Orenios actually does the
-          organizing — and remembers you tomorrow.
+          ChatGPT is a general-purpose assistant. Orenios is built to turn
+          your goals, calendar, tasks and daily context into an organized
+          plan — and keep it updated over time.
         </p>
       </motion.div>
 
@@ -65,18 +64,16 @@ export default function Comparison() {
           className="rounded-3xl border border-white/10 bg-white/[0.02] p-6 sm:p-8"
         >
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-zinc-500">
-            ChatGPT
+            General AI Chat
           </p>
 
           <ul className="mt-6 space-y-4">
-            {chatGptPoints.map((point) => (
+            {generalAiPoints.map((point) => (
               <li
                 key={point}
                 className="flex items-start gap-3 text-zinc-500"
               >
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/5">
-                  <X className="h-3 w-3" strokeWidth={2.5} />
-                </span>
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/20" />
                 <span className="text-sm leading-6 sm:text-base">
                   {point}
                 </span>

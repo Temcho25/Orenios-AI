@@ -44,6 +44,7 @@ export default function Navbar() {
   const mobileLinks = [
     { href: "#demo", label: "See it work" },
     { href: "#compare", label: "Why different" },
+    { href: "#memory", label: "Memory" },
   ];
 
   return (
@@ -51,10 +52,10 @@ export default function Navbar() {
       <header className="fixed left-0 right-0 top-0 z-50 w-full px-3 sm:px-4">
         <motion.div
           animate={{
-            marginTop: isScrolled ? 10 : 16,
-            paddingTop: isScrolled ? 8 : 12,
-            paddingBottom: isScrolled ? 8 : 12,
-            scale: isScrolled ? 0.98 : 1,
+            marginTop: isScrolled ? 6 : 13,
+            paddingTop: isScrolled ? 4 : 9,
+            paddingBottom: isScrolled ? 4 : 9,
+            scale: isScrolled ? 0.96 : 1,
           }}
           transition={{
             duration: 0.25,
@@ -88,31 +89,24 @@ export default function Navbar() {
               <AnimatedLogo
                 className={`transition-all duration-300 ${
                   isScrolled
-                    ? "h-11 w-11 sm:h-12 sm:w-12"
-                    : "h-12 w-12 sm:h-14 sm:w-14 lg:h-[70px] lg:w-[70px]"
+                    ? "h-11 w-11 sm:h-12 sm:w-12 lg:h-9 lg:w-9"
+                    : "h-12 w-12 sm:h-14 sm:w-14 lg:h-14 lg:w-14"
                 }`}
               />
             </motion.div>
 
             <div>
-              <h2 className="text-base font-bold text-black sm:text-lg">
+              <h2 className="text-base font-bold leading-tight text-black sm:text-lg">
                 Orenios AI
               </h2>
 
-              <p className="hidden text-xs text-gray-500 sm:block">
+              <p className="hidden text-xs leading-tight text-gray-500 sm:block">
                 Your Life Admin
               </p>
             </div>
           </button>
 
           <nav className="hidden items-center gap-10 text-sm font-medium text-gray-600 md:flex">
-            <a
-              href="#waitlist"
-              className="transition hover:text-black"
-            >
-              Join Waitlist
-            </a>
-
             <a
               href="#demo"
               className="transition hover:text-black"
@@ -126,6 +120,13 @@ export default function Navbar() {
             >
               Why different
             </a>
+
+            <a
+              href="#memory"
+              className="transition hover:text-black"
+            >
+              Memory
+            </a>
           </nav>
 
           <motion.a
@@ -135,7 +136,7 @@ export default function Navbar() {
             }
             whileTap={prefersReducedMotion ? undefined : { scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            className="inline-flex min-h-[44px] items-center rounded-full bg-black px-4 text-xs font-semibold text-white shadow-[0_10px_25px_rgba(15,23,42,0.18)] transition-shadow duration-300 active:shadow-[0_16px_35px_rgba(15,23,42,0.28)] sm:px-6 sm:py-3 sm:text-sm md:hover:shadow-[0_16px_35px_rgba(15,23,42,0.28)]"
+            className="inline-flex min-h-[44px] items-center rounded-full bg-black px-4 text-xs font-semibold text-white shadow-[0_10px_25px_rgba(15,23,42,0.18)] transition-shadow duration-300 active:shadow-[0_16px_35px_rgba(15,23,42,0.28)] sm:px-6 sm:py-3 sm:text-sm md:hover:shadow-[0_16px_35px_rgba(15,23,42,0.28)] lg:min-h-9 lg:px-5 lg:py-2"
           >
             <span className="sm:hidden">Join</span>
             <span className="hidden sm:inline">Join Waitlist</span>
@@ -198,7 +199,7 @@ export default function Navbar() {
         </AnimatePresence>
       </header>
 
-      <div className="h-[92px] sm:h-[112px] lg:h-[130px]" aria-hidden="true" />
+      <div className="h-[84px] sm:h-[92px]" aria-hidden="true" />
     </>
   );
 }
