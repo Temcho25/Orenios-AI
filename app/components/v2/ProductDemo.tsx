@@ -151,7 +151,7 @@ export default function ProductDemo() {
               >
                 <div className="flex items-center gap-2.5">
                   <span
-                    className={`h-2 w-2 shrink-0 rounded-full ${item.dot}`}
+                    className={`status-dot-pulse h-2 w-2 shrink-0 rounded-full ${item.dot}`}
                   />
                   <span className="text-sm font-medium text-zinc-200">
                     {item.title}
@@ -191,7 +191,7 @@ export default function ProductDemo() {
           </div>
 
           <div className="mt-5 flex items-center gap-2 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3">
-            <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-400" />
+            <span className="status-dot-pulse h-2 w-2 shrink-0 rounded-full bg-emerald-400" />
             <span className="text-sm font-medium text-emerald-300">
               Reminder set for 6:45 PM — leave for the gym
             </span>

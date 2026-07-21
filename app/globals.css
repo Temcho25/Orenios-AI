@@ -352,3 +352,25 @@ button {
     animation: cta-sweep 8s ease-in-out infinite 3.5s;
   }
 }
+
+/* Status dot pulse — the small solid-color dots used next to schedule/
+   priority/confirmation rows (e.g. DailyCheckIn's "Tomorrow updated
+   automatically" dot). One shared keyframe so every status dot across
+   the landing page pulses identically instead of each call site
+   re-implementing its own animate prop. */
+@keyframes status-dot-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .status-dot-pulse {
+    animation: status-dot-pulse 1.6s ease-in-out infinite;
+  }
+}

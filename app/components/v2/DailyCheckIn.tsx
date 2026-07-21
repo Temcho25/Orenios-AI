@@ -109,19 +109,7 @@ export default function DailyCheckIn() {
             }}
             className="mt-5 flex items-center gap-2.5 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3.5"
           >
-            <motion.span
-              animate={
-                prefersReducedMotion
-                  ? undefined
-                  : { scale: [1, 1.3, 1] }
-              }
-              transition={{
-                duration: 1.6,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="h-2 w-2 shrink-0 rounded-full bg-emerald-400"
-            />
+            <span className="status-dot-pulse h-2 w-2 shrink-0 rounded-full bg-emerald-400" />
             <span className="text-sm font-medium text-emerald-300">
               Tomorrow updated automatically.
             </span>
