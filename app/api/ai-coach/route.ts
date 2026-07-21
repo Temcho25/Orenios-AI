@@ -1,7 +1,8 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { createClient } from "../../lib/supabase-server";
-import { aiCoachRateLimit } from "@/app/lib/rate-limit";
+import { aiCoachRateLimit, getAiCoachDailyLimit } from "@/app/lib/rate-limit";
+import { getSubscription } from "@/app/lib/subscription";
 import { formatConversationHistory } from "./lib/conversation";
 import { aiCoachTools } from "./lib/tools";
 import { buildAICoachPrompt } from "./lib/prompt";
@@ -118,6 +119,33 @@ export async function POST(request: Request) {
           },
         }
       );
+    }
+
+    const subscription = await getSubscription(supabase, user.id);
+    const planTier = subscription?.hasAccess ? subscription.planTier : null;
+    const dailyLimit = getAiCoachDailyLimit(planTier);
+
+    if (dailyLimit) {
+      const { success: dailyQuotaOk, reset: dailyReset } =
+        await dailyLimit.limit(user.id);
+
+      if (!dailyQuotaOk) {
+        return NextResponse.json(
+          {
+            error:
+              "You've reached today's message limit for your plan. It resets tomorrow, or you can upgrade for a higher limit.",
+          },
+          {
+            status: 429,
+            headers: {
+              "Retry-After": Math.max(
+                1,
+                Math.ceil((dailyReset - Date.now()) / 1000)
+              ).toString(),
+            },
+          }
+        );
+      }
     }
 
     const openai = new OpenAI({
