@@ -188,9 +188,11 @@ export default function ProductHero() {
               }}
               className="mt-3 text-[2.5rem] font-black leading-[1.05] tracking-[-0.03em] text-white sm:mt-4 sm:text-5xl sm:leading-[1.02] sm:tracking-[-0.04em] lg:text-6xl xl:text-[64px]"
             >
-              Stop planning your day{" "}
+              Tell Orenios about your day.
+              <br />
+              It organizes{" "}
               <span className="bg-gradient-to-r from-violet-400 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent">
-                manually
+                everything
               </span>
               .
             </motion.h1>
@@ -205,9 +207,9 @@ export default function ProductHero() {
               }}
               className="mx-auto mt-6 max-w-xl text-lg leading-8 text-zinc-300 sm:text-xl sm:leading-9 lg:mx-0"
             >
-              Tell Orenios about your day once. It automatically organizes
-              your schedule, tasks and priorities so you can focus on
-              living instead of planning.
+              Just talk naturally. Orenios turns it into tasks, a
+              schedule and priorities, sets reminders, and keeps it all
+              up to date as your day changes.
             </motion.p>
 
             <motion.div
@@ -279,8 +281,7 @@ export default function ProductHero() {
                   </div>
 
                   <p className="mt-3 text-sm text-zinc-400">
-                    Currently in development. Join for early access — no
-                    spam.
+                    No forms. No manual planning. Just one conversation.
                   </p>
                 </>
               ) : (
