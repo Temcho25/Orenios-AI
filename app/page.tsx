@@ -40,21 +40,21 @@ export default function HomePage() {
 
         {/* Desktop / tablet (>=768px) */}
         <div className="hidden md:block">
-          <div className="absolute left-[8%] top-[12%] h-[620px] w-[620px] rounded-full bg-violet-500/[0.16] blur-[170px]" />
-          <div className="absolute right-[6%] top-[30%] h-[560px] w-[560px] rounded-full bg-cyan-400/[0.13] blur-[160px]" />
-          <div className="absolute left-[12%] top-[50%] h-[560px] w-[560px] rounded-full bg-fuchsia-500/[0.11] blur-[170px]" />
-          <div className="absolute right-[10%] top-[70%] h-[560px] w-[560px] rounded-full bg-violet-500/[0.15] blur-[160px]" />
-          <div className="absolute left-[10%] top-[90%] h-[520px] w-[520px] rounded-full bg-cyan-400/[0.13] blur-[160px]" />
+          <div className="aurora-blob-1 absolute left-[8%] top-[12%] h-[620px] w-[620px] rounded-full bg-violet-500/[0.16] blur-[170px]" />
+          <div className="aurora-blob-2 absolute right-[6%] top-[30%] h-[560px] w-[560px] rounded-full bg-cyan-400/[0.13] blur-[160px]" />
+          <div className="aurora-blob-3 absolute left-[12%] top-[50%] h-[560px] w-[560px] rounded-full bg-fuchsia-500/[0.11] blur-[170px]" />
+          <div className="aurora-blob-4 absolute right-[10%] top-[70%] h-[560px] w-[560px] rounded-full bg-violet-500/[0.15] blur-[160px]" />
+          <div className="aurora-blob-5 absolute left-[10%] top-[90%] h-[520px] w-[520px] rounded-full bg-cyan-400/[0.13] blur-[160px]" />
         </div>
 
         {/* Mobile (<768px) — own stops, tuned for the taller stacked layout */}
         <div className="md:hidden">
-          <div className="absolute left-[-10%] top-[7%] h-[440px] w-[440px] rounded-full bg-violet-500/[0.17] blur-[130px]" />
-          <div className="absolute right-[-15%] top-[24%] h-[480px] w-[480px] rounded-full bg-cyan-400/[0.14] blur-[130px]" />
-          <div className="absolute left-[-15%] top-[41%] h-[460px] w-[460px] rounded-full bg-fuchsia-500/[0.12] blur-[130px]" />
-          <div className="absolute right-[-10%] top-[57%] h-[480px] w-[480px] rounded-full bg-violet-500/[0.16] blur-[130px]" />
-          <div className="absolute left-[-15%] top-[73%] h-[460px] w-[460px] rounded-full bg-cyan-400/[0.14] blur-[130px]" />
-          <div className="absolute right-[-10%] top-[89%] h-[460px] w-[460px] rounded-full bg-violet-500/[0.15] blur-[130px]" />
+          <div className="aurora-blob-6 absolute left-[-10%] top-[7%] h-[440px] w-[440px] rounded-full bg-violet-500/[0.17] blur-[130px]" />
+          <div className="aurora-blob-1 absolute right-[-15%] top-[24%] h-[480px] w-[480px] rounded-full bg-cyan-400/[0.14] blur-[130px]" />
+          <div className="aurora-blob-2 absolute left-[-15%] top-[41%] h-[460px] w-[460px] rounded-full bg-fuchsia-500/[0.12] blur-[130px]" />
+          <div className="aurora-blob-3 absolute right-[-10%] top-[57%] h-[480px] w-[480px] rounded-full bg-violet-500/[0.16] blur-[130px]" />
+          <div className="aurora-blob-4 absolute left-[-15%] top-[73%] h-[460px] w-[460px] rounded-full bg-cyan-400/[0.14] blur-[130px]" />
+          <div className="aurora-blob-5 absolute right-[-10%] top-[89%] h-[460px] w-[460px] rounded-full bg-violet-500/[0.15] blur-[130px]" />
         </div>
       </div>
 

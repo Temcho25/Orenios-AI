@@ -101,7 +101,7 @@ export default function ProductDemo() {
           className="flex items-center justify-center lg:flex-col"
           aria-hidden="true"
         >
-          <span className="hidden h-px w-8 bg-gradient-to-r from-violet-300/60 to-cyan-300/60 lg:block" />
+          <span className="shimmer-a hidden h-px w-8 bg-gradient-to-r from-violet-300/60 to-cyan-300/60 lg:block" />
 
           <motion.span
             animate={
@@ -116,7 +116,7 @@ export default function ProductDemo() {
             <span className="lg:hidden">↓</span>
           </motion.span>
 
-          <span className="hidden h-px w-8 bg-gradient-to-r from-cyan-300/60 to-violet-300/60 lg:block" />
+          <span className="shimmer-b hidden h-px w-8 bg-gradient-to-r from-cyan-300/60 to-violet-300/60 lg:block" />
         </div>
 
         {/* Right: what Orenios creates */}

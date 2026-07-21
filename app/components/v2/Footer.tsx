@@ -52,7 +52,7 @@ export default function Footer() {
           </div>
 
           <div className="relative z-10">
-            <p className="text-sm font-semibold uppercase tracking-[0.35em] text-violet-300">
+            <p className="shimmer-b bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text text-sm font-semibold uppercase tracking-[0.35em] text-transparent">
               Orenios AI
             </p>
 
@@ -68,15 +68,26 @@ export default function Footer() {
             </p>
 
             <span className="relative mt-10 inline-block">
-              <span
+              <motion.span
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-violet-500/50 to-cyan-400/50 blur-2xl"
+                animate={
+                  prefersReducedMotion
+                    ? undefined
+                    : { scale: [1, 1.15, 1], opacity: [0.6, 0.85, 0.6] }
+                }
+                transition={{
+                  duration: 5.2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 0.5,
+                }}
               />
 
               <a
                 href="#"
                 onClick={scrollToWaitlist}
-                className="inline-flex min-h-[44px] items-center rounded-full bg-gradient-to-r from-violet-500 to-cyan-400 px-8 py-4 text-lg font-semibold text-white shadow-[0_20px_45px_rgba(124,58,237,0.35)] transition-all duration-300 hover:-translate-y-1 hover:from-violet-400 hover:to-cyan-300 hover:shadow-[0_26px_55px_rgba(124,58,237,0.45)] active:from-violet-400 active:to-cyan-300 active:shadow-[0_26px_55px_rgba(124,58,237,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-dark-card"
+                className="cta-sweep cta-sweep-b inline-flex min-h-[44px] items-center rounded-full bg-gradient-to-r from-violet-500 to-cyan-400 px-8 py-4 text-lg font-semibold text-white shadow-[0_20px_45px_rgba(124,58,237,0.35)] transition-all duration-300 hover:-translate-y-1 hover:from-violet-400 hover:to-cyan-300 hover:shadow-[0_26px_55px_rgba(124,58,237,0.45)] active:from-violet-400 active:to-cyan-300 active:shadow-[0_26px_55px_rgba(124,58,237,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-dark-card"
               >
                 Join Waitlist
               </a>

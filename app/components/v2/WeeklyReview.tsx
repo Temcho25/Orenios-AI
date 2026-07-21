@@ -42,7 +42,7 @@ export default function WeeklyReview() {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="text-center"
       >
-        <p className="text-sm font-medium uppercase tracking-[0.3em] text-violet-300">
+        <p className="shimmer-c bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text text-sm font-medium uppercase tracking-[0.3em] text-transparent">
           WEEKLY REVIEW
         </p>
 

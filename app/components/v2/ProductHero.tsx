@@ -191,7 +191,7 @@ export default function ProductHero() {
               Tell Orenios about your day.
               <br />
               It organizes{" "}
-              <span className="bg-gradient-to-r from-violet-400 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent">
+              <span className="shimmer-a bg-gradient-to-r from-violet-400 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent">
                 everything
               </span>
               .
@@ -273,7 +273,7 @@ export default function ProductHero() {
                         }}
                         disabled={loading}
                         type="submit"
-                        className="inline-flex h-14 items-center justify-center rounded-full bg-gradient-to-r from-violet-500 to-cyan-400 px-8 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_16px_40px_rgba(124,58,237,0.35)] transition-colors duration-300 hover:from-violet-400 hover:to-cyan-300 focus:outline-none focus:ring-2 focus:ring-violet-300 disabled:cursor-not-allowed disabled:opacity-60 sm:h-16 sm:px-10 sm:text-base"
+                        className="cta-sweep cta-sweep-a inline-flex h-14 items-center justify-center rounded-full bg-gradient-to-r from-violet-500 to-cyan-400 px-8 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_16px_40px_rgba(124,58,237,0.35)] transition-colors duration-300 hover:from-violet-400 hover:to-cyan-300 focus:outline-none focus:ring-2 focus:ring-violet-300 disabled:cursor-not-allowed disabled:opacity-60 sm:h-16 sm:px-10 sm:text-base"
                       >
                         {loading ? "Joining..." : "Join Waitlist"}
                       </motion.button>
@@ -351,7 +351,38 @@ export default function ProductHero() {
             >
               <div className="flex items-center justify-between border-b border-zinc-100 pb-3 sm:pb-4">
                 <div className="flex items-center gap-3">
-                  <AnimatedLogo className="h-[58px] w-[58px] sm:h-[72px] sm:w-[72px] lg:h-[86px] lg:w-[86px]" />
+                  <motion.div
+                    className="relative"
+                    animate={
+                      prefersReducedMotion
+                        ? undefined
+                        : { y: [0, -2, 0] }
+                    }
+                    transition={{
+                      duration: 5.4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 0.8,
+                    }}
+                  >
+                    <motion.div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-violet-400/40 to-cyan-300/30 blur-xl"
+                      animate={
+                        prefersReducedMotion
+                          ? undefined
+                          : { scale: [1, 1.18, 1], opacity: [0.4, 0.65, 0.4] }
+                      }
+                      transition={{
+                        duration: 4.6,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: 1.4,
+                      }}
+                    />
+
+                    <AnimatedLogo className="h-[58px] w-[58px] sm:h-[72px] sm:w-[72px] lg:h-[86px] lg:w-[86px]" />
+                  </motion.div>
 
                   <div>
                     <p className="text-sm font-semibold text-zinc-900">

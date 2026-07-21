@@ -36,7 +36,7 @@ export default function Comparison() {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="text-center"
       >
-        <p className="text-sm font-medium uppercase tracking-[0.3em] text-violet-300">
+        <p className="shimmer-c bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text text-sm font-medium uppercase tracking-[0.3em] text-transparent">
           WHY IT&apos;S DIFFERENT
         </p>
 
@@ -97,12 +97,23 @@ export default function Comparison() {
           }}
           className="relative overflow-hidden rounded-3xl border border-violet-400/30 bg-white/[0.04] p-6 shadow-[0_0_0_1px_rgba(139,92,246,0.15),0_30px_65px_rgba(124,58,237,0.25)] sm:p-8"
         >
-          <div
+          <motion.div
             aria-hidden="true"
             className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-gradient-to-br from-violet-500 to-cyan-400 opacity-[0.2] blur-[60px]"
+            animate={
+              prefersReducedMotion
+                ? undefined
+                : { scale: [1, 1.2, 1], opacity: [0.15, 0.28, 0.15] }
+            }
+            transition={{
+              duration: 6.8,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1.1,
+            }}
           />
 
-          <p className="relative text-sm font-semibold uppercase tracking-[0.14em] text-transparent bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text">
+          <p className="shimmer-d relative bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text text-sm font-semibold uppercase tracking-[0.14em] text-transparent">
             Orenios
           </p>
 
@@ -112,7 +123,7 @@ export default function Comparison() {
                 key={point}
                 className="flex items-start gap-3 text-zinc-100"
               >
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-cyan-400">
+                <span className="shimmer-e mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-cyan-400">
                   <Check className="h-3 w-3 text-white" strokeWidth={3} />
                 </span>
                 <span className="text-sm leading-6 sm:text-base">

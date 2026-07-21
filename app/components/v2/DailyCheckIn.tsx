@@ -28,7 +28,7 @@ export default function DailyCheckIn() {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="text-center lg:text-left"
         >
-          <p className="text-sm font-medium uppercase tracking-[0.3em] text-violet-300">
+          <p className="shimmer-b bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text text-sm font-medium uppercase tracking-[0.3em] text-transparent">
             DAILY CHECK-IN
           </p>
 
@@ -81,7 +81,7 @@ export default function DailyCheckIn() {
                 }}
                 className="flex items-start gap-3"
               >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-cyan-400 text-[10px] font-bold text-white">
+                <div className="shimmer-e flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-cyan-400 text-[10px] font-bold text-white">
                   AI
                 </div>
 

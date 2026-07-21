@@ -73,27 +73,45 @@ export default function Navbar() {
             aria-label="Refresh Orenios AI"
             className="flex items-center gap-3 text-left"
           >
-            <motion.div
-              animate={
-                prefersReducedMotion
-                  ? undefined
-                  : { y: [0, -5, 0], scale: [1, 1.03, 1] }
-              }
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="drop-shadow-[0_0_20px_rgba(124,58,237,0.35)]"
-            >
-              <AnimatedLogo
-                className={`transition-all duration-300 ${
-                  isScrolled
-                    ? "h-11 w-11 sm:h-12 sm:w-12 lg:h-9 lg:w-9"
-                    : "h-12 w-12 sm:h-14 sm:w-14 lg:h-14 lg:w-14"
-                }`}
+            <div className="relative">
+              <motion.div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-violet-400/35 to-cyan-300/25 blur-lg"
+                animate={
+                  prefersReducedMotion
+                    ? undefined
+                    : { scale: [1, 1.22, 1], opacity: [0.5, 0.75, 0.5] }
+                }
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 0.6,
+                }}
               />
-            </motion.div>
+
+              <motion.div
+                animate={
+                  prefersReducedMotion
+                    ? undefined
+                    : { y: [0, -5, 0], scale: [1, 1.03, 1] }
+                }
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="drop-shadow-[0_0_20px_rgba(124,58,237,0.35)]"
+              >
+                <AnimatedLogo
+                  className={`transition-all duration-300 ${
+                    isScrolled
+                      ? "h-11 w-11 sm:h-12 sm:w-12 lg:h-9 lg:w-9"
+                      : "h-12 w-12 sm:h-14 sm:w-14 lg:h-14 lg:w-14"
+                  }`}
+                />
+              </motion.div>
+            </div>
 
             <div>
               <h2 className="text-base font-bold leading-tight text-black sm:text-lg">

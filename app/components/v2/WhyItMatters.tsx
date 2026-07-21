@@ -44,6 +44,14 @@ const outcomes = [
   },
 ];
 
+const shimmerVariants = [
+  "shimmer-a",
+  "shimmer-b",
+  "shimmer-c",
+  "shimmer-d",
+  "shimmer-e",
+];
+
 export default function WhyItMatters() {
   const prefersReducedMotion = useReducedMotion();
 
@@ -61,7 +69,7 @@ export default function WhyItMatters() {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="text-center"
       >
-        <p className="text-sm font-medium uppercase tracking-[0.3em] text-violet-300">
+        <p className="shimmer-d bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text text-sm font-medium uppercase tracking-[0.3em] text-transparent">
           WHY IT MATTERS
         </p>
 
@@ -96,7 +104,9 @@ export default function WhyItMatters() {
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
               className="relative flex h-full flex-col rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_10px_30px_rgba(0,0,0,0.2)] backdrop-blur-sm transition-all duration-300 hover:border-violet-400/40 hover:bg-white/[0.06] sm:p-7"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400 shadow-[0_8px_20px_rgba(124,58,237,0.35)]">
+              <div
+                className={`${shimmerVariants[index % shimmerVariants.length]} flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400 shadow-[0_8px_20px_rgba(124,58,237,0.35)]`}
+              >
                 <outcome.icon
                   className="h-5 w-5 text-white"
                   strokeWidth={2}

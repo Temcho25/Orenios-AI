@@ -30,7 +30,7 @@ export default function MemorySection() {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="text-center"
       >
-        <p className="text-sm font-medium uppercase tracking-[0.3em] text-violet-300">
+        <p className="shimmer-a bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text text-sm font-medium uppercase tracking-[0.3em] text-transparent">
           LONG-TERM MEMORY
         </p>
 
@@ -56,9 +56,20 @@ export default function MemorySection() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="relative flex h-40 w-40 items-center justify-center sm:h-48 sm:w-48"
         >
-          <div
+          <motion.div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-violet-500/40 to-cyan-400/30 blur-[60px]"
+            animate={
+              prefersReducedMotion
+                ? undefined
+                : { scale: [1, 1.16, 1], opacity: [0.5, 0.75, 0.5] }
+            }
+            transition={{
+              duration: 5.8,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.9,
+            }}
           />
 
           {!prefersReducedMotion && (
@@ -67,7 +78,21 @@ export default function MemorySection() {
             </div>
           )}
 
-          <AnimatedLogo className="h-20 w-20 sm:h-24 sm:w-24" />
+          <motion.div
+            animate={
+              prefersReducedMotion
+                ? undefined
+                : { y: [0, -2, 0] }
+            }
+            transition={{
+              duration: 6.2,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.3,
+            }}
+          >
+            <AnimatedLogo className="h-20 w-20 sm:h-24 sm:w-24" />
+          </motion.div>
         </motion.div>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3 sm:mt-12 sm:gap-4">
