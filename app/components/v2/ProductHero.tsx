@@ -1,41 +1,17 @@
 "use client";
 
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-} from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useState } from "react";
-import AnimatedLogo from "./AnimatedLogo";
-import OrbitalRings from "./OrbitalRings";
+import HeroConversationInput from "./HeroConversationInput";
+import OreniosCore from "./OreniosCore";
+import OrbitConnector from "./OrbitConnector";
+import OrganizedDayPreview from "./OrganizedDayPreview";
 
 export default function ProductHero() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [joined, setJoined] = useState(false);
   const prefersReducedMotion = useReducedMotion();
-
-  const rotateX = useMotionValue(0);
-  const rotateY = useMotionValue(0);
-  const springRotateX = useSpring(rotateX, { stiffness: 150, damping: 20 });
-  const springRotateY = useSpring(rotateY, { stiffness: 150, damping: 20 });
-
-  function handleCardMouseMove(event: React.MouseEvent<HTMLDivElement>) {
-    if (prefersReducedMotion) return;
-
-    const rect = event.currentTarget.getBoundingClientRect();
-    const px = (event.clientX - rect.left) / rect.width - 0.5;
-    const py = (event.clientY - rect.top) / rect.height - 0.5;
-
-    rotateY.set(px * 12);
-    rotateX.set(-py * 12);
-  }
-
-  function handleCardMouseLeave() {
-    rotateX.set(0);
-    rotateY.set(0);
-  }
 
   function handleSpotlightMove(event: React.MouseEvent<HTMLDivElement>) {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -188,11 +164,9 @@ export default function ProductHero() {
               }}
               className="mt-3 text-[2.5rem] font-black leading-[1.05] tracking-[-0.03em] text-white sm:mt-4 sm:text-5xl sm:leading-[1.02] sm:tracking-[-0.04em] lg:text-6xl xl:text-[64px]"
             >
-              Tell Orenios about your day.
-              <br />
-              It organizes{" "}
+              Say it once. Orenios keeps your life{" "}
               <span className="shimmer-a bg-gradient-to-r from-violet-400 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent">
-                everything
+                organized
               </span>
               .
             </motion.h1>
@@ -207,9 +181,9 @@ export default function ProductHero() {
               }}
               className="mx-auto mt-6 max-w-xl text-lg leading-8 text-zinc-300 sm:text-xl sm:leading-9 lg:mx-0"
             >
-              Just talk naturally. Orenios turns it into tasks, a
-              schedule and priorities, sets reminders, and keeps it all
-              up to date as your day changes.
+              Talk naturally about your plans, tasks, and priorities.
+              Orenios turns the conversation into a living schedule and
+              keeps it up to date.
             </motion.p>
 
             <motion.div
@@ -305,133 +279,58 @@ export default function ProductHero() {
           {/* Right side */}
 
           <motion.div
-            initial={{ opacity: 0, y: 26, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{
-              duration: 0.7,
-              delay: 0.18,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="relative mx-auto w-full max-w-[380px] sm:max-w-[440px] lg:mx-0 lg:max-w-[480px]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="relative mx-auto flex w-full max-w-[380px] flex-col items-center sm:max-w-[440px] lg:mx-0 lg:max-w-[440px]"
           >
-            {/* Glow behind card */}
-
-            <motion.div
+            {/* Ambient glow — static, not pulsing, so the motion budget
+                stays with the story below (waveform, orbit, travel dot,
+                staggered schedule) instead of competing decoration. */}
+            <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-violet-500/50 to-cyan-400/40 blur-[90px]"
-              animate={
-                prefersReducedMotion
-                  ? undefined
-                  : { scale: [1, 1.22, 1], opacity: [0.55, 0.9, 0.55] }
-              }
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-violet-500/25 to-cyan-400/15 blur-[100px]"
             />
 
-            <OrbitalRings />
-
-            {/* Daily briefing card */}
-
+            {/* Stage 1 — natural conversation */}
             <motion.div
-              onMouseMove={handleCardMouseMove}
-              onMouseLeave={handleCardMouseLeave}
-              style={{
-                rotateX: springRotateX,
-                rotateY: springRotateY,
-                transformPerspective: 800,
-              }}
-              animate={
-                prefersReducedMotion ? undefined : { y: [0, -7, 0] }
-              }
-              transition={{
-                duration: 6.4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="relative rounded-[24px] border border-white/10 bg-white/95 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-5 lg:rounded-[28px] lg:p-6"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="w-full lg:-ml-3"
             >
-              <div className="flex items-center justify-between border-b border-zinc-100 pb-3 sm:pb-4">
-                <div className="flex items-center gap-3">
-                  <motion.div
-                    className="relative"
-                    animate={
-                      prefersReducedMotion
-                        ? undefined
-                        : { y: [0, -5, 0] }
-                    }
-                    transition={{
-                      duration: 5.4,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: 0.8,
-                    }}
-                  >
-                    <motion.div
-                      aria-hidden="true"
-                      className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-violet-400/40 to-cyan-300/30 blur-xl"
-                      animate={
-                        prefersReducedMotion
-                          ? undefined
-                          : { scale: [1, 1.38, 1], opacity: [0.45, 0.85, 0.45] }
-                      }
-                      transition={{
-                        duration: 4.6,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: 1.4,
-                      }}
-                    />
-
-                    <AnimatedLogo className="h-[58px] w-[58px] sm:h-[72px] sm:w-[72px] lg:h-[86px] lg:w-[86px]" />
-                  </motion.div>
-
-                  <div>
-                    <p className="text-sm font-semibold text-zinc-900">
-                      Orenios AI
-                    </p>
-
-                    <p className="text-xs text-zinc-500">
-                      Daily briefing
-                    </p>
-                  </div>
-                </div>
-
-                <div className="rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] font-medium text-zinc-600 sm:px-3 sm:text-xs">
-                  Synced
-                </div>
-              </div>
-
-              <div className="mt-3 space-y-2.5 sm:mt-4 sm:space-y-3">
-                <div className="flex items-center justify-between rounded-2xl bg-zinc-50 px-3 py-2.5 text-sm sm:px-4 sm:py-3">
-                  <span className="text-zinc-600">
-                    Goals aligned
-                  </span>
-
-                  <span className="font-semibold text-zinc-900">
-                    100%
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between rounded-2xl bg-zinc-50 px-3 py-2.5 text-sm sm:px-4 sm:py-3">
-                  <span className="text-zinc-600">
-                    Calendar synced
-                  </span>
-
-                  <span className="font-semibold text-zinc-900">
-                    Today
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between rounded-2xl bg-zinc-50 px-3 py-2.5 text-sm sm:px-4 sm:py-3">
-                  <span className="text-zinc-600">
-                    Next best action
-                  </span>
-
-                  <span className="font-semibold text-zinc-900">
-                    Review deck
-                  </span>
-                </div>
-              </div>
+              <HeroConversationInput />
             </motion.div>
+
+            <OrbitConnector heightClassName="h-9" variant="a" />
+
+            {/* Stage 2 — Orenios understands */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <OreniosCore />
+            </motion.div>
+
+            <OrbitConnector heightClassName="h-9" variant="b" />
+
+            {/* Stage 3 — organized result */}
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              className="w-full lg:-mr-2"
+            >
+              <OrganizedDayPreview />
+            </motion.div>
+
+            {/* Leads the eye toward the next section */}
+            <OrbitConnector
+              heightClassName="h-12"
+              variant="c"
+              className="mt-2 opacity-70"
+            />
           </motion.div>
         </div>
       </div>
