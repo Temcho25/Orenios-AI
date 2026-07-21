@@ -322,12 +322,12 @@ export default function ProductHero() {
               animate={
                 prefersReducedMotion
                   ? undefined
-                  : { scale: [1, 1.12, 1], opacity: [0.55, 0.8, 0.55] }
+                  : { scale: [1, 1.22, 1], opacity: [0.55, 0.9, 0.55] }
               }
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             />
 
-            {!prefersReducedMotion && <OrbitalRings />}
+            <OrbitalRings />
 
             {/* Daily briefing card */}
 
@@ -356,7 +356,7 @@ export default function ProductHero() {
                     animate={
                       prefersReducedMotion
                         ? undefined
-                        : { y: [0, -2, 0] }
+                        : { y: [0, -5, 0] }
                     }
                     transition={{
                       duration: 5.4,
@@ -371,7 +371,7 @@ export default function ProductHero() {
                       animate={
                         prefersReducedMotion
                           ? undefined
-                          : { scale: [1, 1.18, 1], opacity: [0.4, 0.65, 0.4] }
+                          : { scale: [1, 1.38, 1], opacity: [0.45, 0.85, 0.45] }
                       }
                       transition={{
                         duration: 4.6,

@@ -74,7 +74,7 @@ export default function Footer() {
                 animate={
                   prefersReducedMotion
                     ? undefined
-                    : { scale: [1, 1.15, 1], opacity: [0.6, 0.85, 0.6] }
+                    : { scale: [1, 1.38, 1], opacity: [0.6, 0.95, 0.6] }
                 }
                 transition={{
                   duration: 5.2,

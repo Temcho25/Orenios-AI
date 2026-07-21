@@ -80,7 +80,7 @@ export default function Navbar() {
                 animate={
                   prefersReducedMotion
                     ? undefined
-                    : { scale: [1, 1.22, 1], opacity: [0.5, 0.75, 0.5] }
+                    : { scale: [1, 1.42, 1], opacity: [0.55, 0.9, 0.55] }
                 }
                 transition={{
                   duration: 5,

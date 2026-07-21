@@ -62,7 +62,7 @@ export default function MemorySection() {
             animate={
               prefersReducedMotion
                 ? undefined
-                : { scale: [1, 1.16, 1], opacity: [0.5, 0.75, 0.5] }
+                : { scale: [1, 1.36, 1], opacity: [0.5, 0.88, 0.5] }
             }
             transition={{
               duration: 5.8,
@@ -72,17 +72,15 @@ export default function MemorySection() {
             }}
           />
 
-          {!prefersReducedMotion && (
-            <div className="absolute inset-0 flex items-center justify-center opacity-70">
-              <OrbitalRings />
-            </div>
-          )}
+          <div className="absolute inset-0 flex items-center justify-center opacity-70">
+            <OrbitalRings />
+          </div>
 
           <motion.div
             animate={
               prefersReducedMotion
                 ? undefined
-                : { y: [0, -2, 0] }
+                : { y: [0, -5, 0] }
             }
             transition={{
               duration: 6.2,

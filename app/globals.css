@@ -189,40 +189,55 @@ button {
 /* Landing page "alive" polish pass — every rule below is purely
    decorative motion layered on top of already-shipped gradients,
    nothing here changes color, size or layout. Each variant below
-   shares the same accent-gradient-breathe keyframe (background-
-   position on an oversized background) but at a different duration
-   and delay, so nothing on the page pulses in sync — see the
-   duration/delay comment on each rule. Applied to text (bg-clip-text)
-   and solid fills alike; the keyframe only ever touches
-   background-position, so this is the same technique the existing
-   .cta-gradient already uses in production. */
+   uses the same landing-shimmer keyframe (background-position sweep
+   across a much-oversized background, plus a small brightness pulse
+   at the midpoint) but at a different duration and delay, so nothing
+   on the page pulses in sync — see the duration/delay comment on
+   each rule. Applied to text (bg-clip-text) and solid fills alike.
+   Deliberately faster/bigger than a first pass at this (v1 used
+   11-16s cycles at 220% background-size, which read as static) —
+   tuned so the sweep is consciously visible within a few seconds
+   while staying within the existing violet/cyan palette. */
+@keyframes landing-shimmer {
+  0%,
+  100% {
+    background-position: 0% 50%;
+    filter: brightness(1);
+  }
+
+  50% {
+    background-position: 100% 50%;
+    filter: brightness(1.22);
+  }
+}
+
 .shimmer-a,
 .shimmer-b,
 .shimmer-c,
 .shimmer-d,
 .shimmer-e {
-  background-size: 220% 220%;
+  background-size: 320% 320%;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .shimmer-a {
-    animation: accent-gradient-breathe 11s ease-in-out infinite;
+    animation: landing-shimmer 4.2s ease-in-out infinite;
   }
 
   .shimmer-b {
-    animation: accent-gradient-breathe 13.5s ease-in-out infinite -2.1s;
+    animation: landing-shimmer 5s ease-in-out infinite -1.2s;
   }
 
   .shimmer-c {
-    animation: accent-gradient-breathe 16s ease-in-out infinite -5.4s;
+    animation: landing-shimmer 5.6s ease-in-out infinite -2.4s;
   }
 
   .shimmer-d {
-    animation: accent-gradient-breathe 14.5s ease-in-out infinite -1.3s;
+    animation: landing-shimmer 4.8s ease-in-out infinite -0.6s;
   }
 
   .shimmer-e {
-    animation: accent-gradient-breathe 12s ease-in-out infinite -3.7s;
+    animation: landing-shimmer 5.3s ease-in-out infinite -1.8s;
   }
 }
 
@@ -232,8 +247,10 @@ button {
    only `transform` — cheap to composite even on an already
    blur()'d layer, unlike animating background-position or top/left
    would be. Negative delays start each blob mid-cycle so the whole
-   layer never "breathes" in unison on load. Durations are 70-100s+ —
-   meant to be borderline imperceptible, not a visible drift. */
+   layer never "breathes" in unison on load. Durations tuned to 16-24s
+   with a much larger travel distance (v1 used 70-105s at 22-34px,
+   which was imperceptible short of a full minute of watching) so the
+   drift reads within 10-15 seconds of looking at the page. */
 @keyframes aurora-drift-a {
   0%,
   100% {
@@ -241,7 +258,7 @@ button {
   }
 
   50% {
-    transform: translate3d(34px, -22px, 0);
+    transform: translate3d(85px, -60px, 0);
   }
 }
 
@@ -252,7 +269,7 @@ button {
   }
 
   50% {
-    transform: translate3d(-28px, 26px, 0);
+    transform: translate3d(-75px, 70px, 0);
   }
 }
 
@@ -263,33 +280,33 @@ button {
   }
 
   50% {
-    transform: translate3d(22px, 32px, 0);
+    transform: translate3d(60px, 80px, 0);
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .aurora-blob-1 {
-    animation: aurora-drift-a 82s ease-in-out infinite -14s;
+    animation: aurora-drift-a 18s ease-in-out infinite -4s;
   }
 
   .aurora-blob-2 {
-    animation: aurora-drift-b 95s ease-in-out infinite -38s;
+    animation: aurora-drift-b 22s ease-in-out infinite -11s;
   }
 
   .aurora-blob-3 {
-    animation: aurora-drift-c 74s ease-in-out infinite -52s;
+    animation: aurora-drift-c 16s ease-in-out infinite -8s;
   }
 
   .aurora-blob-4 {
-    animation: aurora-drift-a 105s ease-in-out infinite -21s;
+    animation: aurora-drift-a 24s ease-in-out infinite -15s;
   }
 
   .aurora-blob-5 {
-    animation: aurora-drift-b 88s ease-in-out infinite -67s;
+    animation: aurora-drift-b 19s ease-in-out infinite -6s;
   }
 
   .aurora-blob-6 {
-    animation: aurora-drift-c 91s ease-in-out infinite -9s;
+    animation: aurora-drift-c 21s ease-in-out infinite -12s;
   }
 }
 
@@ -318,9 +335,9 @@ button {
   inset: 0;
   background: linear-gradient(
     100deg,
-    transparent 40%,
-    rgba(255, 255, 255, 0.16) 50%,
-    transparent 60%
+    transparent 35%,
+    rgba(255, 255, 255, 0.34) 50%,
+    transparent 65%
   );
   transform: translateX(-160%) skewX(-15deg);
   pointer-events: none;
@@ -328,10 +345,10 @@ button {
 
 @media (prefers-reduced-motion: no-preference) {
   .cta-sweep-a::before {
-    animation: cta-sweep 9s ease-in-out infinite 2s;
+    animation: cta-sweep 7s ease-in-out infinite 1s;
   }
 
   .cta-sweep-b::before {
-    animation: cta-sweep 11s ease-in-out infinite 5s;
+    animation: cta-sweep 8s ease-in-out infinite 3.5s;
   }
 }

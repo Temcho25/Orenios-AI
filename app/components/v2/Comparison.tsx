@@ -103,7 +103,7 @@ export default function Comparison() {
             animate={
               prefersReducedMotion
                 ? undefined
-                : { scale: [1, 1.2, 1], opacity: [0.15, 0.28, 0.15] }
+                : { scale: [1, 1.45, 1], opacity: [0.15, 0.4, 0.15] }
             }
             transition={{
               duration: 6.8,

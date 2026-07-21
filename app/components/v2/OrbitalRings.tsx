@@ -1,8 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 export default function OrbitalRings() {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <div
       aria-hidden="true"
@@ -12,7 +14,7 @@ export default function OrbitalRings() {
         viewBox="0 0 520 520"
         className="h-[300px] w-[300px] opacity-80 sm:h-[440px] sm:w-[440px] md:h-[520px] md:w-[520px] lg:h-[600px] lg:w-[600px]"
         initial={{ rotate: 0 }}
-        animate={{ rotate: 360 }}
+        animate={prefersReducedMotion ? undefined : { rotate: 360 }}
         transition={{ duration: 46, repeat: Infinity, ease: "linear" }}
       >
         <circle
@@ -43,7 +45,7 @@ export default function OrbitalRings() {
         viewBox="0 0 520 520"
         className="absolute inset-0 h-[300px] w-[300px] opacity-90 sm:h-[440px] sm:w-[440px] md:h-[520px] md:w-[520px] lg:h-[600px] lg:w-[600px]"
         initial={{ rotate: 0 }}
-        animate={{ rotate: -360 }}
+        animate={prefersReducedMotion ? undefined : { rotate: -360 }}
         transition={{ duration: 32, repeat: Infinity, ease: "linear" }}
       >
         <circle
